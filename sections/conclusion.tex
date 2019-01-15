@@ -1,0 +1,13 @@
+
+\section{Conclusion and Future Work}
+
+In this paper we have shown how to mechanise an algorithmic subtyping relation
+for higher-order polymorphism, together with its proofs of soundness,
+completeness and decidability, in the Abella proof assistant. 
+In ongoing work we are extending our mechanisation with a bidirectional type
+inference algorithm. The main difficulty there is communicating the
+instantiations of existential variables from the subtyping algorithm to the
+type inference. To make this possible we are exploring a continuation passing
+style formulation, which generalises the worklist approach.
+Another possible extension is to have the algorithm return an explicit witness
+for the subtyping as part of type-directed elaboration into System F.
