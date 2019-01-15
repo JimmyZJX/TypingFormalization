@@ -1,31 +1,26 @@
 
 
-\def\wh{\widehat}
+\newcommand\wh{\widehat}
 
-\def\j{\omega}
-\def\ji{\Omega}
-\def\jo{\Theta}
-\def\jc{;}
-\def\toto{\rightrightarrows}
-\def\To{\Rightarrow}
-\def\Lto{\Leftarrow}
-\def\TTo{\mathrel{\mathrlap{\To}\mkern1mu\To}}
-\def\sto{\rightsquigarrow}
-\def\tto{\rightarrowtail}
+\newcommand\jg{\omega}
+\newcommand\ji{\Omega}
+\newcommand\jo{\Theta}
+\newcommand\jc{;}
+\newcommand\toto{\rightrightarrows}
+\newcommand\To{\Rightarrow}
+\newcommand\Lto{\Leftarrow}
+\newcommand\TTo{\mathrel{\mathrlap{\To}\mkern1mu\To}}
+\newcommand\sto{\rightsquigarrow}
+\newcommand\tto{\rightarrowtail}
 
-\def\G{\Gamma}
-\def\O{\Omega}
-\def\P{\Psi}
+\newcommand\Gm{\Gamma}
+\newcommand\Om{\Omega}
 
 % just to fool TexStudio
 \def\Alg{}
 \def\a{}
 \def\b{}
 \def\inferrule{}
-
-\def\mark{\vdash}
-\newcommand{\frmark}[1]{{\vartriangleright}(#1)}
-\newcommand{\fmark}[1]{\mark(#1)}
 
 \def\rto{\ \rightharpoonup\ }
 
@@ -36,7 +31,7 @@
 \newcommand{\appInfAlg}[4]{{#1}\bullet{#2}\TTo_{#3} {#4}}
 \newcommand{\carry}[1]{~\{#1\}}
 
-\RenewDocumentCommand \Alg { O{\G} m O{\Psi} m }{#1 \vdash #2 \rightsquigarrow #3 \vdash #4}
+\RenewDocumentCommand \Alg { O{\Gm} m O{\Psi} m }{#1 \vdash #2 \rightsquigarrow #3 \vdash #4}
 
 \RenewDocumentCommand \a {O{}} {\wh\alpha_{#1}}
 \RenewDocumentCommand \b {O{}} {\wh\beta_{#1}}
