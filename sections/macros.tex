@@ -1,11 +1,12 @@
 
+\newcommand\mynote[3]{\textcolor{#2}{#1: #3}}
+\newcommand\bruno[1]{\mynote{Bruno}{red}{#1}}
+\newcommand\jimmy[1]{\mynote{Jimmy}{blue}{#1}}
+\newcommand\tom[1]{\mynote{Tom}{magenta}{#1}}
 
 \newcommand\wh{\widehat}
 
-\newcommand\jg{\omega}
-\newcommand\ji{\Omega}
-\newcommand\jo{\Theta}
-\newcommand\jc{;}
+\newcommand\jg{\omega} % judgment
 \newcommand\toto{\rightrightarrows}
 \newcommand\To{\Rightarrow}
 \newcommand\Lto{\Leftarrow}
@@ -17,22 +18,22 @@
 \newcommand\Om{\Omega}
 
 % just to fool TexStudio
-\def\Alg{}
-\def\a{}
-\def\b{}
-\def\inferrule{}
+\providecommand\inferrule{}
 
-\def\rto{\ \rightharpoonup\ }
+\newcommand\rto{\ \rightharpoonup\ }
 
 \newcommand{\tRed}[1]{\textcolor{red}{#1}}
 
-\newcommand{\lam}[2]{\lambda {#1}.~{#2}}
+\newcommand{\lam}{} %[2]{\lambda {#1}.~{#2}}
+\RenewDocumentCommand \lam {O{x} m} {\lambda {#1}.~{#2}}
+
 \newcommand{\appInf}[3]{{#1}\bullet{#2}\TTo{#3}}
-\newcommand{\appInfAlg}[4]{{#1}\bullet{#2}\TTo_{#3} {#4}}
-\newcommand{\carry}[1]{~\{#1\}}
+\newcommand{\appInfAlg}{} %[4]{{#1}\bullet{#2}\TTo_{#3} {#4}}
+\RenewDocumentCommand \appInfAlg {m m O{a} O{\jg}} {{#1}\bullet{#2}\TTo_{#3} {#4}}
 
-\RenewDocumentCommand \Alg { O{\Gm} m O{\Psi} m }{#1 \vdash #2 \rightsquigarrow #3 \vdash #4}
+\newcommand\al{}
+\newcommand\bt{}
 
-\RenewDocumentCommand \a {O{}} {\wh\alpha_{#1}}
-\RenewDocumentCommand \b {O{}} {\wh\beta_{#1}}
+\RenewDocumentCommand \al {O{}} {\wh\alpha_{#1}}
+\RenewDocumentCommand \bt {O{}} {\wh\beta_{#1}}
 

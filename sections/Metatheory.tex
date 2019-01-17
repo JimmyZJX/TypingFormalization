@@ -1,0 +1,25 @@
+\section{Metatheory}
+
+\subsection{Transfer to the Declarative System}
+\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
+
+\begin{figure}[t]
+\framebox{$\Gm \sto \Om$} $\Gm$ transfers to $\Om$. \jimmy{Always substitute from the very first existential variable. Types in contexts ($\Gm,x:A,\ldots$) should be taken care.}
+\begin{gather*}
+\inferrule*[right=$\mathtt{{\sto}}\Om$]
+{~}
+{\Om \sto \Om}
+\quad
+\inferrule*[right=$\mathtt{{\sto}\al}$]
+{\Om\vdash\tau \\ \Om,[\tau/\al]\Gm \sto \Om}
+{\Om,\al,\Gm \sto \Om}
+\end{gather*}
+\caption{Transfer Rules}
+\label{fig:trans}
+\end{figure}
+
+\subsection{Soundness}
+\subsection{Completeness}
+\subsection{Decidability}
+
+\subsection{Abella}
