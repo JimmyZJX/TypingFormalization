@@ -2,34 +2,50 @@
 
 \subsection{Syntax and Well-Formedness}
 
-$$\begin{aligned}
+\begin{figure}
+\begin{gather*}
+\begin{aligned}
 \text{Type variables}\qquad&a, b\\
-\text{Existential variables}\qquad&\al, \bt\\[3mm]
+\text{Existential variables}\qquad&\al, \bt
+\\[3mm]
 %\text{Types}\qquad&A', B', C' &::=&\quad 1 \mid a \mid \forall x. A' \mid A'\to B'\\
 \text{Mono-types}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
 %\text{Context}\qquad&\Psi &::=&\quad \cdot \mid \Psi, a \mid \Psi, x:A' \color{red} \\[3mm]
 % \text{Declarative Judgements}\qquad&\jo &::=&\quad \cdot \mid \P\vdash A' \le B' \jc \jo\\
 % &&&\quad \mid \P\vdash e\Leftarrow A' \jc \jo \mid \P\vdash e\To A' \jc \jo \mid \P\vdash A' \bullet e\TTo C' \jc \jo\\
-% \noalign{\jimmy{\text{What do the markers do: $\G \vdash,a \vdash,b\vdash \j_1;\j_2;\j_3$ means $\G,a,b\vdash \j_1 \land \G,a\vdash \j_1,\j_2 \land \G\vdash \j_3$}}}\\[3mm]
-\text{Algorithmic types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B\\
-\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\[3mm]
-\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \cdot \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \vdash \jg\\[3mm]
+% \noalign{\jimmy{\text{What do the markers do: $\G \vdash,a \vdash,b\vdash \j_1;\j_2;\j_3$ means $\G,a,b\vdash \j_1 \land \G,a\vdash \j_1,\j_2 \land \G\vdash \j_3$}}} \\[3mm]
+\text{Algorithmic types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B
+\\[3mm]
 \text{Terms}\qquad&e&::=&\quad x \mid () \mid \lam{e} \mid e_1~e_2 \mid (e:A)
-\end{aligned}$$
+\\[3mm]
+\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
+\\[3mm]
+\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \cdot \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \vdash \jg\\
+\text{Declarative worklist}\qquad&\Om &::=&\quad \cdot \mid \Gm, a \mid \Gm, x: A \mid \Gm \vdash \jg
+\end{aligned}
+\end{gather*}
+\caption{Algorithmic Syntax}\label{fig:alg_syntax}
+\end{figure}
 
 \paragraph{Existential Variables} ...
 
-\paragraph{Judgment and judgment chain} ...
-\paragraph{Worklist Judgments} Our algorithmic judgment has a non-standard form.
+\paragraph{Judgments and judgment chains} Judgment is a core component during algorithmic type-checking.
+There are four kinds of judgments in our system: subtyping, checking, inference and application inference.
+Subtyping and checking are relatively simple, since the result could be either success or fail, and no values will be returned.
+For inference and application inference, they would return some type that leads to further computation, so we use continuation-passing-style encodings for them.
+For example, a judgment chain $e \To_a (a \le B)$ contains two judgments: first we want to infer the type of the expression $e$, and then check if that type is a subtype of $B$.
+In the rest of the paper, we usually refer to ``judgment chains'' by ``judgments''.
+
+\paragraph{Worklist Judgments} Our algorithm has a non-standard form.
 We combine the traditional contexts and judgment(s) into a single worklist.
-The worklist collects variable bindings and judgments in order, which represents their scopings:
-each variable is visible after it is declared.
-For example, $a,x:a,x \Lto a$ is a valid worklist, but $\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a$ is not.
+The worklist collects variable bindings and judgments in \emph{order}, which represents their scopings:
+each variable is visible only after it is declared.
+For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a]$ is not (red-colored symbols are out-of-scope).
 
 \paragraph{Hole Notation}...
 
 \begin{figure}[t]
-\framebox{$\Gm\vdash\jg$} Well-formed algorithmic judgment.
+\framebox{$\Gm\vdash\jg$} Well-formed algorithmic judgment
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf{\le}}$]
 {\Gm\vdash A \\ \Gm\vdash B}
@@ -48,7 +64,7 @@ For example, $a,x:a,x \Lto a$ is a valid worklist, but $\textcolor{red}{x} \Lto 
 {\Gm\vdash \appInfAlg{A}{e}}
 \end{gather*}
 
-\framebox{$\text{wf }\Gm$} Well-formed algorithmic worklist.
+\framebox{$\text{wf }\Gm$} Well-formed algorithmic worklist
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf\cdot}$]
 {~}{\text{wf }\cdot}
@@ -69,7 +85,7 @@ For example, $a,x:a,x \Lto a$ is a valid worklist, but $\textcolor{red}{x} \Lto 
 {\text{wf }\Gm \\ \Gm\vdash\jg}
 {\text{wf }\Gm \vdash\jg}
 \end{gather*}
-\caption{Algorithmic Well-Formedness}\label{fig:alg}
+\caption{Algorithmic Well-Formedness}\label{fig:alg_wf}
 \end{figure}
 
 \subsection{Algorithmic System}
@@ -89,8 +105,8 @@ For example, $a,x:a,x \Lto a$ is a valid worklist, but $\textcolor{red}{x} \Lto 
 \Gm \vdash \al\le \al &\rto \Gm
 \\[2mm]
 \Gm \vdash A_1\to A_2 \le B_1\to B_2 &\rto \Gm \vdash A_2 \le B_2 \vdash B_1\le A_1\\
-\Gm \vdash \forall a. A\le B &\rto \Gm,\al \vdash [\al/a]A\le B \quad\text{\jimmy{No more existential variable "leaks"!}}\\
-\Gm \vdash A\le \forall b. B &\rto \Gm,b \vdash A\le B \quad\text{\jimmy{And no more type variable "leaks"!}}
+\Gm \vdash \forall a. A\le B &\rto \Gm,\al \vdash [\al/a]A\le B \quad\text{\jimmy{No more exvar leaks}}\\
+\Gm \vdash A\le \forall b. B &\rto \Gm,b \vdash A\le B \quad\text{\jimmy{No more typevar leaks}}
 \\[2mm]
 %\\
 %\text{Let } \color{red}\Gm[\al \toto B // G_M] &:= \Gm_L, G_M, [B/\al]\Gm_R, \text{ when } \Gm[\al] = \Gm_L,\al,\Gm_R \ (G_M\text{ defaults to }\cdot)\\
@@ -110,13 +126,13 @@ For example, $a,x:a,x \Lto a$ is a valid worklist, but $\textcolor{red}{x} \Lto 
 \Gm \vdash () \Lto 1 &\rto \Gm\\
 \Gm \vdash e\Lto \forall a. A &\rto \Gm,a \vdash e\Lto A\\
 \Gm \vdash \lambda x. e \Lto A\to B &\rto \Gm, x:A  \vdash e \Lto B\\
-\Gm[\al] \vdash \lambda x. e \Lto \al &\rto [\al[1]\to \al[2] / \al](\Gm[\al[1],\al[2]], x:\al[1] \vdash e \Lto \al[2]) \quad\text{\jimmy{Additional case}}
+\Gm[\al] \vdash \lambda x. e \Lto \al &\rto [\al[1]\to \al[2] / \al](\Gm[\al[1],\al[2]], x:\al[1] \vdash e \Lto \al[2]) \quad\text{\jimmy{Additional}}
 \\[2mm]
 \Gm \vdash x\To_a \jg &\rto \Gm \vdash [A/a] \jg \qquad (x:A)\in \Gm\\
 \Gm \vdash (e:A)\To_a \jg &\rto \Gm \vdash [A/a]\jg \vdash e \Lto A\\
-\Gm \vdash ()\To_a \jg &\rto \Gm \vdash [1/a]\jg \qquad\jimmy{\downarrow\text{Precise control on exvars: to the $2^{nd}$ chain}}\\
+\Gm \vdash ()\To_a \jg &\rto \Gm \vdash [1/a]\jg \qquad\jimmy{\downarrow\text{Precise control on exvars}}\\
 \Gm \vdash \lambda x. e \To_a \jg &\rto
-	\Gm,\al,\bt \vdash [\al\to\bt/a]\jg, x:\al \vdash e\Lto \bt \quad\jimmy{\text{differs from Dunfield's}}\\
+	\Gm,\al,\bt \vdash [\al\to\bt/a]\jg, x:\al \vdash e\Lto \bt \quad\jimmy{\text{differs}}\\
 \Gm \vdash e_1\ e_2 \To_a \jg &\rto \Gm \vdash e_1\To_{a_1} (\appInfAlg{a_1}{e_2})
 \\[2mm]
 \Gm \vdash \appInfAlg{\forall a. A}{e} &\rto \Gm,\al \vdash \appInfAlg{[\al/a]A}{e}\\
@@ -124,7 +140,7 @@ For example, $a,x:a,x \Lto a$ is a valid worklist, but $\textcolor{red}{x} \Lto 
 \Gm[\al] \vdash \appInfAlg{\al}{e} &\rto
 	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \vdash [\al[2]/a]\jg \vdash e\Lto \al[1])\\
  &\color{magenta} \makebox[0pt]{\qquad or}\phantom{{}\rto{}}
- 	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \vdash \appInfAlg{\al[1]\to\al[2]}{e}) \quad\text{(1 step equiv.)}
+ 	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \vdash \appInfAlg{\al[1]\to\al[2]}{e})
 \end{aligned}
 \end{gather*}
 \caption{Algorithmic Typing}\label{fig:alg}
