@@ -18,8 +18,49 @@
 \label{fig:trans}
 \end{figure}
 
+\begin{lemma}[Insert]
+If $\Gm_L\vdash \tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$
+, then $\Gm_L, \al, \Gm_R \sto \Om$.
+\end{lemma}
+\begin{lemma}[Extract]
+If $\Gm_L, \al, \Gm_R \sto \Om$
+, then $\exists \tau$ s.t. $\Gm\vdash\tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$.
+\end{lemma}
+
 \subsection{Soundness}
+
+\begin{theorem}[Soundness]
+If \emph{wf }$\Gm$ and $\Gm \redto \cdot$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\cdot$.
+\end{theorem}
+
 \subsection{Completeness}
+
+\begin{theorem}[Completeness]
+If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\cdot$, then $\Gm \redto \cdot$.
+\end{theorem}
+
+\begin{lemma}[Prune Transfer for Instantiation]
+If $(\Gm \vdash \al \le A \to B) \sto (\Om \vdash C \le A_1 \to B_1)$ and $\Om \vdash_d C \le A_1 \to B_1$,
+then $\al\notin FV(A) \cup FV(B)$.
+\end{lemma}
+
 \subsection{Decidability}
+\begin{theorem}[Decidability]
+For all well-formed $\Gm$, it is decidable whether $\Gm\redto\cdot$ or not.
+\end{theorem}
+
+lexicographic group of induction measurements
+$\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
+
+\begin{definition}[Worklist Measures]
+\[|\Gm|_e = \sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e + \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\]
+\[|\Gm|_\Leftrightarrow = \#_{e\Lto A\in\Gm}
+    + 2\cdot\#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\]
+\[|\Gm|_\forall = \sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
+    \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\]
+\[|\Gm|_\to = \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
+    \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\]
+\[|\Gm|_{\al} = \#_{\al\in\Gm}\]
+\end{definition}
 
 \subsection{Abella}
