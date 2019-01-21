@@ -16,16 +16,41 @@ we also employ.
 Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
 the formalization harder since requires ``synchronizing'' things ...
 
+%-------------------------------------------------------------------------------
 \subsection{Worklist Algorithm for Subtyping}
 
-Revise the approach in ITP.
+In recent work~\cite{itp2018}, we have shown how to mechanise a variant of DK's
+subtyping algorithm and shown it correct with respect to DK's declarative
+subtyping judgment. This approach overcomes the problem's in DK's formulation
+by using a \emph{worklist}-based judgement of the form $\Gamma \vdash \Omega$
+where $\Omega$ is a worklist, i.e. a sequence, of subtyping problems of the
+form $A \leq B$.  The judgement is defined by case analysis on the first
+element of $\Omega$ and recursively processes the worklist until it is empty.
+Using both a single common environment $\Gamma$ and a worklist $\Omega$ greatly
+simplifies propagating the instantiation of type variables that happen in one
+subtyping problem to the remaining ones.
 
-\paragraph{Scoping Garbage} Scoping problems (extra garbage).
+Unfortunately, this work does not solve all problems. In particular, it has two
+major limitations that prevent it from scaling to the whole DK system. 
+
+\paragraph{Scoping Garbage} Firstly, the single common type environment
+$\Gamma$ does not accurately reflect the type and unification variables
+currently in scope. Instead, it is an overapproximation that steadily accrues
+variables, and only drops those unification variables that are instantiated.
+In other words, $\Gamma$ contains ``garbage'' that is no longer in scope.
+This complicates establishing the relation with the declarative system.
+
 
 \paragraph{No Inference Judgments} 
-Only subtyping (which is a \emph{checking} judgment). 
-No approach to deal with \emph{inference} judgments.
+Secondly and more importantly, the approach only deals with a judgement for
+\emph{checking} whether one type is the subtype of another. While this may not
+so be difficult to scale to the \emph{checking} mode of term typing $\Gamma
+\vdash e \Leftarrow A$, it clearly lacks the functionality to support the
+\emph{inference} mode of term typing $\Gamma \vdash e \Rightarrow A$. Indeed,
+the latter requires not only the communication of unification variable
+instantiations from one typing problem to another, but also an inferred type.
 
+%-------------------------------------------------------------------------------
 \subsection{Algorithmic Type Inference for Higher-Ranked Types: Key Ideas}
 
 Our algorithm borrows some ideas from previous work, while adding new ones. 
