@@ -26,14 +26,14 @@ by using a \emph{worklist}-based judgement of the form $\Gamma \vdash \Omega$
 where $\Omega$ is a worklist, i.e. a sequence, of subtyping problems of the
 form $A \leq B$.  The judgement is defined by case analysis on the first
 element of $\Omega$ and recursively processes the worklist until it is empty.
-Using both a single common environment $\Gamma$ and a worklist $\Omega$ greatly
+Using both a single common ordered context $\Gamma$ and a worklist $\Omega$ greatly
 simplifies propagating the instantiation of type variables that happen in one
 subtyping problem to the remaining ones.
 
 Unfortunately, this work does not solve all problems. In particular, it has two
 major limitations that prevent it from scaling to the whole DK system. 
 
-\paragraph{Scoping Garbage} Firstly, the single common type environment
+\paragraph{Scoping Garbage} Firstly, the single common type ordered context 
 $\Gamma$ does not accurately reflect the type and unification variables
 currently in scope. Instead, it is an overapproximation that steadily accrues
 variables, and only drops those unification variables that are instantiated.
@@ -53,8 +53,32 @@ instantiations from one typing problem to another, but also an inferred type.
 %-------------------------------------------------------------------------------
 \subsection{Algorithmic Type Inference for Higher-Ranked Types: Key Ideas}
 
-Our algorithm borrows some ideas from previous work, while adding new ones. 
-A small-step style processing worklists; \emph{Judgment Chains}; others. 
+Our new algorithmic type system addresses builds on the work above, but
+addresses the open problems. 
 
-Importantly we now deal with inference judgement.
+\paragraph{Scope Tracking}
+Firstly, we avoid scoping garbage by blending the ordered context and the
+worklist into a single syntactic sort $\Gamma$, our algorithmic worklist. This
+algorithmic worklist interleaves (type and term) variables with \emph{work}
+like checking or inferring types of expressions. The interleaving keeps track
+of the variable scopes in the usual, natural way: each variables is in scope of
+anything in front of it in the worklist. If there is nothing in front, the
+variable is no longer needed and can be popped from the worklist. This way, no
+garbage builds up.
+
+\paragraph{Inference Judgements}
+To express the DK inference judgements, we use a novel form of work entries in
+the worklist: our algorithmic judgement chains $\omega$. In its simplest form,
+such a judgement chain is just a check, like a subtyping check $A \leq B$ or a
+term typecheck $e \Leftarrow A$.  The non-trivial forms of chains capture an
+inference task together with the the work that depends on its outcome. For
+instance, a type inference task takes the form $e \Rightarrow_a \omega$. It
+denotes that we need to infer the type, say $A$, of expression $e$ and use it
+in the chain $\omega$ by subsituting it for the placeholder type variable $a$.
+
+
+% Our algorithm borrows some ideas from previous work, while adding new ones. 
+% A small-step style processing worklists; \emph{Judgment Chains}; others. 
+
+% Importantly we now deal with inference judgement.
 
