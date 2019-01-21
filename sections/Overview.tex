@@ -1,0 +1,33 @@
+\section{Overview}
+
+\bruno{I think some text/ideas-for-text can be borrowed from ITP.}
+
+\subsection{DK's Declarative System}
+Subtyping and Typing. \jimmy{Can you prepare the figures. Subtyping is already in ITP.}
+
+\paragraph{Metatheory} Talk about the lemmas that are false, show counterexample. 
+
+\paragraph{Other Challenges} Scoping, Output Contexts?
+
+\subsection{Small-Step Unification} Mention some algorithms for unification for 
+dependent types that use a small-step approach. Credit them later for some ideas that 
+we also employ.
+
+Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
+the formalization harder since requires ``synchronizing'' things ...
+
+\subsection{Worklist Algorithm for Subtyping}
+
+Revise the approach in ITP.
+
+\paragraph{Scoping Garbage} Scoping problems (extra garbage).
+
+\paragraph{No Inference Judgments} 
+Only subtyping (which is a \emph{checking} judgment). 
+No approach to deal with \emph{inference} judgments.
+
+\subsection{Algorithmic Type Inference for Higher-Ranked Types: Key Ideas}
+
+Our algorithm borrows some ideas from previous work, while adding new ones. 
+A small-step style processing worklists; \emph{Judgment Chains}; others. 
+
