@@ -3,6 +3,13 @@
 \subsection{Transfer to the Declarative System}
 \jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
 
+The transfer rules are shown in Figure~\ref{fig:trans}.
+The rules recursively replace the first existential variable to a well-scoped mono-type,
+so the algorithmic worklist will finally become a declarative one.
+In order to maintain well-formedness,
+the substitution should affect all the judgments and term variable bindings in the worklist.
+
+
 \begin{figure}[t]
 \framebox{$\Gm \sto \Om$} $\Gm$ transfers to $\Om$. \jimmy{Always substitute from the very first existential variable. Types in contexts ($\Gm,x:A,\ldots$) should be taken care.}
 \begin{gather*}
@@ -18,6 +25,22 @@
 \label{fig:trans}
 \end{figure}
 
+\begin{figure}[t]
+\framebox{$\Om \rto \Om'$} $\Om$ reduces to $\Om'$.
+\begin{gather*}
+\begin{aligned}
+\Om,a &\rto \Om \qquad \Om,\al \rto \Om \qquad \Om,x:A \rto \Om\\
+\Om\Vdash A\le B &\rto \Om \text{ when } \Om\vdash A\le B\\
+\Om\Vdash e\Lto A &\rto \Om \text{ when } \Om\vdash e\Lto A\\
+\Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg \text{ when } \Om\vdash e\To A\\
+\Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg \text{ when } \Om\vdash \appInf{A}{e}{C}\\
+\end{aligned}
+\end{gather*}
+\caption{Algorithmic Worklist Typing Rules}
+\label{fig:alg:typing}
+\end{figure}
+
+
 \begin{lemma}[Insert]
 If $\Gm_L\vdash \tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$
 , then $\Gm_L, \al, \Gm_R \sto \Om$.
@@ -30,23 +53,23 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \subsection{Soundness}
 
 \begin{theorem}[Soundness]
-If \emph{wf }$\Gm$ and $\Gm \redto \cdot$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\cdot$.
+If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
 \end{theorem}
 
 \subsection{Completeness}
 
 \begin{theorem}[Completeness]
-If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\cdot$, then $\Gm \redto \cdot$.
+If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 \end{theorem}
 
 \begin{lemma}[Prune Transfer for Instantiation]
-If $(\Gm \vdash \al \le A \to B) \sto (\Om \vdash C \le A_1 \to B_1)$ and $\Om \vdash_d C \le A_1 \to B_1$,
+If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and $\Om \vdash C \le A_1 \to B_1$,
 then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
 
 \subsection{Decidability}
 \begin{theorem}[Decidability]
-For all well-formed $\Gm$, it is decidable whether $\Gm\redto\cdot$ or not.
+For all well-formed $\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
 
 lexicographic group of induction measurements
@@ -55,7 +78,7 @@ $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to +
 \begin{definition}[Worklist Measures]
 \[|\Gm|_e = \sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e + \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\]
 \[|\Gm|_\Leftrightarrow = \#_{e\Lto A\in\Gm}
-    + 2\cdot\#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\]
+    + 2\nil\#_{e\To_a \jg\in\Gm} + 3\nil\#_{\appInfAlg{A}{e}\in\Gm}\]
 \[|\Gm|_\forall = \sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
     \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\]
 \[|\Gm|_\to = \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +

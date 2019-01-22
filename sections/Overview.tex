@@ -5,6 +5,65 @@
 \subsection{DK's Declarative System}
 Subtyping and Typing. \jimmy{Can you prepare the figures. Subtyping is already in ITP.}
 
+\begin{figure}[t]
+\[
+\begin{array}{l@{\qquad}lcl}
+\text{Type variables}\qquad&a, b\\[3mm]
+\text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \forall a. A \mid A\to B\\
+\text{Monotypes}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
+\text{Contexts}\qquad&\Psi &::=&\quad \cdot \mid \Psi, a\\
+%\text{Judgments}\qquad&\exps &::=&\quad \cdot \mid A \le B : \exps
+\end{array}
+\]
+\caption{Syntax of Declarative System}\label{fig:decl:syntax}
+\end{figure}
+
+The syntax of this declarative system is shown in Figure~\ref{fig:decl:syntax}.
+
+\begin{figure}[t]
+\centering \framebox{$\Om \vdash A$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf_d unit}$]
+    {~}{\Om\vdash 1}
+\qquad
+\inferrule*[right=$\mathtt{wf_d var}$]
+    {a\in\Om}{\Om\vdash a}
+\qquad
+\inferrule*[right=$\mathtt{wf_d{\to}}$]
+    {\Om\vdash A\quad \Om\vdash B}
+    {\Om\vdash A\to B}
+\qquad
+\inferrule*[right=$\mathtt{wf_d\forall}$]
+    {\Om, a\vdash A}
+    {\Om\vdash \forall a. A}
+\end{gather*}
+
+\centering \framebox{$\Om \vdash A \le B$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{{\le}Var}$]
+    {a\in\Om}{\Om\vdash a\le a}
+\qquad
+\inferrule*[right=$\mathtt{{\le}Unit}$]
+    {~}{\Om \vdash 1 \le 1}
+\qquad
+\inferrule*[right=$\mathtt{{\le}{\to}}$]
+    {\Om \vdash B_1 \le A_1 \quad \Om \vdash A_2 \le B_2}
+    {\Om\vdash A_1\to A_2 \le B_1\to B_2}
+\\
+\inferrule*[right=$\mathtt{{\le}\forall L}$]
+    {\Om\vdash \tau \quad \Om\vdash [\tau/a] A \le B}
+    {\Om\vdash \forall a. A \le B}
+\qquad
+\inferrule*[right=$\mathtt{{\le}\forall R}$]
+    {\Om, a\vdash A\le B}
+    {\Om\vdash A \le \forall a. B}
+\end{gather*}
+\caption{Well-formedness of Declarative Types and Declarative Subtyping}\label{fig:decl:wf_sub}
+\end{figure}
+
+In Figure~\ref{fig:decl:wf_sub},
+we give the well-formedness and subtyping relation for the declarative system.
+
 \paragraph{Metatheory} Talk about the lemmas that are false, show counterexample. 
 
 \paragraph{Other Challenges} Scoping, Output Contexts?
