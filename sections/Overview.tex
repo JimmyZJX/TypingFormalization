@@ -10,7 +10,7 @@ Subtyping and Typing. \jimmy{Can you prepare the figures. Subtyping is already i
 \begin{array}{l@{\qquad}lcl}
 \text{Type variables}\qquad&a, b\\[3mm]
 \text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \forall a. A \mid A\to B\\
-\text{Monotypes}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
+\text{Monotypes}\qquad&\tau,\sigma &::=&\quad 1 \mid a \mid \tau\to \sigma\\
 \text{Contexts}\qquad&\Psi &::=&\quad \cdot \mid \Psi, a\\
 %\text{Judgments}\qquad&\exps &::=&\quad \cdot \mid A \le B : \exps
 \end{array}
@@ -21,48 +21,97 @@ Subtyping and Typing. \jimmy{Can you prepare the figures. Subtyping is already i
 The syntax of this declarative system is shown in Figure~\ref{fig:decl:syntax}.
 
 \begin{figure}[t]
-\centering \framebox{$\Om \vdash A$}
-\begin{gather*}
-\inferrule*[right=$\mathtt{wf_d unit}$]
-    {~}{\Om\vdash 1}
-\qquad
-\inferrule*[right=$\mathtt{wf_d var}$]
-    {a\in\Om}{\Om\vdash a}
-\qquad
-\inferrule*[right=$\mathtt{wf_d{\to}}$]
-    {\Om\vdash A\quad \Om\vdash B}
-    {\Om\vdash A\to B}
-\qquad
-\inferrule*[right=$\mathtt{wf_d\forall}$]
-    {\Om, a\vdash A}
-    {\Om\vdash \forall a. A}
-\end{gather*}
+%\centering \framebox{$\Psi \vdash A$}
+%\begin{gather*}
+%\inferrule*[right=$\mathtt{wf_d unit}$]
+%    {~}{\Psi\vdash 1}
+%\qquad
+%\inferrule*[right=$\mathtt{wf_d var}$]
+%    {a\in\Psi}{\Psi\vdash a}
+%\qquad
+%\inferrule*[right=$\mathtt{wf_d{\to}}$]
+%    {\Psi\vdash A\quad \Psi\vdash B}
+%    {\Psi\vdash A\to B}
+%\qquad
+%\inferrule*[right=$\mathtt{wf_d\forall}$]
+%    {\Psi, a\vdash A}
+%    {\Psi\vdash \forall a. A}
+%\end{gather*}
 
-\centering \framebox{$\Om \vdash A \le B$}
+\centering \framebox{$\Psi \vdash A \le B$}
 \begin{gather*}
 \inferrule*[right=$\mathtt{{\le}Var}$]
-    {a\in\Om}{\Om\vdash a\le a}
+    {a\in\Psi}{\Psi\vdash a\le a}
 \qquad
 \inferrule*[right=$\mathtt{{\le}Unit}$]
-    {~}{\Om \vdash 1 \le 1}
+    {~}{\Psi \vdash 1 \le 1}
 \qquad
 \inferrule*[right=$\mathtt{{\le}{\to}}$]
-    {\Om \vdash B_1 \le A_1 \quad \Om \vdash A_2 \le B_2}
-    {\Om\vdash A_1\to A_2 \le B_1\to B_2}
+    {\Psi \vdash B_1 \le A_1 \quad \Psi \vdash A_2 \le B_2}
+    {\Psi\vdash A_1\to A_2 \le B_1\to B_2}
 \\
 \inferrule*[right=$\mathtt{{\le}\forall L}$]
-    {\Om\vdash \tau \quad \Om\vdash [\tau/a] A \le B}
-    {\Om\vdash \forall a. A \le B}
+    {\Psi\vdash \tau \quad \Psi\vdash [\tau/a] A \le B}
+    {\Psi\vdash \forall a. A \le B}
 \qquad
 \inferrule*[right=$\mathtt{{\le}\forall R}$]
-    {\Om, a\vdash A\le B}
-    {\Om\vdash A \le \forall a. B}
+    {\Psi, a\vdash A\le B}
+    {\Psi\vdash A \le \forall a. B}
 \end{gather*}
-\caption{Well-formedness of Declarative Types and Declarative Subtyping}\label{fig:decl:wf_sub}
+\caption{%Well-formedness of Declarative Types and 
+Declarative Subtyping}\label{fig:decl:sub}
 \end{figure}
 
-In Figure~\ref{fig:decl:wf_sub},
-we give the well-formedness and subtyping relation for the declarative system.
+\begin{figure}[t]
+\centering \framebox{$\Psi \vdash A \Lto B$} $e$ checks against input type $A$.\\
+\centering \framebox{$\Psi \vdash A \To B$} $e$ synthesizes output type $A$.\\
+\centering \framebox{$\Psi \vdash \appInf{A}{e}{C}$} Applying a function of type $A$ to $e$ synthesizes type $C$.
+\begin{gather*}
+\inferrule*[right=$\mathtt{DeclVar}$]
+    {(x:A)\in\Psi}{\Psi\vdash x\To A}
+\qquad
+\inferrule*[right=$\mathtt{DeclSub}$]
+    {\Psi\vdash e\To A \quad \Psi\vdash A\le B}{\Psi \vdash e\Lto B}
+\qquad
+\inferrule*[right=$\mathtt{DeclAnno}$]
+    {\Psi \vdash A \quad \Psi\vdash e\Lto A}
+    {\Psi\vdash (e:A)\To A}
+\\
+\inferrule*[right=$\mathtt{Decl1I}$]
+    {~}{\Psi\vdash () \Lto 1}
+\qquad
+\inferrule*[right=$\mathtt{Decl1I\To}$]
+    {~}{\Psi\vdash () \To 1}
+\qquad
+\inferrule*[right=$\mathtt{Decl\forall I}$]
+    {\Psi,a \vdash e \Lto A}
+    {\Psi\vdash e\Lto \all A}
+\\
+\inferrule*[right=$\mathtt{Decl\forall App}$]
+    {\Psi \vdash \tau \quad \Psi\vdash \appInf{[\tau/a]A}{e}{C} }
+    {\Psi\vdash \appInf{\all A}{e}{C}}
+\qquad
+\inferrule*[right=$\mathtt{Decl\to I}$]
+    {\Psi,x:A \vdash e\Lto B}
+    {\Psi\vdash \lam e \Lto A \to B}
+\\
+\inferrule*[right=$\mathtt{Decl\to I\To}$]
+    {\Psi\vdash \sigma\to\tau \quad \Psi,x:\sigma \vdash e\Lto \tau}
+    {\Psi\vdash \lam e \To \sigma\to\tau}
+\qquad
+\inferrule*[right=$\mathtt{Decl\to E}$]
+    {\Psi\vdash e_1\To A \quad \Psi\vdash \appInf{A}{e_2}{C}}
+    {\Psi\vdash e_1~e_2 \To C}
+\\
+\inferrule*[right=$\mathtt{Decl\to App}$]
+    {\Psi\vdash e \Lto A}
+    {\Psi\vdash \appInf{A \to C}{e}{C}}
+\end{gather*}
+\caption{Declarative Typing}\label{fig:decl:typing}
+\end{figure}
+
+In Figures~\ref{fig:decl:sub} and \ref{fig:decl:typing},
+we give the subtyping and typing relations for the declarative system.
 
 \paragraph{Metatheory} Talk about the lemmas that are false, show counterexample. 
 
