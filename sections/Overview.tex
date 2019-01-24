@@ -71,38 +71,39 @@ Declarative Subtyping}\label{fig:decl:sub}
     {(x:A)\in\Psi}{\Psi\vdash x\To A}
 \qquad
 \inferrule*[right=$\mathtt{DeclSub}$]
-    {\Psi\vdash e\To A \quad \Psi\vdash A\le B}{\Psi \vdash e\Lto B}
-\qquad
+    {e \neq \lam e' \quad B \neq \all B' \quad \Psi\vdash e\To A \quad \Psi\vdash A\le B}
+    {\Psi \vdash e\Lto B}
+\\
 \inferrule*[right=$\mathtt{DeclAnno}$]
     {\Psi \vdash A \quad \Psi\vdash e\Lto A}
     {\Psi\vdash (e:A)\To A}
-\\
+\qquad
 \inferrule*[right=$\mathtt{Decl1I}$]
     {~}{\Psi\vdash () \Lto 1}
 \qquad
 \inferrule*[right=$\mathtt{Decl1I\To}$]
     {~}{\Psi\vdash () \To 1}
-\qquad
+\\
 \inferrule*[right=$\mathtt{Decl\forall I}$]
     {\Psi,a \vdash e \Lto A}
     {\Psi\vdash e\Lto \all A}
-\\
+\qquad
 \inferrule*[right=$\mathtt{Decl\forall App}$]
     {\Psi \vdash \tau \quad \Psi\vdash \appInf{[\tau/a]A}{e}{C} }
     {\Psi\vdash \appInf{\all A}{e}{C}}
-\qquad
+\\
 \inferrule*[right=$\mathtt{Decl\to I}$]
     {\Psi,x:A \vdash e\Lto B}
     {\Psi\vdash \lam e \Lto A \to B}
-\\
+\qquad
 \inferrule*[right=$\mathtt{Decl\to I\To}$]
     {\Psi\vdash \sigma\to\tau \quad \Psi,x:\sigma \vdash e\Lto \tau}
     {\Psi\vdash \lam e \To \sigma\to\tau}
-\qquad
+\\
 \inferrule*[right=$\mathtt{Decl\to E}$]
     {\Psi\vdash e_1\To A \quad \Psi\vdash \appInf{A}{e_2}{C}}
     {\Psi\vdash e_1~e_2 \To C}
-\\
+\qquad
 \inferrule*[right=$\mathtt{Decl\to App}$]
     {\Psi\vdash e \Lto A}
     {\Psi\vdash \appInf{A \to C}{e}{C}}
