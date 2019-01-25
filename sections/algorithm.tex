@@ -130,7 +130,7 @@ For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \L
 \Gm \Vdash \lambda x. e \Lto A\to B &\algrule \Gm, x:A  \Vdash e \Lto B\\
 \Gm[\al] \Vdash \lambda x. e \Lto \al &\algrule [\al[1]\to \al[2] / \al](\Gm[\al[1],\al[2]], x:\al[1] \Vdash e \Lto \al[2]) \quad\text{\jimmy{Additional}}
 \\[2mm]
-\Gm \Vdash x\To_a \jg &\algrule \Gm \Vdash [A/a] \jg \qquad (x:A)\in \Gm\\
+\Gm \Vdash x\To_a \jg &\algrule \Gm \Vdash [A/a] \jg \quad \text{when } (x:A)\in \Gm\\
 \Gm \Vdash (e:A)\To_a \jg &\algrule \Gm \Vdash [A/a]\jg \Vdash e \Lto A\\
 \Gm \Vdash ()\To_a \jg &\algrule \Gm \Vdash [1/a]\jg \qquad\jimmy{\downarrow\text{Precise control on exvars}}\\
 \Gm \Vdash \lambda x. e \To_a \jg &\algrule
@@ -179,3 +179,42 @@ By making use of the continuation-passing-style judgement chain,
 inner judgments always shares context with its parent judgment,
 therefore we preserve well-formedness during reduction.
 
+Secondly, Rules 10 and 11 are algorithmic extensions to Rule $\mathtt{{\le}{\to}}$.
+Both of them partially instantiate $\al$ to function types.
+The domain $\al[1]$ and range $\al[2]$ of the new function type are not determined:
+they are fresh existential variables with the same scope as $\al$.
+We remove $\al$ from the worklist, and insert $\al[1], \al[2]$ back to the same position.
+To propagate the instantiation to the rest of the worklist and maintain the wel-formedness,
+every $\al$ is replaced by $\al[1] \to \al[2]$.
+The \emph{occurs-check} condition is to prevent a diverging infinite loop.
+Without such check, $\al \le 1 \to \al$, as an example, would diverge.
+
+Thirdly, Rules 12-17 are base cases where an existential variable is solved.
+Each of the rules removes and existential variable, substitutes the variable with its solution and continues.
+
+Fourthly, Rules 18-21 deal with checking judgments.
+Rule 18 is similar to $\mathtt{DeclSub}$, and rewrited in the continuation-passing-style.
+Rules 19 and 20 adapts the worklist style from their corresponding declarative rules.
+Rule 21 is a special case of $\mathtt{Decl\to I}$.
+Instantiation technique similar to Rules 10 and 11 applys.
+The declarative checking rule $\mathtt{Decl1I}$ is not translated to the algorithm,
+since combining Rule 18 and Rule 24 would give the same result.
+
+Fifthly, Rules 22-26 deal with inference judgments.
+Inference judgment chains are written in continuation-passing-style.
+When an inference judgment succeeds with type $A$,
+the algorithm continues to work on the inner-chain $\jg$ by assigning $A$ to its placeholder varible $a$.
+Rule 23 infers an annotated expression by changing into checking mode,
+therefore another judgment chain is created.
+Rule 25 infers the type of a lambda expression by introducing $\al, \bt$
+as the input and output types of the function, respectively.
+After checking the body $e$ under the assumption $x:\al$,
+the return type might reflect more information than simply $\al \to \bt$.
+The variable scopings are well-maintained during the process:
+the assumption of argument type ($x:\al$) is recycled after checking against the function body;
+the declaration of the function type ($\al,\bt$) is only visible to
+the checking and the remaining chain $[\al\to\bt/a]\jg$.
+
+Finally, Rules 27-29 deal with application inference judgments.
+Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}$ and $\mathtt{Decl\to App}$.
+Rule 29 instantiate $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
