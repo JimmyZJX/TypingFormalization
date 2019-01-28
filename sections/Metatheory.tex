@@ -99,12 +99,9 @@ $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to +
 \qquad
 \inferrule*[right=$\mathtt{\jExt solve}$]
     {|A|_\forall = 0 \quad \Gm_L,[A/\al]\Gm_R \jExt \Gm'}{\Gm_L,\al,\Gm_R \jExt \Gm'}
-\\
+\qquad
 \inferrule*[right=$\mathtt{\jExt \al}$]
     {\Gm_L,\al,\Gm_R \jExt \Gm'}{\Gm_L,\Gm_R \jExt \Gm'}
-\qquad
-\inferrule*[right=$\mathtt{\jExt inst}$]
-    {\Gm_L,\al[1],\al[2],[\al[1]\to\al[2]/\al]\Gm_R \jExt \Gm'}{\Gm_L,\al,\Gm_R \jExt \Gm'}
 \end{gather*}
 \caption{Worklist Extension}\label{fig:worklist_ext}
 \end{figure}
@@ -113,8 +110,11 @@ Shown in Figure~\ref{fig:worklist_ext},
 worklist extension relates minor changes of worklist during type-checking.
 When the algorithm processes the worklist, the first judgment is processed,
 and the rest of the worklist roughly remains its shape.
-Worklist extension formally defines the minor changes of the shape by three cases:
-existential variable solving ($\mathtt{\jExt solve}$), existential variable addition ($\mathtt{\jExt \al}$)
-and existential variable instantiation ($\mathtt{\jExt inst}$). \jimmy{Is the 3rd case redundant?}
+Worklist extension formally defines the minor changes of the shape by two cases:
+existential variable solving ($\mathtt{\jExt solve}$) and
+existential variable addition ($\mathtt{\jExt \al}$).
+Existential variable instantiation,
+i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
+can be derived with the combination of the 3 rules.
 
 \subsection{Abella}
