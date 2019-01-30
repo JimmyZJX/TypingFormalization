@@ -70,7 +70,16 @@ Figure~\ref{fig:alg:syntax} shows the syntax and the well-formedness judgement.
 \caption{Syntax and Well-Formedness for the Algorithmic System}\label{fig:alg:syntax}
 \end{figure}
 
-\paragraph{Existential Variables} ...
+\paragraph{Existential Variables} In order to find the unknown type $\tau$ in the declarative system,
+\emph{existential variables} $\al, \bt$ are introduced to the algorithmic system.
+They behave similarly to unification variables,
+but their scoping is restricted by the position located in the worklist,
+rather than globally defined
+Any existential variable $\al$ should only be solved to
+a well-formed type under the worklist before $\al$ is defined.
+Thus the mono-type $\tau$ represented by the corresponding existential variable
+is always well-formed under the corresponding declarative context.
+In other words, the position of $\al$'s reflects the well-formedness restriction of $\tau$'s.
 
 \paragraph{Judgments and judgment chains} Judgment is a core component of algorithmic type-checking.
 There are four kinds of judgments in our system: subtyping, checking, inference and application inference.
@@ -85,7 +94,12 @@ The worklist collects variable bindings and judgments in \emph{order}, which rep
 each variable is visible only after it is declared.
 For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a]$ is not (red-colored symbols are out-of-scope).
 
-\paragraph{Hole Notation}...
+\paragraph{Hole Notation}
+We use the syntax $\Gm[\Gm_M]$ to denote the worklist $\Gm_L,\Gm_M,\Gm_R$,
+where $\Gm$ is the worklist $\Gm_L,\bullet,\Gm_R$ with a hole ($\bullet$).
+Hole notations with the same name implicitly shares the same structure $\Gm_L$ and $\Gm_R$.
+A multi-hole notation splits the worklist into more parts.
+For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 
 \subsection{Algorithmic System}
 
