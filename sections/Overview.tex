@@ -114,6 +114,64 @@ Declarative Subtyping}\label{fig:decl:sub}
 In Figures~\ref{fig:decl:sub} and \ref{fig:decl:typing},
 we give the subtyping and typing relations for the declarative system.
 
+\paragraph{Overlapping rules}
+Some of the declarative rules overlaps with each other.
+Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
+both match the conclusion $\Psi\vdash \forall a. A \le \forall a. B$.
+In such case, choose $\mathtt{{\le}\forall R}$ first is always better,
+since we introduce the type variable $a$ to the context earlier,
+which gives more flexibility on the choice of $\tau$.
+
+Declarative typing rule $\mathtt{DeclSub}$ overlaps with
+both $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$.
+However, we could argue that more specific rules are always the best choices,
+i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$ should have
+higher priority to $\mathtt{DeclSub}$.
+For example, $\Psi\vdash \lam x \Lto \all a\to a$ succeeds if derived from
+Rule $\mathtt{Decl\forall I}$, but fails when applied to $\mathtt{DeclSub}$:
+$$
+\inferrule*[right={$\mathtt{Decl\forall I}$}]
+	{\inferrule*[Right={$\mathtt{Decl\to I}$}]
+		{\Psi,a,x:a \vdash x \Lto a}
+		{\Psi,a \vdash \lam x \Lto a \to a}
+	}
+	{\Psi\vdash \lam x \Lto \forall a \to a}
+$$
+$$
+\inferrule*[right={$\mathtt{DeclSub}$}]
+	{
+		\inferrule*[right=$\mathtt{Decl\to I\To}$]
+			{\Psi \vdash \blue\sigma\to \blue\tau \quad \Psi,x:\blue\sigma\vdash e \Lto \blue\tau}
+			{\Psi \vdash \lam x \To \blue\sigma\to \blue\tau}\quad
+		\inferrule*[Right=$\mathtt{{\le}\forall R}$]
+			{\inferrule*[Right=$\mathtt{{\le}{\to}}$]
+				{
+					\inferrule*[Right=$?$]
+						{\text{Impossible! }\blue\sigma \neq a}
+						{\Psi,a \vdash a \le \blue\sigma}
+					\quad \Psi,a \vdash \blue\tau \le a
+				}
+				{\Psi,a \vdash \blue\sigma\to \blue\tau \le a \to a}
+			}
+			{\Psi\vdash \blue\sigma\to \blue\tau\le \all a \to a}
+	}
+{\Psi\vdash \lam x \Lto \forall a \to a}
+$$
+
+Rule $\mathtt{Decl\to I}$ is also better at handling higher-order types.
+When the lambda-expression to be inferred has a polymorphic input type,
+such as $\all a \to a$,
+$\mathtt{DeclSub}$ may not derive some judgments.
+For example, $\Psi,id:\all a\to a \vdash \lam[f] f~id~(f~()) \Lto (\all a\to a) \to 1$
+requires the argument of the lambda-expression to be a polymorphic type,
+otherwise it could not be applied to both $id$ and $()$.
+If Rule $\mathtt{DeclSub}$ was chosen for derivation,
+the type of the argument is restricted by Rule $\mathtt{Decl\to I\To}$,
+which is not a polymorphic type.
+By contrast,
+Rule $\mathtt{Decl\to I}$ keeps the polymorphic argument type $\all a\to a$,
+and will successfully derive the judgment.
+
 \paragraph{Metatheory} Talk about the lemmas that are false, show counterexample. 
 
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
