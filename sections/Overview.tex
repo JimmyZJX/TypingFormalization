@@ -71,7 +71,8 @@ Declarative Subtyping}\label{fig:decl:sub}
     {(x:A)\in\Psi}{\Psi\vdash x\To A}
 \qquad
 \inferrule*[right=$\mathtt{DeclSub}$]
-    {e \neq \lam e' \quad B \neq \all B' \quad \Psi\vdash e\To A \quad \Psi\vdash A\le B}
+%e \neq \lam e' \quad B \neq \all B' \quad 
+    {\Psi\vdash e\To A \quad \Psi\vdash A\le B}
     {\Psi \vdash e\Lto B}
 \\
 \inferrule*[right=$\mathtt{DeclAnno}$]
