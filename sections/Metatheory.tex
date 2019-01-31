@@ -25,6 +25,12 @@ so the algorithmic worklist will finally become a declarative one.
 In order to maintain well-formedness,
 the substitution should affect all the judgments and term variable bindings in the scope of $\al$.
 
+The transfer $\Gm\sto\Om$ is not a function.
+On the one hand, there are infinite possibilities to instantiate an existential variable,
+thus a $\Gm$ could be transferred to different $\Om$'s.
+On the other hand, any valid mono-type in $\Om$ can be represented by an existential variable in $\Gm$,
+thus different $\Gm$'s could be transferred to a single $\Om$.
+
 The following lemmas~\ref{lem:insert} and \ref{lem:extract}
 generalize Rule $\mathtt{{\sto}\al}$ from substituting the first existential variable
 to substituting any existential variable.
@@ -64,20 +70,51 @@ which naturally fits declarative subtyping and typing.
 
 \subsection{Soundness}
 
+Our algorithm is sound with respect to the declarative system.
+For any worklist $\Gm$ that reduces successfully,
+we can find a valid transfer $\Gm\sto\Om$ that solves all the existential variables,
+such that $\Om$ also reduces successfully.
 \begin{theorem}[Soundness]
 If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
 \end{theorem}
 
+The proof proceeds by induction on derivation of $\Gm\redto\nil$.
+Proper applications of lemmas \ref{lem:insert} and \ref{lem:extract} finish off the theorem.
+
 \subsection{Completeness}
+
+Completeness of the algorithm means that any declarative system has an algorithmic counterpart.
 
 \begin{theorem}[Completeness]
 If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 \end{theorem}
 
+We prove completeness by induction on the derivation of $\Om\redto\nil$.
+Since the declarative worklist is reduced judgment-by-judgment,
+the induction always analyse the first judgment until it is satisfied.
+As the algorithmic system introduces existential variables,
+a declarative rule may correspond to multiple algorithmic rules,
+and thus we analyse each of the possible cases.
+
+For subtyping, algorithmic Rules 10 and 11 worth special treatment.
+When the induction reaches the $\mathtt{{\le}{\to}}$ case,
+the first judgment is of shape $A_1 \to A_2 \le B_1 \to B_2$.
+One of the corresponding algorithmic judgment is $\al \le A \to B$.
+However, the case analysis does not imply that $\al$ is fresh in $A$ and $B$,
+therefore Rule~10 cannot be applied and the proof get stuck.
+The following lemma helps us out in those cases:
+the success in declarative subtyping indicates the freshness of $\al$ in $A$ and $B$
+in its corresponding algorithmic judgment.
+In other words, the declarative system do not accept infinite types,
+thus, as an example, we cannot find a mono-type $\tau$ such that $\tau\le 1\to \tau$,
+which could be transferred by $\al\le 1\to\al$.
+
 \begin{lemma}[Prune Transfer for Instantiation]
-If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and $\Om \vdash C \le A_1 \to B_1$,
-then $\al\notin FV(A) \cup FV(B)$.
+If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and
+$\Om \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
+
+A symmetric lemma holds for $A\to B \le \al$.
 
 \subsection{Decidability}
 \begin{theorem}[Decidability]
@@ -106,7 +143,7 @@ $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to +
 \begin{figure}
 \framebox{$\Gm\jExt\Gm'$}
 \begin{gather*}
-\inferrule*[right=$\mathtt{\jExt\nil}$]
+\inferrule*[right=$\mathtt{\jExt id}$]
     {~}{\Gm\jExt\Gm}
 \qquad
 \inferrule*[right=$\mathtt{\jExt solve}$]
