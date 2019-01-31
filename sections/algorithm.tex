@@ -138,7 +138,7 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm[\bt] \Vdash \bt \le 1 &\algrule [1/\bt](\Gm[])
 \\[2mm]
 \Gm \Vdash e \Lto B &\algrule \Gm \Vdash e\To_a a\le B \quad
-	\text{when } e \neq \lam e' \text{ and } B \neq \all B'\\
+    \text{when } e \neq \lam e' \text{ and } B \neq \all B'\\
 % \Gm \Vdash () \Lto 1 &\algrule \Gm\\
 \Gm \Vdash e\Lto \forall a. A &\algrule \Gm,a \Vdash e\Lto A\\
 \Gm \Vdash \lambda x. e \Lto A\to B &\algrule \Gm, x:A  \Vdash e \Lto B\\
@@ -148,13 +148,13 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm \Vdash (e:A)\To_a \jg &\algrule \Gm \Vdash [A/a]\jg \Vdash e \Lto A\\
 \Gm \Vdash ()\To_a \jg &\algrule \Gm \Vdash [1/a]\jg \qquad\jimmy{\downarrow\text{Precise control on exvars}}\\
 \Gm \Vdash \lambda x. e \To_a \jg &\algrule
-	\Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt \quad\jimmy{\text{differs}}\\
-\Gm \Vdash e_1\ e_2 \To_a \jg &\algrule \Gm \Vdash e_1\To_{a_1} (\appInfAlg{a_1}{e_2})
+    \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt \quad\jimmy{\text{differs}}\\
+\Gm \Vdash e_1\ e_2 \To_a \jg &\algrule \Gm \Vdash e_1\To_b (\appInfAlg{b}{e_2})
 \\[2mm]
 \Gm \Vdash \appInfAlg{\forall a. A}{e} &\algrule \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\\
 \Gm \Vdash \appInfAlg{A\to C}{e} &\algrule \Gm \Vdash [C/a]\jg \Vdash e \Lto A\\
 \Gm[\al] \Vdash \appInfAlg{\al}{e} &\algrule
-	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash \appInfAlg{\al[1]\to\al[2]}{e})
+    [\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash \appInfAlg{\al[1]\to\al[2]}{e})
 %	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash [\al[2]/a]\jg \Vdash e\Lto \al[1])\\
 % &\color{magenta} \makebox[0pt]{\qquad or} \phantom{{}\rrule{}{}}
 \end{aligned}
@@ -237,5 +237,27 @@ The syntax $\Gm\redto \Gm'$ denotes multiple reduction.
 If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully.
 
 \paragraph{Example}
-\jimmy{An example here}
 
+\begin{figure}
+\begin{gather*}
+\begin{aligned}
+           & \nil \Vdash (\lam x)~() \Lto 1\\
+\rrule{18} & \nil \Vdash (\lam x)~() \To_a a\le 1\\
+\rrule{26} & \nil \Vdash (\lam x) \To_b (\appInfAlg{b}{()}[a][a\le 1])\\
+\rrule{25} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash x\Lto \bt\\
+\rrule{18} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash x\To_b b\le \bt\\
+\rrule{22} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash \al\le \bt\\
+\rrule{12} & \nil,\al \Vdash \appInfAlg{\al\to\al}{()}[a][a\le 1], x:\al\\
+\rrule{3}  & \nil,\al \Vdash \appInfAlg{\al\to\al}{()}[a][a\le 1]\\
+\rrule{28} & \nil,\al \Vdash \al\le 1 \Vdash () \Lto \al\\
+\rrule{18} & \nil,\al \Vdash \al\le 1 \Vdash () \To_a a\le \al\\
+\rrule{24} & \nil,\al \Vdash \al\le 1 \Vdash 1\le \al\\
+\rrule{16} & \nil \Vdash 1\le 1\\
+\rrule{4}  & \nil
+\end{aligned}
+\end{gather*}
+\caption{A Sample Derivation for Algorithmic Typing}
+\label{fig:alg:sample}
+\end{figure}
+
+Figure~\ref{fig:alg:sample} shows a sample derivation of the algorithm.
