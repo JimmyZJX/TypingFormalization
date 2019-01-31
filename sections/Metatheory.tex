@@ -121,24 +121,49 @@ A symmetric lemma holds for $A\to B \le \al$.
 Given \emph{wf }$\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
 
-lexicographic group of induction measurements
+We have proven this theorem by a lexicographic group of induction measurements\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
+on the worklist $\Gm$.
+$|\cdot|_e$ and $|\cdot|_\Leftrightarrow$ measure the total ``size'' of teams
+and the total ``difficulty'' of judgments, respectively;
+$|\cdot|_\forall$ and $|\cdot|_\to$ count the total number of
+universal quantifiers and function types, respectively;
+$|\cdot|_{\al}$ counts the number of existential variables in the worklist.
 
 \begin{definition}[Worklist Measures]
 \begin{gather*}
 \begin{aligned}
 |\Gm|_e &= \textstyle\sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
     \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
+\text{where } |x|_e &= |()|_e = 1 \qquad |\lam e|_e = |e|_e + 1\\
+|e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1 \qquad |e:A|_e = |e| + 1\\[2mm]
+%
 |\Gm|_\Leftrightarrow &= \#_{e\Lto A\in\Gm} +
-    2\cdot\#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\\
+    2\cdot\#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\\[2mm]
 |\Gm|_\forall &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
     \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
+\text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
+|A\to B|_\forall &= |A|_\forall + |B|_\forall \qquad |\all A|_\forall = |A|_\forall + 1\\[2mm]
+%
 |\Gm|_\to &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
     \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
+\text{where } |1|_\to &= |a|_\to = |\al|_\to = 1\\
+|A\to B|_\to &= |A|_\to + |B|_\to + 1 \qquad |\all A|_\to = |A|_\to\\[2mm]
+%
 |\Gm|_{\al} &= \#_{\al\in\Gm}\\
 \end{aligned}
 \end{gather*}
 \end{definition}
+
+It is not difficult to see that all but two algorithmic reduction rules
+decreases the group of measurements.
+(The result of Rule 29 could be directly reduced by Rule 28, which decreases the measurements.)
+The two exceptions are Rules 10 and 11; they increases the number of existential variables
+without decreasing the number of universal quantifiers.
+However, at the same time, they both break the subtyping problem into two sub-problems
+(Rule 7 applied right after Rule 10 or 11), in smaller sizes.
+Therefore we argue that such split makes the worklist easier, by analyzing a subset of worklist,
+which we call \emph{instantiation judgments} $\Gm_i$, with the help of $\Gm_\le$ for the proof.
 
 \begin{definition}[$\Gm_\le, \Gm_i$]
 \begin{gather*}
@@ -151,7 +176,7 @@ $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to +
 \end{definition}
 
 \begin{figure}
-\framebox{$\Gm\jExt\Gm'$}
+\framebox{$\Gm\jExt\Gm'$} $\Gm$ extends to $\Gm'$.
 \begin{gather*}
 \inferrule*[right=$\mathtt{\jExt id}$]
     {~}{\Gm\jExt\Gm}
@@ -165,30 +190,58 @@ $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to +
 \caption{Worklist Extension}\label{fig:worklist_ext}
 \end{figure}
 
+\paragraph{Intuition of instantiation decidability}
+These instantiation judgments are the ones consumed and produced by Rules 10 and 11.
+When there are universal quantifiers in the initial instantiation judgments $\Gm_i$,
+the worklist $\Gm,\Gm_i$ will be multi-reduced to match Rule 8 or 9,
+which decreases the number of universal quantifiers by 1, and returns a $\Gm',\Gm_\le$.
+Otherwise, no more variables will be introduced,
+and each instantiation judgment solves one existential variable,
+thus finally there will be $|\Gm_i|$ existential variables solved,
+with the worklist reduced to $\Gm'$.
+$\Gm'$ basically refers to the original part of worklist $\Gm$.
+During the reduction, minor changes to worklist might occur, such as
+existential variable solving, insertion and instantiation,
+but the main structure of it remains unchanged.
+
 Shown in Figure~\ref{fig:worklist_ext},
-worklist extension relates minor changes of worklist during type-checking.
+worklist extension formally describe the minor changes to worklist during algorithmic reduction.
 When the algorithm processes the worklist, the first judgment is processed,
 and the rest of the worklist roughly remains its shape.
-Worklist extension formally defines the minor changes of the shape by two cases:
-existential variable solving ($\mathtt{\jExt solve}$) and
-existential variable addition ($\mathtt{\jExt \al}$).
-Existential variable instantiation,
+Worklist extension is formally defined by two cases:
+existential variable solving ($\mathtt{\jExt solve}$) and insertion ($\mathtt{\jExt \al}$).
+Existential variable instantiation, as another common form of worklist manipulation,
 i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
 can be derived with the combination of the 3 rules.
+Within expectation, some worklist measurements are not changed modulo worklist extension.
 
 \newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
 \begin{lemma}[Measure Invariants of Worklist Extension]
 If $\Gm\sto\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
 \end{lemma}
 
-\begin{theorem}[Instantiation Decidability]
+With all the definitions, we are able to prove the following instantiation decidability lemma.
+
+\begin{lemma}[Instantiation Decidability]\label{lemma:inst:decidable}
 For any well-formed algorithmic worklist $(\Gm, \Gm_i)$,
 \begin{enumerate}[1)]
-    \item When $|\Gm_i|_\forall = 0$, $(\Gm, \Gm_i)$ reduces to $\Gm'$
-        with $|\Gm_i|$ existential varaibles solved, where $\Gm\sto\Gm'$.
-    \item When $|\Gm_i|_\forall > 0$, $(\Gm, \Gm_i)$ reduces to $\Gm', \Gm_\le$,
+    \item When $|\Gm_i|_\forall = 0$, $(\Gm, \Gm_i) \redto \Gm'$,
+        where $|\Gm'|_{\al} = |\Gm|_{\al} - |\Gm_i|$ and $\Gm\sto\Gm'$.
+    \item When $|\Gm_i|_\forall > 0$, $(\Gm, \Gm_i) \redto (\Gm', \Gm_\le)$,
         where $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\sto\Gm'$.
 \end{enumerate}
-\end{theorem}
+\end{lemma}
+
+In short, after reducing any instantiation judgment prefix $\Gm_i$,
+the algorithm either decreases the number of $\forall$'s
+or solves one existential variable per instantiation judgment.
+The proof of this lemma is by induction on the measure $2*|\Gm_i|_\to + |\Gm_i|$
+of the instantiation judgment list $\Gm_i$.
+
+In summary, the decidability theorem is shown through a lexicographic group of induction measurements
+$\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$.
+The critical case is that, whenever we encounter an instantiation judgment at the top of the worklist,
+we make use of Lemma~\ref{lemma:inst:decidable}, which reduces $|\Gm|_{\al}$ or $|\Gm|_\forall$
+by consuming that instantiation judgment. Other cases are relatively straightforward.
 
 \subsection{Abella}

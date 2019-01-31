@@ -137,7 +137,8 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm[\bt] \Vdash 1 \le \bt &\algrule [1/\bt](\Gm[])\\
 \Gm[\bt] \Vdash \bt \le 1 &\algrule [1/\bt](\Gm[])
 \\[2mm]
-\Gm \Vdash e \Lto B &\algrule \Gm \Vdash e\To_a a\le B \quad \text{when } e \neq \lam e', B \neq \all B'\\
+\Gm \Vdash e \Lto B &\algrule \Gm \Vdash e\To_a a\le B \quad
+	\text{when } e \neq \lam e' \text{ and } B \neq \all B'\\
 % \Gm \Vdash () \Lto 1 &\algrule \Gm\\
 \Gm \Vdash e\Lto \forall a. A &\algrule \Gm,a \Vdash e\Lto A\\
 \Gm \Vdash \lambda x. e \Lto A\to B &\algrule \Gm, x:A  \Vdash e \Lto B\\
