@@ -153,9 +153,9 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm \Vdash \appInfAlg{\forall a. A}{e} &\algrule \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\\
 \Gm \Vdash \appInfAlg{A\to C}{e} &\algrule \Gm \Vdash [C/a]\jg \Vdash e \Lto A\\
 \Gm[\al] \Vdash \appInfAlg{\al}{e} &\algrule
-	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash [\al[2]/a]\jg \Vdash e\Lto \al[1])\\
- &\color{magenta} \makebox[0pt]{\qquad or} \phantom{{}\rrule{}{}}
- 	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash \appInfAlg{\al[1]\to\al[2]}{e})
+	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash \appInfAlg{\al[1]\to\al[2]}{e})
+%	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash [\al[2]/a]\jg \Vdash e\Lto \al[1])\\
+% &\color{magenta} \makebox[0pt]{\qquad or} \phantom{{}\rrule{}{}}
 \end{aligned}
 \end{gather*}
 \caption{Algorithmic Typing}\label{fig:alg}
@@ -231,3 +231,7 @@ the checking and the remaining chain $[\al\to\bt/a]\jg$.
 Finally, Rules 27-29 deal with application inference judgments.
 Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}$ and $\mathtt{Decl\to App}$.
 Rule 29 instantiate $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
+
+\paragraph{Example}
+\jimmy{An example here}
+

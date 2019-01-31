@@ -1,17 +1,10 @@
 \section{Metatheory}
 
 \subsection{Transfer to the Declarative System}
-\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
-
-The transfer rules are shown in Figure~\ref{fig:trans}.
-The rules recursively replace the first existential variable to a well-scoped mono-type,
-so the algorithmic worklist will finally become a declarative one.
-In order to maintain well-formedness,
-the substitution should affect all the judgments and term variable bindings in the worklist.
-
+%\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
 
 \begin{figure}[t]
-\framebox{$\Gm \sto \Om$} $\Gm$ transfers to $\Om$. \jimmy{Always substitute from the very first existential variable. Types in contexts ($\Gm,x:A,\ldots$) should be taken care.}
+\framebox{$\Gm \sto \Om$} $\Gm$ transfers to $\Om$.
 \begin{gather*}
 \inferrule*[right=$\mathtt{{\sto}}\Om$]
 {~}
@@ -25,30 +18,49 @@ the substitution should affect all the judgments and term variable bindings in t
 \label{fig:trans}
 \end{figure}
 
+The transfer rules are shown in Figure~\ref{fig:trans}.
+Rule $\mathtt{{\sto}\al}$ recursively replace the first existential variable to a well-scoped mono-type
+($\Om$, as a declarative worklist, contains no existential variables),
+so the algorithmic worklist will finally become a declarative one.
+In order to maintain well-formedness,
+the substitution should affect all the judgments and term variable bindings in the scope of $\al$.
+
+The following lemmas~\ref{lem:insert} and \ref{lem:extract}
+generalize Rule $\mathtt{{\sto}\al}$ from substituting the first existential variable
+to substituting any existential variable.
+
+\begin{lemma}[Insert]\label{lem:insert}
+If $\Gm_L\vdash \tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$
+, then $\Gm_L, \al, \Gm_R \sto \Om$.
+\end{lemma}
+\begin{lemma}[Extract]\label{lem:extract}
+If $\Gm_L, \al, \Gm_R \sto \Om$
+, then $\exists \tau$ s.t. $\Gm_L\vdash\tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$.
+\end{lemma}
+
 \begin{figure}[t]
 \framebox{$\Om \rto \Om'$} $\Om$ reduces to $\Om'$.
 \begin{gather*}
 \begin{aligned}
-\Om,a &\rto \Om \qquad \Om,\al \rto \Om \qquad \Om,x:A \rto \Om\\
+\Om,a &\rto \Om \qquad \Om \qquad \Om,x:A \rto \Om\\
 \Om\Vdash A\le B &\rto \Om \text{ when } \Om\vdash A\le B\\
 \Om\Vdash e\Lto A &\rto \Om \text{ when } \Om\vdash e\Lto A\\
 \Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg \text{ when } \Om\vdash e\To A\\
 \Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg \text{ when } \Om\vdash \appInf{A}{e}{C}\\
 \end{aligned}
 \end{gather*}
-\caption{Algorithmic Worklist Typing Rules}
-\label{fig:alg:typing}
+\caption{Declarative Worklist Typing}
+\label{fig:decl:worklist}
 \end{figure}
 
-
-\begin{lemma}[Insert]
-If $\Gm_L\vdash \tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$
-, then $\Gm_L, \al, \Gm_R \sto \Om$.
-\end{lemma}
-\begin{lemma}[Extract]
-If $\Gm_L, \al, \Gm_R \sto \Om$
-, then $\exists \tau$ s.t. $\Gm\vdash\tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$.
-\end{lemma}
+Figure~\ref{fig:decl:worklist} relates the worklist-style declarative system
+to the original declarative system.
+A successful reduction means a valid variable declaration,
+a valid subtyping or checking judgment, or a successful guessing for inferences.
+Additionally, judgment chains are unfolded to match the original declarative rules.
+Although $\Om$ is defined differently from $\Psi$,
+our declarative worklist $\Om$ contains a ordered collection of variable definitions,
+which naturally fits declarative subtyping and typing.
 
 \subsection{Soundness}
 
