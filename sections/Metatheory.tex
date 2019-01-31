@@ -118,7 +118,7 @@ A symmetric lemma holds for $A\to B \le \al$.
 
 \subsection{Decidability}
 \begin{theorem}[Decidability]
-For all well-formed $\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
+Given \emph{wf }$\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
 
 lexicographic group of induction measurements
@@ -130,12 +130,22 @@ $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to +
 |\Gm|_e &= \textstyle\sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
     \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
 |\Gm|_\Leftrightarrow &= \#_{e\Lto A\in\Gm} +
-    2\nil\#_{e\To_a \jg\in\Gm} + 3\nil\#_{\appInfAlg{A}{e}\in\Gm}\\
+    2\cdot\#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\\
 |\Gm|_\forall &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
     \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
 |\Gm|_\to &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
     \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
 |\Gm|_{\al} &= \#_{\al\in\Gm}\\
+\end{aligned}
+\end{gather*}
+\end{definition}
+
+\begin{definition}[$\Gm_\le, \Gm_i$]
+\begin{gather*}
+\begin{aligned}
+\Gm_\le &:= \nil \mid \Gm_\le, a \mid \Gm_\le, \al \mid \Gm_\le, A\le B\\
+\Gm_i &:= \nil \mid \Gm_i, \al\le A \mid \Gm_i, A\le\al \quad
+    \text{where } \al\notin FV(A) \cup FV(\Gm_i)
 \end{aligned}
 \end{gather*}
 \end{definition}
@@ -165,5 +175,20 @@ existential variable addition ($\mathtt{\jExt \al}$).
 Existential variable instantiation,
 i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
 can be derived with the combination of the 3 rules.
+
+\newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
+\begin{lemma}[Measure Invariants of Worklist Extension]
+If $\Gm\sto\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
+\end{lemma}
+
+\begin{theorem}[Instantiation Decidability]
+For any well-formed algorithmic worklist $(\Gm, \Gm_i)$,
+\begin{enumerate}[1)]
+    \item When $|\Gm_i|_\forall = 0$, $(\Gm, \Gm_i)$ reduces to $\Gm'$
+        with $|\Gm_i|$ existential varaibles solved, where $\Gm\sto\Gm'$.
+    \item When $|\Gm_i|_\forall > 0$, $(\Gm, \Gm_i)$ reduces to $\Gm', \Gm_\le$,
+        where $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\sto\Gm'$.
+\end{enumerate}
+\end{theorem}
 
 \subsection{Abella}
