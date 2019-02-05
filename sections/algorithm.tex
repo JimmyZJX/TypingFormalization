@@ -1,4 +1,8 @@
-\section{Algorithm}
+\section{Algorithmic System}
+
+This section introduces a novel algorithmic system that implements the
+DK's declarative specification. The algorithmic system comes with
+several novelties.\bruno{fill in/summarize novelties}
 
 \subsection{Syntax and Well-Formedness}
 
@@ -71,22 +75,45 @@ Figure~\ref{fig:alg:syntax} shows the syntax and the well-formedness judgement.
 \end{figure}
 
 \paragraph{Existential Variables} In order to find the unknown type $\tau$ in the declarative system,
-\emph{existential variables} $\al, \bt$ are introduced to the algorithmic system.
+\emph{existential variables} $\al, \bt$ are introduced in the algorithmic system.
 They behave similarly to unification variables,
-but their scoping is restricted by the position located in the worklist,
-rather than globally defined
+but their scoping is restricted by the position located in the
+worklist\bruno{be careful to ensure that the reader knows about
+  worklist at this point},
+rather than globally defined.
 Any existential variable $\al$ should only be solved to
 a well-formed type under the worklist before $\al$ is defined.
 Thus the mono-type $\tau$ represented by the corresponding existential variable
 is always well-formed under the corresponding declarative context.
 In other words, the position of $\al$'s reflects the well-formedness restriction of $\tau$'s.
 
-\paragraph{Judgments and judgment chains} Judgment is a core component of algorithmic type-checking.
-There are four kinds of judgments in our system: subtyping, checking, inference and application inference.
-Subtyping and checking are relatively simple, since the result could be either success or fail, and no values will be returned.
-For inference and application inference, they would return some type that leads to further computation, so we use continuation-passing-style encodings for them.
-For example, a judgment chain $e \To_a (a \le B)$ contains two judgments: first we want to infer the type of the expression $e$, and then check if that type is a subtype of $B$.
-In the rest of the paper, we usually refer to ``judgment chains'' by ``judgments''.
+\paragraph{Monotypes, types and terms} The algorithm system also has a
+notion of monotypes, which is identical to the declarative system.
+\bruno{Since monotypes are identical to declarative system, maybe they
+do not need to be presented again. Perhaps drop their definition from 
+the syntax?} Algorithmic types include all the declarative types plus
+existential variables $\al$. \bruno{Aren't terms identical to the
+  Declarative system too? If they are briefly state that terms are
+  identical and do not show them here. Otherwise say what is different.}
+
+%% A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
+
+\paragraph{Judgments and judgment chains} 
+A \emph{judgment chain} $\jg$ is a core component of algorithmic
+type-checking. For conciseness, in the rest of the paper, we usually
+refer to ``judgment chains'' simply by ``judgments''.  There are four kinds
+of judgments in our system: subtyping ($A \le B$), checking ($e\Lto
+A$), inference ($e\To_{a} \j$) and
+application inference ($\appInfAlg{A}{e}$).  Subtyping and checking are relatively simple,
+since the result could be either success or fail, and no other output
+is returned.  However inference and application inference return some
+type that leads to further computation. We use a
+continuation-passing-style encoding for them.  For example, a judgment
+chain $e \To_a (a \le B)$ contains two judgments: first we want to
+infer the type of the expression $e$, and then check if that type is a
+subtype of $B$. The \emph{unknown} type of $e$ is represented by a
+type variable $a$, which is used in the second judgement to denote the 
+type of $e$.
 
 \paragraph{Worklist Judgments} Our algorithm has a non-standard form.
 We combine the traditional contexts and judgment(s) into a single worklist.
@@ -162,29 +189,45 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \caption{Algorithmic Typing}\label{fig:alg}
 \end{figure}
 
-The algorithmic typing reduction rules, defined in Figure~\ref{fig:alg}, has the form $\Gm \rto \Gm'$,
-where the worklists $\Gm, \Gm'$ contains variable declarations and judgments.
-In every step it pops the first judgment from the worklist for processing,
+The algorithmic typing reduction rules, defined in Figure~\ref{fig:alg}, have the form $\Gm \rto \Gm'$.
+The worklists $\Gm, \Gm'$ contain both variable declarations and judgments.
+In every step reduction pops the first judgment from the worklist for processing,
 possibly pushes new judgments to the worklist, and repeats this process until the list is empty.
-A worklist that could be finally reduced to empty is considered to be successfully type-checked.
-When the first element is a variable declaration, we simply continue the process (Rules 1-3).
+A worklist that finally reduces to empty is considered to be successfully type-checked.
+When the first element is a variable declaration, we simply continue
+the process (Rules 1-3).
+Note that those rules about to garbage collecting variables that are
+out-of-scope for the next judgement being processed.
 The other rules always deal with the first judgment in the worklist. Logically we can discern 6 group of rules.
 
-Firstly, we have six rules (Rules 4-9) that are similar to those of declarative subtyping.
-For instance, Rule 7 consumes one subtyping judgment and pushes two back to the worklist.
-Rule 8 differs from declarative Rule ${\le}{\forall}L$ by introducing an existential variable $\al$ instead of guessing the mono-type $\tau$ for instantiation.
-Each existential variable is later solved to a mono-type $\tau$ with the same context,
-so the final solution of $\al$, $\tau$, should be well-formed under context $\Gm$.
+Firstly, we have six rules (Rules 4-9) that are similar to those of
+declarative subtyping.  For instance, Rule 7 consumes one subtyping
+judgment and pushes two back to the worklist.  Rule 8 differs from
+declarative Rule ${\le}{\forall}L$ by introducing an existential
+variable $\al$ instead of guessing the monotype $\tau$ for
+instantiation.  Each existential variable is later solved to a
+monotype $\tau$ with the same context, so the final solution of
+$\al$, $\tau$, should be well-formed under context $\Gm$.
 
 \paragraph{Variable scopings within worklist}
-Rules 8 and 9 involve variable declaration, which demonstrates how our worklist treats variable scopings.
-Rule 8 introduces an existential variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
-Then reduction continues until all the subtyping judgments after $\al$ are satisfied.
-Finally we can safely remove $\al$ since no occurrence of $\al$ could leak to its left in the worklist.
-On the other hand, removing $\al$ according to the algorithm carbage-collects the variable at the perfect time: it leaves the environment immediately after unreferenced.
+Rules 8 and 9 involve variable declaration, which demonstrates how our
+worklist treats variable scopings. Rule 8 introduces an existential
+variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
+Then reduction continues until all the subtyping judgments after $\al$
+are satisfied.  Finally we can safely remove $\al$ since no occurrence
+of $\al$ could leak to its left in the worklist.  On the other hand,
+removing $\al$ according to the algorithm garbage-collects the
+variable at the perfect time: it leaves the environment immediately
+after being unreferenced.\bruno{Perhaps this is better illustrated
+  with a simple example?}
 
-The design of our judgment chain is closely related to the property of the judgments.
-Subtyping and checking does not return anything, so variables cannot leak anyway, as applied to Rules 8 and 9.
+The design of our judgment chain is closely related to the property of
+the judgments\bruno{What property? Not very clear}.
+Subtyping and checking do not return anything, so variables cannot
+leak anyway, as applied to Rules 8 and 9.
+\bruno{Is the discussion that follows in the right place? We just to
+  rule 26. Perhaps we can wait until we talk about inference to
+  discuss those issues?}
 However, inference and application inference may return a type that contains new variables.
 Take Rule 26 as an example, if it simply returns $\al \to \bt$, passes that to the next judgment and continues the type-checking process,
 variables $\al$ and $\bt$ in the next judgment are out of scope
