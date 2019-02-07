@@ -1,5 +1,11 @@
 \section{Metatheory}
 
+This section presents the metatheory of the algorithmic system
+presented in Section~\ref{}. We show that three main results hold: 
+\emph{soundness}, \emph{completeness} and \emph{decidability}.
+All the results have been mechanically formalized and proved in the 
+Abella theorem prover.
+
 \subsection{Transfer to the Declarative System}
 %\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
 
@@ -14,24 +20,31 @@
 {\Om\vdash\tau \\ \Om,[\tau/\al]\Gm \sto \Om}
 {\Om,\al,\Gm \sto \Om}
 \end{gather*}
-\caption{Transfer Rules}
+\caption{Transfer rules}
 \label{fig:trans}
 \end{figure}
 
+To aid formalizing the correspondence between the declarative and
+algorithmic systems, we use a relation that transfers algorithmic
+worklist judgements into corresponding declarative worklist judgements. In essence this
+judgment instantiates every existential variable with a well-formed monotype.
+
 The transfer rules are shown in Figure~\ref{fig:trans}.
-Rule $\mathtt{{\sto}\al}$ recursively replace the first existential variable to a well-scoped mono-type
-($\Om$, as a declarative worklist, contains no existential variables),
-so the algorithmic worklist will finally become a declarative one.
+Rule $\mathtt{{\sto}\al}$ recursively replaces the first existential variable to a well-scoped monotype.
+Note that $\Om$, as a declarative worklist, contains no existential
+variables. Therefore by recursively applying this rule, the
+algorithmic worklist will finally become a declarative one.
 In order to maintain well-formedness,
 the substitution should affect all the judgments and term variable bindings in the scope of $\al$.
 
-The transfer $\Gm\sto\Om$ is not a function.
+The transfer $\Gm\sto\Om$ is not a function.\bruno{Do you mean here
+  ``is not deterministic''? Would that be more appropriate?}
 On the one hand, there are infinite possibilities to instantiate an existential variable,
-thus a $\Gm$ could be transferred to different $\Om$'s.
-On the other hand, any valid mono-type in $\Om$ can be represented by an existential variable in $\Gm$,
+thus a judment $\Gm$ could be transferred to different $\Om$'s.
+On the other hand, any valid monotype in $\Om$ can be represented by an existential variable in $\Gm$,
 thus different $\Gm$'s could be transferred to a single $\Om$.
 
-The following lemmas~\ref{lem:insert} and \ref{lem:extract}
+Lemmas~\ref{lem:insert} and \ref{lem:extract}
 generalize Rule $\mathtt{{\sto}\al}$ from substituting the first existential variable
 to substituting any existential variable.
 
@@ -55,7 +68,11 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg \text{ when } \Om\vdash \appInf{A}{e}{C}\\
 \end{aligned}
 \end{gather*}
-\caption{Declarative Worklist Typing}
+\caption{Declarative Worklist Typing.\bruno{I think your names for the
+  two relations/definitions aren't great. I think what you're defining
+here should be called transfer. The previous relation should probably
+be called something different. Maybe something like Declarative
+worklist instantiation/realization for the previous relation?}}
 \label{fig:decl:worklist}
 \end{figure}
 
@@ -67,6 +84,11 @@ Additionally, judgment chains are unfolded to match the original declarative rul
 Although $\Om$ is defined differently from $\Psi$,
 our declarative worklist $\Om$ contains a ordered collection of variable definitions,
 which naturally fits declarative subtyping and typing.
+\bruno{I think that to make things precise what you want to show is
+  that you can always define a erasure function that drops the
+  judgements from the worklist, and retains only the variable
+  declarations (thus becomes a declarative environment). Isn't this
+  what you do in your formalization?}
 
 \subsection{Soundness}
 
@@ -79,7 +101,13 @@ If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ a
 \end{theorem}
 
 The proof proceeds by induction on derivation of $\Gm\redto\nil$.
-Proper applications of lemmas \ref{lem:insert} and \ref{lem:extract} finish off the theorem.
+Proper applications of lemmas \ref{lem:insert} and \ref{lem:extract}
+finish off the theorem.
+\bruno{Give a bit more informal explanation here. Something like: If
+  $\Gm$ is reducible then we can show that there is always an $\Om$
+  where all the corresponding declarative judgements hold.}
+\bruno{I wonder if 1 or 2 examples (concrete instantiations of the
+  theorem) would be helpful to complement the explanation.}
 
 \subsection{Completeness}
 
@@ -91,22 +119,22 @@ If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$, then
 
 We prove completeness by induction on the derivation of $\Om\redto\nil$.
 Since the declarative worklist is reduced judgment-by-judgment,
-the induction always analyse the first judgment until it is satisfied.
+the induction always analyses the first judgment until it is satisfied.
 As the algorithmic system introduces existential variables,
 a declarative rule may correspond to multiple algorithmic rules,
 and thus we analyse each of the possible cases.
 
-For subtyping, algorithmic Rules 10 and 11 worth special treatment.
+For subtyping, algorithmic Rules 10 and 11 require special treatment.
 When the induction reaches the $\mathtt{{\le}{\to}}$ case,
 the first judgment is of shape $A_1 \to A_2 \le B_1 \to B_2$.
 One of the corresponding algorithmic judgment is $\al \le A \to B$.
 However, the case analysis does not imply that $\al$ is fresh in $A$ and $B$,
-therefore Rule~10 cannot be applied and the proof get stuck.
+therefore Rule~10 cannot be applied and the proof gets stuck.
 The following lemma helps us out in those cases:
 the success in declarative subtyping indicates the freshness of $\al$ in $A$ and $B$
 in its corresponding algorithmic judgment.
-In other words, the declarative system do not accept infinite types,
-thus, as an example, we cannot find a mono-type $\tau$ such that $\tau\le 1\to \tau$,
+In other words, the declarative system does not accept infinite types,
+thus, as an example, we cannot find a monotype $\tau$ such that $\tau\le 1\to \tau$,
 which could be transferred by $\al\le 1\to\al$.
 
 \begin{lemma}[Prune Transfer for Instantiation]
