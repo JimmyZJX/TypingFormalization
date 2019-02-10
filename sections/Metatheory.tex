@@ -150,7 +150,7 @@ A symmetric lemma holds for $A\to B \le \al$.
 Given \emph{wf }$\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
 
-We have proven this theorem by a lexicographic group of induction measurements\\
+We have proven this theorem by a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 on the worklist $\Gm$.
 $|\cdot|_e$ and $|\cdot|_\Leftrightarrow$ measure the total ``size'' of teams
@@ -185,8 +185,8 @@ $|\cdot|_{\al}$ counts the number of existential variables in the worklist.
 \end{definition}
 
 It is not difficult to see that all but two algorithmic reduction rules
-decreases the group of measurements.
-(The result of Rule 29 could be directly reduced by Rule 28, which decreases the measurements.)
+decreases the group of measures.
+(The result of Rule 29 could be directly reduced by Rule 28, which decreases the measures.)
 The two exceptions are Rules 10 and 11; they increases the number of existential variables
 without decreasing the number of universal quantifiers.
 However, at the same time, they both break the subtyping problem into two sub-problems
@@ -242,7 +242,7 @@ existential variable solving ($\mathtt{\jExt solve}$) and insertion ($\mathtt{\j
 Existential variable instantiation, as another common form of worklist manipulation,
 i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
 can be derived with the combination of the 3 rules.
-Within expectation, some worklist measurements are not changed modulo worklist extension.
+Within expectation, some worklist measures are not changed modulo worklist extension.
 
 \newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
 \begin{lemma}[Measure Invariants of Worklist Extension]
@@ -267,7 +267,7 @@ or solves one existential variable per instantiation judgment.
 The proof of this lemma is by induction on the measure $2*|\Gm_i|_\to + |\Gm_i|$
 of the instantiation judgment list $\Gm_i$.
 
-In summary, the decidability theorem is shown through a lexicographic group of induction measurements
+In summary, the decidability theorem is shown through a lexicographic group of induction measures
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$.
 The critical case is that, whenever we encounter an instantiation judgment at the top of the worklist,
 we make use of Lemma~\ref{lemma:inst:decidable}, which reduces $|\Gm|_{\al}$ or $|\Gm|_\forall$
