@@ -1,10 +1,10 @@
 \section{Metatheory}
 
 This section presents the metatheory of the algorithmic system
-presented in Section~\ref{}. We show that three main results hold: 
+presented in the previous section. We show that three main results hold: 
 \emph{soundness}, \emph{completeness} and \emph{decidability}.
-All the results have been mechanically formalized and proved in the 
-Abella theorem prover.
+These three results have been mechanically formalized and proved in the 
+Abella theorem prover~\cite{}.
 
 \subsection{Transfer to the Declarative System}
 %\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
@@ -30,7 +30,8 @@ worklist judgements into corresponding declarative worklist judgements. In essen
 judgment instantiates every existential variable with a well-formed monotype.
 
 The transfer rules are shown in Figure~\ref{fig:trans}.
-Rule $\mathtt{{\sto}\al}$ recursively replaces the first existential variable to a well-scoped monotype.
+Rule $\mathtt{{\sto}\al}$ replaces the first existential variable with a well-scoped monotype and
+repeats the process in the resulting worklist.
 Note that $\Om$, as a declarative worklist, contains no existential
 variables. Therefore by recursively applying this rule, the
 algorithmic worklist will finally become a declarative one.
