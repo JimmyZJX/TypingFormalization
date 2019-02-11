@@ -27,7 +27,7 @@ These type systems are
 popular among language designer and their ideas have been adopted by
 several modern functional languages, including Haskell and PureScript.
 In those type systems
-type annotations are required for polymorphic arguments of functions.
+type annotations are required for polymorphic arguments of functions,
 but other type annotations can be omitted. A canonical example is:
 \bruno{the following text needs to be changed, since it is basically
   as in ITP.}
@@ -35,31 +35,48 @@ but other type annotations can be omitted. A canonical example is:
 hpoly = (\f :: forall a. a -> a) -> (f 1, f 'c')
 \end{verbatim}
 The function \verb|hpoly| cannot be
-type-checked in Hindley-Milner.  The type of \verb|hpoly| is 
-\verb|(forall a. a -> a) -> (Int, Char)|. The single universal quantifier
+type-checked in Hindley-Milner.  The type of \verb|hpoly| is the rank-2 type:
+\verb|(forall a. a -> a) -> (Int, Char)|. Notably (and unlike
+Hindley-Milner) the lambda argument \verb|f| requires a
+\emph{polymorphic} type annotation.
+This annotation is needed because the single universal quantifier
 does not appear at the top-level. Instead it is used to quantify a
 type variable \verb|a| used in the first argument of the
-function.
-Notably \verb|hpoly| requires a type annotation for the first
-argument (\verb|forall a. a -> a|). 
-Despite these additional annotations,
-the type-inference algorithm employed by GHC Haskell~\cite{jones2007practical} preserves 
-many of the desirable properties of Hindley-Milner. 
+function. 
+Despite these additional annotations, Peyton Jones et al. and DK's
+type inference algorithms preserve many of the desirable properties 
+of Hindley-Milner. For example the applications of \verb|f| implicitly 
+instantiate the polymorphic type arguments of \verb|f|.
 
 Despite the importance of type inference in practice and also in
 academic research, there is little work in mechanically formalizing
 such advanced forms of type inference in theorem provers. This is at
-odds with a current trend in programming language research. In
-particular both the POPLMark challenge~\cite{} and CompCert ~\cite{}
-have significantly promoted the use of theorem provers to model
-variaous aspects of programming languages. Indeed today there are
-routinely papers in top conferences that use theorem provers to
-mechanically formalize various aspects of programming languages,
-including: \emph{dynamic and static semantics} and their
-correctness properties~\cite{}, \emph{compiler correctness}~\cite{},
-\emph{correctness of optimizations}~\cite{} or even certain forms of
-\emph{abstract interpretation}. Mechanical formalizations have
-numerous advantages~\cite{read to make sure I do not miss any!}. 
+odds with the current trend of mechanical formalizations in
+programming language research. In particular both the POPLMark
+challenge~\cite{} and CompCert ~\cite{} have significantly promoted
+the use of theorem provers to model various aspects of programming
+languages. Indeed today there are routinely papers in top conferences
+that use theorem provers to mechanically formalize: \emph{dynamic and
+  static semantics} and their correctness properties~\cite{},
+\emph{compiler correctness}~\cite{}, \emph{correctness of
+  optimizations}~\cite{}, certain forms of \emph{abstract
+  interpretation} or proofs involving \emph{logical relations}. The
+main argument for mechanical formalizations is a simple one. Proofs
+for programming languages tend to be \emph{long}, \emph{tedious} and
+\emph{error-prone}. In such proofs it is very easy to make mistakes
+that invalidate the whole development. Furthermore, readers and
+reviewers often do not have time to look at the proofs carefuly to
+check their correctnessness. Therefore errors can go unnoticed for a
+long time.  Mechanical formalizations provide, in principle, a natural
+solution for such problems. Theorem provers can automaticaly check and
+validate the proofs, which removes the burden from checking from both
+the person doing the proofs as well as readers or reviewers.
+
+DK problem in lemma ??. Castagna problem in a recent type inference paper.
+
+with the exception of some work
+done on the formalization of 
+certain aspects of Hindley-Milner type inference, we do not know 
 
 This paper presents the first full mechanical formalization of the metatheory for
 higher-ranked polymorphic type inference. The system that we formalize
