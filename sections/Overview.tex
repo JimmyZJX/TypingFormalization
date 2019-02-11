@@ -229,9 +229,19 @@ reasons to look for a simpler algorithm that is easier to reason about in a
 mechanised setting.
 
 %-------------------------------------------------------------------------------
-\subsection{Small-Step Unification} Mention some algorithms for unification for 
-dependent types that use a small-step approach. Credit them later for some ideas that 
-we also employ.
+\subsection{Small-Step Unification}
+% Mention some algorithms for unification for 
+% dependent types that use a small-step approach. Credit them later for some ideas that 
+% we also employ.
+There are literals that make use of small-step unification for dependently typed
+inference and reconstruction algorithms~\cite{}.
+These approaches collect a list of constraints and process one at a time.
+Similar to DK's algorithm, unification variables are used to represent the types to guess.
+In order to solve unification variables to correctly scoped types
+(typically constrained by the context when the variable is introduced),
+the context information should be kept with the variables.
+Judgments that represent unifications of terms might also require such a context
+to keep the constraint collection well-formed.
 
 Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
 the formalization harder since requires ``synchronizing'' things ...
