@@ -1,6 +1,6 @@
 \section{Algorithmic System}
 
-This section introduces a novel algorithmic system that implements the
+This section introduces a novel algorithmic system that implements 
 DK's declarative specification. The algorithmic system comes with
 several novelties.\bruno{fill in/summarize novelties. I think
   novelties include: precise scoping control; CPS-style; dealing with
@@ -76,16 +76,16 @@ Figure~\ref{fig:alg:syntax} shows the syntax and the well-formedness judgement.
 \caption{Syntax and Well-Formedness for the Algorithmic System}\label{fig:alg:syntax}
 \end{figure}
 
-\paragraph{Existential Variables} In order to find the unknown type $\tau$ in the declarative system,
-\emph{existential variables} $\al, \bt$ are introduced in the algorithmic system.
+\paragraph{Existential Variables} In order to find unknown types $\tau$ in the declarative system,
+the algorithmic system introduces \emph{existential variables} $\al, \bt$.
 They behave similarly to unification variables,
-but their scoping is restricted by the position located in the
+but their scoping is restricted by their position in the
 worklist\bruno{be careful to ensure that the reader knows about
   worklist at this point},
-rather than globally defined.
+rather than being global.
 Any existential variable $\al$ should only be solved to
-a well-formed type under the worklist before $\al$ is defined.
-Thus the mono-type $\tau$ represented by the corresponding existential variable
+a type that is well-formed with respect to the worklist to which $\al$ has been added.
+The point is that the mono-type $\tau$ represented by the corresponding existential variable
 is always well-formed under the corresponding declarative context.
 In other words, the position of $\al$'s reflects the well-formedness restriction of $\tau$'s.
 
@@ -101,16 +101,15 @@ existential variables $\al$. \bruno{Aren't terms identical to the
 %% A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
 
 \paragraph{Judgments and judgment chains} 
-A \emph{judgment chain} $\jg$ is a core component of algorithmic
+\emph{Judgment chain}s $\jg$ are the core components of our algorithmic
 type-checking. For conciseness, in the rest of the paper, we usually
 refer to ``judgment chains'' simply by ``judgments''.  There are four kinds
 of judgments in our system: subtyping ($A \le B$), checking ($e\Lto
-A$), inference ($e\To_{a} \j$) and
+A$), inference ($e\To_{a} \jg$) and
 application inference ($\appInfAlg{A}{e}$).  Subtyping and checking are relatively simple,
-since the result could be either success or fail, and no other output
-is returned.  However inference and application inference return some
-type that leads to further computation. We use a
-continuation-passing-style encoding for them.  For example, a judgment
+since their result is only success or failure. However both inference and
+application inference return a type that is used in further computation. We use
+continuation-passing-style encoding to accomplish this. For example, the judgment
 chain $e \To_a (a \le B)$ contains two judgments: first we want to
 infer the type of the expression $e$, and then check if that type is a
 subtype of $B$. The \emph{unknown} type of $e$ is represented by a
@@ -121,7 +120,7 @@ type of $e$.
 We combine the traditional contexts and judgment(s) into a single worklist.
 The worklist collects variable bindings and judgments in \emph{order}, which represents their scopings:
 each variable is visible only after it is declared.
-For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a]$ is not (red-colored symbols are out-of-scope).
+For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a]$ is not (the red-colored symbols are out of scope).
 
 \paragraph{Hole Notation}
 We use the syntax $\Gm[\Gm_M]$ to denote the worklist $\Gm_L,\Gm_M,\Gm_R$,
@@ -193,35 +192,37 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 
 The algorithmic typing reduction rules, defined in Figure~\ref{fig:alg}, have the form $\Gm \rto \Gm'$.
 The worklists $\Gm, \Gm'$ contain both variable declarations and judgments.
-In every step reduction pops the first judgment from the worklist for processing,
-possibly pushes new judgments to the worklist, and repeats this process until the list is empty.
-A worklist that finally reduces to empty is considered to be successfully type-checked.
-When the first element is a variable declaration, we simply continue
-the process (Rules 1-3).
-Note that those rules about to garbage collecting variables that are
-out-of-scope for the next judgement being processed.
-The other rules always deal with the first judgment in the worklist. Logically we can discern 6 group of rules.
+The reduction process treats the worklist as a stack.
+In every step it pops the first judgment from the worklist for processing,
+possibly pushes new judgments onto the worklist, and repeats this process until the list is empty.
+A worklist that fully reduces to empty corresponds to a successful type-checking.
 
-Firstly, we have six rules (Rules 4-9) that are similar to those of
-declarative subtyping.  For instance, Rule 7 consumes one subtyping
+Rules 1-3 pop a variable declaration; this garbage collects variables that are
+out of scope for the remaining judgements.
+
+All other rules concern a judgement at the front of the worklist. Logically we can discern 6 group of rules.
+
+Firstly, we have six subtyping rules (Rules 4-9) that have similar 
+declarative counterparts.  For instance, Rule 7 consumes a subtyping
 judgment and pushes two back to the worklist.  Rule 8 differs from
 declarative Rule ${\le}{\forall}L$ by introducing an existential
 variable $\al$ instead of guessing the monotype $\tau$ for
 instantiation.  Each existential variable is later solved to a
-monotype $\tau$ with the same context, so the final solution of
-$\al$, $\tau$, should be well-formed under context $\Gm$.
+monotype $\tau$ with the same context, so the final solution $\tau$ of
+$\al$ should be well-formed under context $\Gm$.
 
 \paragraph{Variable scopings within worklist}
-Rules 8 and 9 involve variable declaration, which demonstrates how our
+Rules 8 and 9 involve variable declarations and demonstrate how our
 worklist treats variable scopings. Rule 8 introduces an existential
 variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
-Then reduction continues until all the subtyping judgments after $\al$
+Reduction continues until all the subtyping judgments after $\al$
 are satisfied.  Finally we can safely remove $\al$ since no occurrence
-of $\al$ could leak to its left in the worklist.  On the other hand,
-removing $\al$ according to the algorithm garbage-collects the
+of $\al$ could have leaked into the left part of the worklist.  Moreover,
+the algorithm garbage-collects the $\al$
 variable at the perfect time: it leaves the environment immediately
 after being unreferenced.\bruno{Perhaps this is better illustrated
-  with a simple example?}
+  with a simple example?}\tom{Yes, it would be good to show one or more
+example derivations to illustrate the key points.}
 
 The design of our judgment chain is closely related to the property of
 the judgments\bruno{What property? Not very clear}.
@@ -248,26 +249,26 @@ We remove $\al$ from the worklist, and insert $\al[1], \al[2]$ back to the same 
 To propagate the instantiation to the rest of the worklist and maintain the well-formedness,
 every $\al$ is replaced by $\al[1] \to \al[2]$.
 The \emph{occurs-check} condition is to prevent a diverging infinite loop.
-Without such check, $\al \le 1 \to \al$, as an example, would diverge.
+For example, without such check $\al \le 1 \to \al$ would diverge.
 
 \paragraph{Solving existentials.} Thirdly, Rules 12-17 are base cases where an existential variable is solved.
-Each of the rules removes and existential variable, substitutes the
-variable with its solution and continues. Importantly the rules
+Each of the rules removes an existential variable and substitutes the
+variable with its solution in the remaining worklist. Importantly the rules
 respect the scoping of existential variables. For example, rule 12 
 states that an existential variable $\al$ can be solved with another
 existential variable $\bt$ only if $\bt$ occurs after $\al$.
 
 \paragraph{Checking judgements}
 Fourthly, Rules 18-21 deal with checking judgments.
-Rule 18 is similar to $\mathtt{DeclSub}$, and rewrited in the
+Rule 18 is similar to $\mathtt{DeclSub}$, but rewritten in the
 continuation-passing-style.
 \bruno{The side condition needs to be explained, and some mention of
   the overlapping is probably needed here.}
-Rules 19 and 20 adapts the worklist style from their corresponding declarative rules.
+Rules 19 and 20 adapt their declarative counterparts to the worklist style.
 Rule 21 is a special case of $\mathtt{Decl\to I}$.\bruno{Rule 21
   deserves some more explanation. What is the motivation for this
   rule? You may want to give some concrete example to motivate it.}
-Instantiation technique similar to Rules 10 and 11 applies.
+The same instantiation technique as in Rules 10 and 11 applies.
 The declarative checking rule $\mathtt{Decl1I}$ is not translated to the algorithm,
 since combining Rule 18 and Rule 24 would give the same result.
 
@@ -275,14 +276,14 @@ since combining Rule 18 and Rule 24 would give the same result.
 Fifthly, Rules 22-26 deal with inference judgments.
 Inference judgment chains are written in continuation-passing-style.
 When an inference judgment succeeds with type $A$,
-the algorithm continues to work on the inner-chain $\jg$ by assigning $A$ to its placeholder varible $a$.
+the algorithm continues to work on the inner-chain $\jg$ by assigning $A$ to its placeholder variable $a$.
 Rule 23 infers an annotated expression by changing into checking mode,
 therefore another judgment chain is created.
 Rule 25 infers the type of a lambda expression by introducing $\al, \bt$
 as the input and output types of the function, respectively.
 After checking the body $e$ under the assumption $x:\al$,
 the return type might reflect more information than simply $\al \to \bt$.
-The variable scopings are well-maintained during the process:
+The variable scopings are maintained during the process:
 the assumption of argument type ($x:\al$) is recycled after checking against the function body;
 the declaration of the function type ($\al,\bt$) is only visible to
 the checking and the remaining chain $[\al\to\bt/a]\jg$.
@@ -295,7 +296,7 @@ Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}
 Rule 29 instantiate $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
 
 \subsection{Multiple reduction}
-The syntax $\Gm\redto \Gm'$ denotes multiple reduction.
+The syntax $\Gm\redto \Gm'$ denotes multiple reduction steps.
 If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully.
 
 \paragraph{Example}
