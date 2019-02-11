@@ -229,6 +229,10 @@ reasons to look for a simpler algorithm that is easier to reason about in a
 mechanised setting.
 
 %-------------------------------------------------------------------------------
+\subsection{DK's Algorithm}
+\jimmy{TODO: some of the text above about DK's algorithm may be moved here}
+
+%-------------------------------------------------------------------------------
 \subsection{Small-Step Unification}
 % Mention some algorithms for unification for 
 % dependent types that use a small-step approach. Credit them later for some ideas that 
@@ -243,6 +247,7 @@ the context information should be kept with the variables.
 Judgments that represent unifications of terms might also require such a context
 to keep the constraint collection well-formed.
 
+\jimmy{TODO explain the duplicated context with some examples (their judgment form)}
 Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
 the formalization harder since requires ``synchronizing'' things ...
 
@@ -252,7 +257,8 @@ the formalization harder since requires ``synchronizing'' things ...
 In recent work~\cite{itp2018}, we have shown how to mechanise a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
 subtyping judgment. This approach overcomes the problem's in DK's formulation
-by using a \emph{worklist}-based judgement of the form $\Gamma \vdash \Omega$
+by using a \emph{worklist}-based judgement of the form $$\Gamma \vdash \Omega$$
+\jimmy{emphasize the form of judgment}
 where $\Omega$ is a worklist, i.e. a sequence, of subtyping problems of the
 form $A \leq B$.  The judgement is defined by case analysis on the first
 element of $\Omega$ and recursively processes the worklist until it is empty.

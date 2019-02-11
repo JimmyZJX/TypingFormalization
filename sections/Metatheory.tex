@@ -38,8 +38,9 @@ algorithmic worklist will finally become a declarative one.
 In order to maintain well-formedness,
 the substitution should affect all the judgments and term variable bindings in the scope of $\al$.
 
-The transfer $\Gm\sto\Om$ is not a function.\bruno{Do you mean here
-  ``is not deterministic''? Would that be more appropriate?}
+The transfer $\Gm\sto\Om$ is not deterministic.
+% \bruno{Do you mean here
+%   ``is not deterministic''? Would that be more appropriate?}
 On the one hand, there are infinite possibilities to instantiate an existential variable,
 thus a judment $\Gm$ could be transferred to different $\Om$'s.
 On the other hand, any valid monotype in $\Om$ can be represented by an existential variable in $\Gm$,
@@ -90,7 +91,7 @@ which naturally fits declarative subtyping and typing.
   judgements from the worklist, and retains only the variable
   declarations (thus becomes a declarative environment). Isn't this
   what you do in your formalization?}
-
+\jimmy{TODO: a erasure function would make things more clear...}
 \subsection{Soundness}
 
 Our algorithm is sound with respect to the declarative system.
