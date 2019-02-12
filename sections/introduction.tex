@@ -3,8 +3,9 @@
 
 Modern functional programming languages, such as Haskell or OCaml,
 use sophisticated forms of type inference. The type systems of these languages are
-descendants of Hindley-Milner~\cite{hindley1969principal,milner1978theory,damas1982principal}
-, which was revolutionary at the
+descendants of
+Hindley-Milner~\cite{hindley1969principal,milner1978theory,damas1982principal}, 
+which was revolutionary at the
 time in allowing type-inference to proceed without any type
 annotation. The traditional Hindley-Milner type system supports
 top-level \emph{implicit (parametric) polymorphism}~\cite{reynolds1983types}. With implicit
@@ -100,7 +101,7 @@ We present a mechanical formalization in the Abella theorem prover for
 DK's declarative type system using a different algorithm. While our
 initial goal was to formalize both DK's declarative and algorithmic
 versions, we faced technical challenges with the latter, prompting us to find
-an alternative formulation formulation.
+an alternative formulation.
 
 One key challenge in type inference is variable binding, because the
 algorithms typically do not rely simply on local environments, but
