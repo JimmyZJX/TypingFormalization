@@ -174,9 +174,73 @@ By contrast,
 Rule $\mathtt{Decl\to I}$ keeps the polymorphic argument type $\all a\to a$,
 and will successfully derive the judgment.
 
-\paragraph{Metatheory} % Talk about the lemmas that are false, show counterexample.
-We have tried to follow DK's proof for formalization,
-but failed due to incorrect proof techniques or logic errors.
+%-------------------------------------------------------------------------------
+\subsection{DK's Algorithm}
+
+The DK algorithm revolves around their notion of \emph{algorithmic context}.
+\[
+\begin{array}{l@{\qquad}lcl}
+\text{Algorithmic Contexts}\qquad&\Gamma,\Delta,\Theta &::=&\quad \nil \mid
+\Gamma, a \mid \Gamma, \hat{\alpha} \mid \Gamma, \hat{\alpha} = \tau \mid
+\Gamma, \blacktriangleright_{\hat{\alpha}}
+\end{array}
+\]
+In addition to the regular (universally quantified) type variables $a$, the
+algorithmic context also contains \emph{existential} type variables
+$\hat{\alpha}$. These are placeholders for monotypes $\tau$ that are still to
+be determined by the inference algorithm. When the existential variable is
+``solved'', its entry in the context is replaced by the assignment
+$\hat{\alpha} = \tau$. With the notation $[\Gamma]$ an algorithmic context
+$\Gamma$ denotes the substitution that replaces all its solved existential type
+variables with their solution.
+
+All algorithmic judgments thread an algorithmic context. They have the form
+$\Gamma \vdash \ldots \dashv \Delta$, where $\Gamma$ is the input context and
+$\Delta$ is the output context:
+$\Gamma \vdash A \le B \dashv \Delta$  for subtyping, 
+$\Gamma \vdash e \Leftarrow A \dashv \Delta$  for type checking, and so on. 
+The output context is a functional update of the input context that records newly
+introduced existentials and solutions.
+
+Solutions are incrementally propagated by applying the algorithmic output
+context of a previous task as substitution to the next task. This can be seen
+in the subsumption rule:
+\[
+\inferrule*
+  {\Gamma \vdash e \Rightarrow A \dashv \Theta \\ 
+   \Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta
+  }
+  { \Gamma \vdash e \Leftarrow B \dashv \Delta}
+\]
+The inference task yields an output context $\Theta$ which is applied as a substitution
+to the types $A$ and $B$ before performing the subtyping check to propagate any solutions
+of existential variables that appear in $A$ and $B$.
+
+The sequential order of entries in the algoritmic context, in combination with
+the threading of contexts,  does not perfectly capture the scoping of all
+existential variables. For this reason the DK algorithm uses scope markers
+$\blacktriangleright_{\hat{\alpha}}$ in a few places. An example is given in the following
+rule:
+\[
+\inferrule*
+  {\Gamma,\blacktriangleright_{\hat{\alpha}}, \hat{\alpha} \vdash [\hat{\alpha}/a]A \le B \dashv \Delta,\blacktriangleright_{\hat{\alpha}},\Theta}
+  {\Gamma \vdash \forall a. A \le B \dashv \Delta}
+\]
+To indicate that the scope of $\hat{\alpha}$ is local to the subtyping check
+$[\hat{\alpha}/a]A \le B$, the marker is pushed onto its input stack and popped
+from the output stack together with the subsequent part $\Theta$, which may
+refer to $\hat{\alpha}$. (Remember that later entries may refer to earlier
+ones, but not vice versa.) This way $\hat{\alpha}$ does not escape its scope.
+
+
+At first sight, the DK algorithm would seem a good basis for mechanisation. After
+all it comes with a careful description and extensive manual proofs.
+Unfortunately, we ran into several obstacles that have prompted us to formulate
+a different, more mechanisation-friendly algorithm.
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\paragraph{Broken Metatheory} % Talk about the lemmas that are false, show counterexample.
+While going through the manual proofs of DK's algorithm, we found several problems.
 The proof of Lemma 19 (Extension Equality Preservation) applies a wrong
 induction hypothesis for the ${\longrightarrow}\mathtt{Uvar}$ case.
 Fortunately the lemma could be proven without the well-formedness conditions
@@ -229,9 +293,6 @@ demarcate the end of an existential variable's scope. These are compelling
 reasons to look for a simpler algorithm that is easier to reason about in a 
 mechanised setting.
 
-%-------------------------------------------------------------------------------
-\subsection{DK's Algorithm}
-\jimmy{TODO: some of the text above about DK's algorithm may be moved here}
 
 %-------------------------------------------------------------------------------
 \subsection{Small-Step Unification}
