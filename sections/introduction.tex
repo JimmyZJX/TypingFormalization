@@ -3,10 +3,11 @@
 
 Modern functional programming languages, such as Haskell or OCaml,
 use sophisticated forms of type inference. The type systems of these languages are
-descendents of Hindley-Milner~\cite{}, which was revolutionary at the
+descendents of Hindley-Milner~\cite{hindley1969principal,milner1978theory,damas1982principal}
+, which was revolutionary at the
 time in allowing type-inference to proceed without any type
 annotation. The traditional Hindley-Milner type system supports
-top-level \emph{implicit (parametric) polymorphism}. With implicit
+top-level \emph{implicit (parametric) polymorphism}~\cite{reynolds1983types}. With implicit
 polymorphism, type arguments of polymorphic functions are
 automatically instantiated. Thus implicit polymorphism and the absense of
 type annotations mean that the Hindley-Milner type system 
@@ -18,14 +19,15 @@ In particular one popular direction is to allow
 \emph{higher-ranked polymorphism} where polymorphic types can
 occur anywhere in a type signature.  
 An important challenge is that full type inference for higher-ranked
-polymorphism is know to be undecidable~\cite{}. Therefore some type
+polymorphism is know to be undecidable~\cite{wells1999typability}. Therefore some type
 annotations are necessary to guide type inference. In response to this 
 challenge several decidable type systems requiring some annotations 
-have been proposed~\cite{}\bruno{works on impredicative type inference + DK and Peyton Jones}.
+have been proposed~\cite{,dunfield2013complete,jones2007practical}
+\bruno{works on impredicative type inference + DK and Peyton Jones}.
 Two closely related type systems that 
 support \emph{predicative} higher-ranked type inference were proposed 
-by Peyton Jones et al.~\cite{} and Dunfield and
-Krishnaswami~\cite{} (henceforth denoted as DK). 
+by Peyton Jones et al.~\cite{jones2007practical} and Dunfield and
+Krishnaswami~\cite{dunfield2013complete} (henceforth denoted as DK). 
 These type systems are
 popular among language designers and their ideas have been adopted by
 several modern functional languages, including Haskell and PureScript.
@@ -53,13 +55,16 @@ Despite the importance of type inference in practice and also in
 academic research, there is little work in mechanically formalizing
 such advanced forms of type inference in theorem provers.
 The remarkable exception is some work done on the formalization of 
-certain parts of Hindley-Milner type inference~\cite{}\bruno{all previous work on mechanizing HM}. However
+certain parts of Hindley-Milner type inference~\cite{naraschewski1999type,
+dubois2000proving,dubois1999certification,urban2008nominal,
+garrigue2015certified}\bruno{all previous work on mechanizing HM}. However
 there is still no formalization of the higher-ranked type systems
 that are employeed by modern languages like Haskell.
 This is at
 odds with the current trend of mechanical formalizations in
 programming language research. In particular both the POPLMark
-challenge~\cite{} and CompCert ~\cite{} have significantly promoted
+challenge~\cite{aydemir2005mechanized} and
+CompCert ~\cite{leroy2012compcert} have significantly promoted
 the use of theorem provers to model various aspects of programming
 languages. Today there are routinely papers in top conferences
 that use theorem provers to mechanically formalize: \emph{dynamic and
@@ -72,7 +77,7 @@ for programming languages tend to be \emph{long}, \emph{tedious} and
 \emph{error-prone}. In such proofs it is very easy to make mistakes
 that may invalidate the whole development. Furthermore, readers and
 reviewers often do not have time to look at the proofs carefuly to
-check their correctnessness. Therefore errors can go unnoticed for a
+check their correctness. Therefore errors can go unnoticed for a
 long time.  Mechanical formalizations provide, in principle, a natural
 solution for such problems. Theorem provers can automaticaly check and
 validate the proofs, which removes the burden from checking from both
@@ -82,7 +87,8 @@ This paper presents the first full mechanical formalization of the
 metatheory for higher-ranked polymorphic type inference.
 The system
 that we formalize is the bidirectional type system by Dunfield and
-Krishnaswami (DK)~\cite{}. We chose DK's type system because it is
+Krishnaswami (DK)~\cite{dunfield2013complete}.
+We chose DK's type system because it is
 quite elegant, well-documented and it comes with detailed manually
 written proofs. Furthermore the system is adopted in practice by a few
 real implementations of functional languages, including PureScript and
@@ -105,7 +111,7 @@ employs input and output contexts to track information that is
 discovered throught type inference. However modelling output contexts
 in a theorem prover is non-trivial. Our work takes a different
 approach by refining and extending the idea of \emph{worklists
-  judgments}~\cite{}, proposed recently to mechanically formalize an
+  judgments}~\cite{itp2018}, proposed recently to mechanically formalize an
 algorithm for \emph{polymorphic subtyping}.  However, a key challenge
 not addressed previously with worklist judgements was how to deal with
 \emph{inference judgements}.  In our work we show how worklist
@@ -113,11 +119,14 @@ judgements can be extended to deal with the inference judgements that
 are necessary for type-inference.  The idea is to use a continuation
 passing style to enable the transfer of inferred information across
 judgements. A further refinement to the idea of worklist judgements is
-the \emph{unification between ordered contexts~\cite{}\bruno{DK and the work by McBride (see ITP citations)} and
-  worklists}. This enables precise scope tracking of free variables in
+the \emph{unification between ordered contexts~\cite{gundry2010type,dunfield2013complete}
+\bruno{DK and the work by McBride (see ITP citations)} and
+  worklists}.
+This enables precise scope tracking of free variables in
 judgements. Furthermore it avoids the duplication of context
 information across judgments in worklists that occurs in other
-techniques~\cite{}\bruno{cite the two works we cited in ITP (and maybe others)}.
+techniques~\cite{Reed2009,Abel2011higher}
+\bruno{cite the two works we cited in ITP (and maybe others)}.
 
 Finally, another challenge that we faced were missing details and
 sometimes incorrect proofs/lemmas in DK's formalization. While DK's
@@ -137,7 +146,8 @@ on their part. Instead it should be an indicator that reinforces the arguments
 for mechanical formalizations: manual formalizations are error-prone due to the multiple
 tedious details involved in them.
 There are several other examples of manual formalizations that were found to have
-similar problems. For example, Klein et al.~\cite{}\bruno{Run your research} mechanized formalizations
+similar problems. For example, Klein et al.~\cite{KleinRunYourResearch}
+\bruno{Run your research} mechanized formalizations
 in Redex for nine ICFP 2009 papers and all were found to have mistakes.
 
 Despite the use of a different algorithm we prove the
