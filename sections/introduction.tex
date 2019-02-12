@@ -3,7 +3,7 @@
 
 Modern functional programming languages, such as Haskell or OCaml,
 use sophisticated forms of type inference. The type systems of these languages are
-descendents of Hindley-Milner~\cite{hindley1969principal,milner1978theory,damas1982principal}
+descendants of Hindley-Milner~\cite{hindley1969principal,milner1978theory,damas1982principal}
 , which was revolutionary at the
 time in allowing type-inference to proceed without any type
 annotation. The traditional Hindley-Milner type system supports
@@ -35,7 +35,7 @@ In those type systems
 type annotations are required for polymorphic arguments of functions,
 but other type annotations can be omitted. A canonical example (here written in Haskell) is:
 \begin{verbatim}
-hpoly = (\f :: forall a. a -> a) -> (f 1, f 'c')
+    hpoly = (\f :: forall a. a -> a) -> (f 1, f 'c')
 \end{verbatim}
 The function \verb|hpoly| cannot be
 type-checked in Hindley-Milner.  The type of \verb|hpoly| is the rank-2 type:
@@ -51,7 +51,7 @@ type inference algorithms preserve many of the desirable properties
 of Hindley-Milner. For example the applications of \verb|f| implicitly 
 instantiate the polymorphic type arguments of \verb|f|.
 
-Despite the importance of type inference in practice and also in
+Although type inference is important in practice and also in
 academic research, there is little work in mechanically formalizing
 such advanced forms of type inference in theorem provers.
 The remarkable exception is some work done on the formalization of 
@@ -59,15 +59,15 @@ certain parts of Hindley-Milner type inference~\cite{naraschewski1999type,
 dubois2000proving,dubois1999certification,urban2008nominal,
 garrigue2015certified}\bruno{all previous work on mechanizing HM}. However
 there is still no formalization of the higher-ranked type systems
-that are employeed by modern languages like Haskell.
+that are employed by modern languages like Haskell.
 This is at
 odds with the current trend of mechanical formalizations in
 programming language research. In particular both the POPLMark
 challenge~\cite{aydemir2005mechanized} and
 CompCert ~\cite{leroy2012compcert} have significantly promoted
 the use of theorem provers to model various aspects of programming
-languages. Today there are routinely papers in top conferences
-that use theorem provers to mechanically formalize: \emph{dynamic and
+languages. Today papers in top conferences routinely
+use theorem provers to mechanically formalize: \emph{dynamic and
   static semantics} and their correctness properties~\cite{},
 \emph{compiler correctness}~\cite{}, \emph{correctness of
   optimizations}~\cite{}, certain forms of \emph{abstract
@@ -76,10 +76,10 @@ main argument for mechanical formalizations is a simple one. Proofs
 for programming languages tend to be \emph{long}, \emph{tedious} and
 \emph{error-prone}. In such proofs it is very easy to make mistakes
 that may invalidate the whole development. Furthermore, readers and
-reviewers often do not have time to look at the proofs carefuly to
+reviewers often do not have time to look at the proofs carefully to
 check their correctness. Therefore errors can go unnoticed for a
 long time.  Mechanical formalizations provide, in principle, a natural
-solution for such problems. Theorem provers can automaticaly check and
+solution for these problems. Theorem provers can automatically check and
 validate the proofs, which removes the burden from checking from both
 the person doing the proofs as well as readers or reviewers.
 
@@ -99,8 +99,8 @@ and an algorithmic one. The two variants have been been
 We present a mechanical formalization in the Abella theorem prover for
 DK's declarative type system using a different algorithm. While our
 initial goal was to formalize both DK's declarative and algorithmic
-versions, we faced technical challenges with the later, prompting us to find
-an alternative.
+versions, we faced technical challenges with the latter, prompting us to find
+an alternative formulation formulation.
 
 One key challenge in type inference is variable binding, because the
 algorithms typically do not rely simply on local environments, but
@@ -128,15 +128,15 @@ information across judgments in worklists that occurs in other
 techniques~\cite{Reed2009,Abel2011higher}
 \bruno{cite the two works we cited in ITP (and maybe others)}.
 
-Finally, another challenge that we faced were missing details and
-sometimes incorrect proofs/lemmas in DK's formalization. While DK's
+Finally, another challenge that we faced were missing details as well as
+a few incorrect proofs and lemmas in DK's formalization. While DK's
 original formalization comes with very well written manual proofs,
 there are still several details missing. These complicate the task of
 writing a mechanically verified proof. Moreover some proofs and/or
-lemmas are wrong and sometimes it is not clear how to replace these by
-other valid lemmas or proofs. Although there are problems in DK's manual formalization
-we believe that their results are true and these problems do not
-invalidate their work. In fact we have nothing but praise to their detailed
+lemmas are wrong and it is not in all cases clear to us how to fix them. Yet,
+despite these problems in DK's manual formalization,
+we believe that these problems do not
+invalidate their work and that their results are still true. In fact we have nothing but praise for their detailed
 and clearly written metatheory and proofs, which provided invaluable
 help to our own work.
 With some additional thought we expect that the issues
@@ -151,7 +151,7 @@ similar problems. For example, Klein et al.~\cite{KleinRunYourResearch}
 in Redex for nine ICFP 2009 papers and all were found to have mistakes.
 
 Despite the use of a different algorithm we prove the
-same results by DK, although with significantly different proofs and
+same results as DK, although with significantly different proofs and
 proof techniques. The calculus and its metatheory
 have been fully formalized in the Abella theorem prover~\cite{AbellaDesc}.
 
@@ -164,7 +164,7 @@ In summary, the contributions of this paper are:
   for type inference of higher ranked types. The formalization is done in the
   Abella theorem prover~\cite{AbellaDesc} and it is available
   online.\footnote{{\bf Note to reviewers:} Due to the anonymous submission process
-  the url is sent as part of the supplementary materials.}
+  it is sent as part of the supplementary materials.}
 
 \item {\bf A new algorithm for DK's type system:} Our work proposes a novel algorithm that implements
   DK's declarative bidirectional type system. We prove
