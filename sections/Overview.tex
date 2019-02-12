@@ -238,7 +238,7 @@ mechanised setting.
 % dependent types that use a small-step approach. Credit them later for some ideas that 
 % we also employ.
 There are literals that make use of small-step unification for dependently typed
-inference and reconstruction algorithms~\cite{}.
+inference and reconstruction algorithms~\cite{Reed2009,Abel2011higher}.
 These approaches collect a list of constraints and process one at a time.
 Similar to DK's algorithm, unification variables are used to represent the types to guess.
 In order to solve unification variables to correctly scoped types
@@ -247,9 +247,48 @@ the context information should be kept with the variables.
 Judgments that represent unifications of terms might also require such a context
 to keep the constraint collection well-formed.
 
-\jimmy{TODO explain the duplicated context with some examples (their judgment form)}
-Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
-the formalization harder since requires ``synchronizing'' things ...
+As an example, Abel et al. defines their constraint $K$ by
+\begin{gather*}
+\begin{aligned}
+K &::= {\top} \mid {\bot} &&\text{Trivial constraint and inconsistency.}\\
+    & \ \mid \  \Psi\vdash M = N : C &&\text{Unify term $M$ with $N$.}\\
+    & \ \mid \  \Psi\mid R:A \vdash E = E' &&\text{Unify evaluation context $E$ with $E'$.}\\
+    & \ \mid \  \Psi\vdash u\leftarrow M: C &&\text{Solution for $u$ (metavariable) found.}
+\end{aligned}
+\end{gather*}
+where the unification constraints and metavariable solutions are bound by a proper context.
+A unification problem in their system is described by $\Delta \Vdash \overline{K}$,
+where $\Delta$ is a collection of metavariables with their defined scopes.
+This approach clearly states the scroping of each unification problem,
+therefore rules out invalid instantiations to metavariables.
+
+However, such ``duplicated contexts'' are not ideal for our formalization.
+Following DK's algorithm, an existential variable $\al$ defined in the context
+could be decomposed into a function type $\al[1] \to \al[2]$,
+so the declaration of $\al$ should be replaced by two declarations $\al[1], \al[2]$.
+Such operation causes all the context that contains $\al$ to change,
+which brings difficulty on the synchronization of multiple contexts,
+as variable declarations are not centralized.
+
+We find a way of encoding multiple contexts by ``compressing'' them into a single worklist.
+As our type inference rules applied to a judgment,
+we typically keep the context or add variable declarations to the old context
+before analysing its sub-judgment(s).
+This enables us to write the judgment worklist in such a form:
+$$\Gm, \{\text{variable declarations}\}, \{\text{judgment}\},
+\{\text{variable declarations}\}, \{\text{judgment}\}, \ldots .$$
+Typically, we simplify the right-most judgment and push back smaller tasks,
+where the old ``context'' automatically gets inherited.
+When some rules solve or partially solve an existential variable,
+we could easily propagate the solution to all the judgments,
+and safely modify its declaration, such as remove from the worklist.
+New judgment(s) may also introduce new \emph{local} variables by declaring
+that variable right before the new judgment(s).
+After the new judgments are satisfied, these local variables are properly recycled.
+
+% \jimmy{TODO explain the duplicated context with some examples (their judgment form)}
+% Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
+% the formalization harder since requires ``synchronizing'' things ...
 
 %-------------------------------------------------------------------------------
 \subsection{Worklist Algorithm for Subtyping}
