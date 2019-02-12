@@ -220,12 +220,17 @@ are satisfied.  Finally we can safely remove $\al$ since no occurrence
 of $\al$ could have leaked into the left part of the worklist.  Moreover,
 the algorithm garbage-collects the $\al$
 variable at the perfect time: it leaves the environment immediately
-after being unreferenced.\bruno{Perhaps this is better illustrated
-  with a simple example?}\tom{Yes, it would be good to show one or more
+after being unreferenced.
+\jimmy{An example on subtyping: $\nil\vdash (1\to 1)\to 1 \le (\forall a. a\to a) \to 1$
+TODO derivation and explanation}
+\bruno{Perhaps this is better illustrated with a simple example?}
+\tom{Yes, it would be good to show one or more
 example derivations to illustrate the key points.}
 
 The design of our judgment chain is closely related to the property of
-the judgments\bruno{What property? Not very clear}.
+the judgments
+\jimmy{requires further clarification}
+\bruno{What property? Not very clear}.
 Subtyping and checking do not return anything, so variables cannot
 leak anyway, as applied to Rules 8 and 9.
 \bruno{Is the discussion that follows in the right place? We just jump
@@ -233,7 +238,8 @@ leak anyway, as applied to Rules 8 and 9.
   rule 26. Perhaps we can wait until we talk about inference to
   discuss those issues?}
 However, inference and application inference may return a type that contains new variables.
-Take Rule 26 as an example, if it simply returns $\al \to \bt$, passes that to the next judgment and continues the type-checking process,
+Take Rule 26 as an example, if it simply returns $\al \to \bt$,
+passes that to the next judgment and continues the type-checking process,
 variables $\al$ and $\bt$ in the next judgment are out of scope
 and will break the well-formedness of the worklist.
 By making use of the continuation-passing-style judgement chain,

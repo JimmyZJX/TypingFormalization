@@ -60,14 +60,24 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \end{lemma}
 
 \begin{figure}[t]
+\framebox{$\|\Om\|$} Judgment erasure for $\Om$, returns a declarative context $\Psi$.
+\begin{gather*}
+\begin{aligned}
+\|\nil\| &= \nil\\
+\|\Om,a\| &= \|\Om\|, a\\
+\|\Om,x:A\| &= \|\Om\|, x:A\\
+\|\Om\Vdash\jg\| &= \|\Om\|
+\end{aligned}
+\end{gather*}
+
 \framebox{$\Om \rto \Om'$} $\Om$ reduces to $\Om'$.
 \begin{gather*}
 \begin{aligned}
-\Om,a &\rto \Om \qquad \Om \qquad \Om,x:A \rto \Om\\
-\Om\Vdash A\le B &\rto \Om \text{ when } \Om\vdash A\le B\\
-\Om\Vdash e\Lto A &\rto \Om \text{ when } \Om\vdash e\Lto A\\
-\Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg \text{ when } \Om\vdash e\To A\\
-\Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg \text{ when } \Om\vdash \appInf{A}{e}{C}\\
+\Om,a &\rto \Om \qquad \Om,x:A \rto \Om\\
+\Om\Vdash A\le B &\rto \Om \text{ when } \|\Om\| \vdash A\le B\\
+\Om\Vdash e\Lto A &\rto \Om \text{ when } \|\Om\| \vdash e\Lto A\\
+\Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg \text{ when } \|\Om\| \vdash e\To A\\
+\Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg \text{ when } \|\Om\| \vdash \appInf{A}{e}{C}\\
 \end{aligned}
 \end{gather*}
 \caption{Declarative Worklist Typing.\bruno{I think your names for the
