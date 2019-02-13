@@ -19,11 +19,11 @@
 \end{figure}
 
 The syntax of this declarative system is shown in Figure~\ref{fig:decl:syntax}.
-A declarative type could be a unit type 1, a type variable $a$,
+A declarative type $A$ is either the unit type $1$, a type variable $a$,
 a universal quantification $\forall a. A$ or a function type $A \to B$.
-Nested universal quantifiers are allowed for types,
-but monotypes do not have any universal quantifier.
-Context $\Psi$ is just a collection of type variable declarations.
+Nested universal quantifiers are allowed in types,
+but monotypes $\tau$ do not contain any universal quantifier.
+Contexts $\Psi$ are just sequences of type variable declarations.
 
 \begin{figure}[t]
 %\centering \framebox{$\Psi \vdash A$}
@@ -117,37 +117,37 @@ Declarative Subtyping}\label{fig:decl:sub}
 \caption{Declarative Typing}\label{fig:decl:typing}
 \end{figure}
 
-In Figures~\ref{fig:decl:sub} and \ref{fig:decl:typing},
-we give the subtyping and typing relations for the declarative system,
-which is exactly the same as DK's.
-The subtyping relations originate from Odersky and La\"ufer~\cite{odersky1996putting},
-and is adopted by DK as a part of their typing system.
+Figures~\ref{fig:decl:sub} and \ref{fig:decl:typing},
+give the subtyping and typing relations for the declarative DK system.
+The DK subtyping relation was adopted from \citet{odersky1996putting}.
 
 \paragraph{Declarative Subtyping}
-For implicit polymorphic type systems,
-subtyping relation compares the degree of polymorphism of types.
-In short, if a polymorphic type $A$ always succeed to instantiate to any instantiation of $B$,
-then A is ``at least as polymorphic as'' $B$,
-or we just say that $A$ is ``more polymorphic than'' $B$, written as $A \le B$.
+Figure~\ref{fig:decl:sub} shows DK's declarative subtyping judgment $\Psi \vdash A \le B$,
+which was adopted from \citet{odersky1996putting}. It compares the
+degree of polymorphism between between $A$ and $B$ in DK's implicit polymorphic type system. 
+Essentially, if $A$ can always be instantiated to match any instantiation of $B$,
+then A is ``at least as polymorphic as'' $B$. We also 
+say that $A$ is ``more polymorphic than'' $B$ and write $A \le B$.
 
 Subtyping rules $\mathtt{{\le}Var}$, $\mathtt{{\le}Unit}$ and $\mathtt{{\le}{\to}}$
-handle simple cases where no universal quantifiers get involved.
+handle simple cases that do not involve universal quantifiers.
 The subtyping rule for function types $\mathtt{{\le}{\to}}$ is standard,
 being covariant on the return type and contravariant on the argument type.
-Rule $\mathtt{{\le}\forall L}$ states that if $A$ is a subtype of $B$
-under the context ($\Psi, a$), where $a$ is fresh in $A$, then $A\le\all B$.
+Rule $\mathtt{{\le}\forall R}$ states that if $A$ is a subtype of $B$
+in the context $\Psi, a$, where $a$ is fresh in $A$, then $A\le\all B$.
 Intuitively, if $A$ is more general than $\all B$ (where the universal quantifier
 already indicates that $\all B$ is a general type),
 then $A$ must instantiate to $[\tau/a]B$ for every $\tau$.
 
-The most interesting rule is $\mathtt{{\le}\forall R}$.
-If any instantiation of $\all A$, $[\tau/a]A$, is a subtype of $B$,
+The most interesting rule is $\mathtt{{\le}\forall L}$.
+If some instantiation of $\all A$, $[\tau/a]A$, is a subtype of $B$,
 then $\all A \le B$.
-The monotype $\tau$ we used to instantiation is \emph{guessed} for the declarative rule,
-but the algorithmic system should be able to compute the guess properly.
+The monotype $\tau$ we used to instantiate $a$ is \emph{guessed} in this
+declarative rule, but the algorithmic system does not guess and defers the
+instantiation until it can determine the monotype deterministically.
 The fact that $\tau$ is a monotype rules out the possibility of
-polymorphic (or impredicative) instantiation.
-Peyton Jones et al.~\cite{} also has such restriction of
+polymorphic (or impredicative) instantiation.\tom{say why this restriction is imposed}
+Peyton Jones et al.~\cite{} also impose the restriction of
 predicative instantiation in their type system.
 Both systems are adopt by several practical programming languages.
 
