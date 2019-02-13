@@ -19,6 +19,11 @@
 \end{figure}
 
 The syntax of this declarative system is shown in Figure~\ref{fig:decl:syntax}.
+A declarative type could be a unit type 1, a type variable $a$,
+a universal quantification $\forall a. A$ or a function type $A \to B$.
+Nested universal quantifiers are allowed for types,
+but monotypes do not have any universal quantifier.
+Context $\Psi$ is just a collection of type variable declarations.
 
 \begin{figure}[t]
 %\centering \framebox{$\Psi \vdash A$}
@@ -113,13 +118,47 @@ Declarative Subtyping}\label{fig:decl:sub}
 \end{figure}
 
 In Figures~\ref{fig:decl:sub} and \ref{fig:decl:typing},
-we give the subtyping and typing relations for the declarative system.
+we give the subtyping and typing relations for the declarative system,
+which is exactly the same as DK's.
+The subtyping relations originate from Odersky and La\"ufer~\cite{odersky1996putting},
+and is adopted by DK as a part of their typing system.
 
-\paragraph{Overlapping rules}
+\paragraph{Declarative Subtyping}
+For implicit polymorphic type systems,
+subtyping relation compares the degree of polymorphism of types.
+In short, if a polymorphic type $A$ always succeed to instantiate to any instantiation of $B$,
+then A is ``at least as polymorphic as'' $B$,
+or we just say that $A$ is ``more polymorphic than'' $B$, written as $A \le B$.
+
+Subtyping rules $\mathtt{{\le}Var}$, $\mathtt{{\le}Unit}$ and $\mathtt{{\le}{\to}}$
+handle simple cases where no universal quantifiers get involved.
+The subtyping rule for function types $\mathtt{{\le}{\to}}$ is standard,
+being covariant on the return type and contravariant on the argument type.
+Rule $\mathtt{{\le}\forall L}$ states that if $A$ is a subtype of $B$
+under the context ($\Psi, a$), where $a$ is fresh in $A$, then $A\le\all B$.
+Intuitively, if $A$ is more general than $\all B$ (where the universal quantifier
+already indicates that $\all B$ is a general type),
+then $A$ must instantiate to $[\tau/a]B$ for every $\tau$.
+
+The most interesting rule is $\mathtt{{\le}\forall R}$.
+If any instantiation of $\all A$, $[\tau/a]A$, is a subtype of $B$,
+then $\all A \le B$.
+The monotype $\tau$ we used to instantiation is \emph{guessed} for the declarative rule,
+but the algorithmic system should be able to compute the guess properly.
+The fact that $\tau$ is a monotype rules out the possibility of
+polymorphic (or impredicative) instantiation.
+Peyton Jones et al.~\cite{} also has such restriction of
+predicative instantiation in their type system.
+Both systems are adopt by several practical programming languages.
+
+\paragraph{Declarative Typing}
+\jimmy{TODO decl. typing description}
+
+\paragraph{Overlapping Rules}
 \jimmy{Move to the Alg. Section}
 Some of the declarative rules overlaps with each other.
 Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
-both match the conclusion $\Psi\vdash \forall a. A \le \forall a. B$.
+both match the conclusion $\Psi\vdash \all A \le \all B$.
 In such case, choose $\mathtt{{\le}\forall R}$ first is always better,
 since we introduce the type variable $a$ to the context earlier,
 which gives more flexibility on the choice of $\tau$.
