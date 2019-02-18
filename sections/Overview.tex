@@ -8,11 +8,14 @@
 \begin{figure}[t]
 \[
 \begin{array}{l@{\qquad}lcl}
-\text{Type variables}\qquad&a, b\\[3mm]
+\text{Type variables}\qquad&a, b
+\\[3mm]
 \text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \forall a. A \mid A\to B\\
-\text{Monotypes}\qquad&\tau,\sigma &::=&\quad 1 \mid a \mid \tau\to \sigma\\
-\text{Contexts}\qquad&\Psi &::=&\quad \nil \mid \Psi, a\\
-%\text{Judgments}\qquad&\exps &::=&\quad \nil \mid A \le B : \exps
+\text{Monotypes}\qquad&\tau,\sigma &::=&\quad 1 \mid a \mid \tau\to \sigma
+\\[3mm]
+\text{Expressions}\qquad&e &::=&\quad x \mid () \mid \lam e \mid e_1~e_2 \mid (e:A)
+\\[3mm]
+\text{Contexts}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A
 \end{array}
 \]
 \caption{Syntax of Declarative System}\label{fig:decl:syntax}
@@ -23,7 +26,10 @@ A declarative type could be a unit type 1, a type variable $a$,
 a universal quantification $\forall a. A$ or a function type $A \to B$.
 Nested universal quantifiers are allowed for types,
 but monotypes do not have any universal quantifier.
-Context $\Psi$ is just a collection of type variable declarations.
+Terms include a unit term $()$, variables $x$, lambda-functions $\lam e$,
+applications $e_1~e_2$ and annotations $(e:A)$.
+Context $\Psi$ is a collection of type variable declarations and
+term variables with its type declared $x:A$.
 
 \begin{figure}[t]
 %\centering \framebox{$\Psi \vdash A$}
