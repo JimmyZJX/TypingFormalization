@@ -332,3 +332,20 @@ If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully.
 Figure~\ref{fig:alg:sample} shows a sample derivation of the
 algorithm.
 \bruno{Derivation should be explained briefly at least.}
+
+\subsection{Non-overlapping and Deterministic Reduction}
+An interesting and important aspect of our algorithmic rules is that
+they are directly implementable.
+Although written in the form of reduction rules, they do not overlap with each other.
+\jimmy{TODO: subtyping: $\forall$L with $\forall$R}
+Rule 18 is the most general case for checking,
+where its corresponding rule in DK's algorithm overlaps with all other checking rules.
+We prevent the non-determinism by restricting the condition of Rule 18,
+namely $e\neq\lam e'$ and $B\neq\all B'$.
+In other words, Rules 19, 20 and 21 have higher priority to Rule 18 when implemented.
+Thus our algorithm runs in polymorphic time, which is suitable for practical scenarios.
+
+\jimmy{Describe how to achieve the non-overlapping: a proof of declarative system,
+and then link to the metatheory for more details.}
+
+
