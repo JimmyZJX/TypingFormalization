@@ -148,7 +148,7 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm \Vdash a\le a &\algrule \Gm\\
 \Gm \Vdash \al\le \al &\algrule \Gm\\
 \Gm \Vdash A_1\to A_2 \le B_1\to B_2 &\algrule \Gm \Vdash A_2 \le B_2 \Vdash B_1\le A_1\\
-\Gm \Vdash \forall a. A\le B &\algrule \Gm,\al \Vdash [\al/a]A\le B \quad\text{\jimmy{No more exvar leaks}}\\
+\Gm \Vdash \forall a. A\le B &\algrule \Gm,\al \Vdash [\al/a]A\le B \quad\text{when } B \neq \all B' \quad\text{\jimmy{No more exvar leaks}}\\
 \Gm \Vdash A\le \forall b. B &\algrule \Gm,b \Vdash A\le B \quad\text{\jimmy{No more typevar leaks}}
 \\[2mm]
 %\\
@@ -337,10 +337,16 @@ algorithm.
 An interesting and important aspect of our algorithmic rules is that
 they are directly implementable.
 Although written in the form of reduction rules, they do not overlap with each other.
-\jimmy{TODO: subtyping: $\forall$L with $\forall$R}
+
+For subtyping, Rules 8 and 9 corresponds to declarative rules
+$\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$,
+where both of them matches the goal $\all A\le \all[b]B$.
+We eliminate the overlapping by restricting Rule 8 ($B\neq\all B'$)
+and thus always applying Rule 9 first for algorithmic reduction.
+
 Rule 18 is the most general case for checking,
 where its corresponding rule in DK's algorithm overlaps with all other checking rules.
-We prevent the non-determinism by restricting the condition of Rule 18,
+We prevent the non-determinism by adding conditions to Rule 18,
 namely $e\neq\lam e'$ and $B\neq\all B'$.
 In other words, Rules 19, 20 and 21 have higher priority to Rule 18 when implemented.
 Thus our algorithm runs in polymorphic time, which is suitable for practical scenarios.

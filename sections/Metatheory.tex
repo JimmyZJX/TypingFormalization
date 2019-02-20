@@ -102,6 +102,13 @@ which naturally fits declarative subtyping and typing.
   declarations (thus becomes a declarative environment). Isn't this
   what you do in your formalization?}
 \jimmy{TODO: a erasure function would make things more clear...}
+
+
+\subsection{Non-overlapping Declarative System}
+\jimmy{Talk about the modified subsumption rule, reasoning about the unit rule,
+and the subtyping $\forall$ overlapping}
+
+%-------------------------------------------------------------------------------
 \subsection{Soundness}
 
 Our algorithm is sound with respect to the declarative system.
@@ -121,12 +128,17 @@ finish off the theorem.
 \bruno{I wonder if 1 or 2 examples (concrete instantiations of the
   theorem) would be helpful to complement the explanation.}
 
+\begin{corollary}[Soundness, single judgment form]
+
+\end{corollary}
+
 \subsection{Completeness}
 
 Completeness of the algorithm means that any declarative system has an algorithmic counterpart.
 
 \begin{theorem}[Completeness]
 If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
+\label{thm:completeness}
 \end{theorem}
 
 We prove completeness by induction on the derivation of $\Om\redto\nil$.
@@ -135,6 +147,7 @@ the induction always analyses the first judgment until it is satisfied.
 As the algorithmic system introduces existential variables,
 a declarative rule may correspond to multiple algorithmic rules,
 and thus we analyse each of the possible cases.
+\jimmy{Cite DK's proof as the sketch.}
 
 For subtyping, algorithmic Rules 10 and 11 require special treatment.
 When the induction reaches the $\mathtt{{\le}{\to}}$ case,
@@ -153,8 +166,13 @@ which could be transferred by $\al\le 1\to\al$.
 If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and
 $\Om \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
-
 A symmetric lemma holds for $A\to B \le \al$.
+
+All other cases are handled easily... \jimmy{more details if necessary}
+
+The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
+\begin{corollary}[Completeness, single judgment form]
+\end{corollary}
 
 \subsection{Decidability}
 \begin{theorem}[Decidability]
@@ -178,8 +196,8 @@ $|\cdot|_{\al}$ counts the number of existential variables in the worklist.
 \text{where } |x|_e &= |()|_e = 1 \qquad |\lam e|_e = |e|_e + 1\\
 |e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1 \qquad |e:A|_e = |e| + 1\\[2mm]
 %
-|\Gm|_\Leftrightarrow &= \#_{e\Lto A\in\Gm} +
-    2\cdot\#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\\[2mm]
+|\Gm|_\Leftrightarrow &= 2\cdot\#_{e\Lto A\in\Gm} +
+    \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\\[2mm]
 |\Gm|_\forall &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
     \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
 \text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
@@ -284,4 +302,8 @@ The critical case is that, whenever we encounter an instantiation judgment at th
 we make use of Lemma~\ref{lemma:inst:decidable}, which reduces $|\Gm|_{\al}$ or $|\Gm|_\forall$
 by consuming that instantiation judgment. Other cases are relatively straightforward.
 
+Combining all the three main results, we know that the declarative system is decidable,
+with the help of our algorithm.
+\begin{corollary}[Decidability of Declarative Typing]
+\end{corollary}
 \subsection{Abella}
