@@ -1,6 +1,12 @@
 \section{Overview}
 
-\bruno{I think some text/ideas-for-text can be borrowed from ITP.}
+This section starts by introducing DK's declarative type system. Then
+it discusses several techniques that have been used in algorithmic
+formulations, which have influenced our own algorithmic design.
+Finally we introduce the novelties of our new algorithm.
+In particular the support for inference judgements in
+judgement worklists, and a new form of judgement worklist
+that the unifies \emph{ordered contexts} and the worklists themselves. 
 
 \subsection{DK's Declarative System}
 % Subtyping and Typing. \jimmy{Can you prepare the figures. Subtyping is already in ITP.}
@@ -21,7 +27,8 @@
 \caption{Syntax of Declarative System}\label{fig:decl:syntax}
 \end{figure}
 
-The syntax of this declarative system is shown in Figure~\ref{fig:decl:syntax}.
+\paragraph{Syntax.}
+The syntax of DK's declarative system~\cite{dunfield2013complete} is shown in Figure~\ref{fig:decl:syntax}.
 A declarative type $A$ is either the unit type $1$, a type variable $a$,
 a universal quantification $\forall a. A$ or a function type $A \to B$.
 Nested universal quantifiers are allowed for types,
@@ -124,10 +131,9 @@ Declarative Subtyping}\label{fig:decl:sub}
 \end{gather*}
 \caption{Declarative Typing}\label{fig:decl:typing}
 \end{figure}
+\bruno{Some of the rule names are messed up.}
 
-Figures~\ref{fig:decl:sub} and \ref{fig:decl:typing},
-give the subtyping and typing relations for the declarative DK system.
-The DK subtyping relation was adopted from \citet{odersky1996putting}.
+%The DK subtyping relation was adopted from \citet{odersky1996putting}.
 
 \paragraph{Declarative Subtyping}
 Figure~\ref{fig:decl:sub} shows DK's declarative subtyping judgment $\Psi \vdash A \le B$,
@@ -154,10 +160,13 @@ The monotype $\tau$ we used to instantiate $a$ is \emph{guessed} in this
 declarative rule, but the algorithmic system does not guess and defers the
 instantiation until it can determine the monotype deterministically.
 The fact that $\tau$ is a monotype rules out the possibility of
-polymorphic (or impredicative) instantiation.\tom{say why this restriction is imposed}
-Peyton Jones et al.~\cite{} also impose the restriction of
+polymorphic (or impredicative) instantiation.
+However this restriction ensures that the subtyping relation remains
+decidable. Allowing an arbitrary type (rather than a monotype) in rule $\mathtt{{\le}\forall L}$
+is know to give rise to an undecidable subtyping relation~\cite{tiuryn1996subtyping}.
+Peyton Jones et al.~\cite{jones2007practical} also impose the restriction of
 predicative instantiation in their type system.
-Both systems are adopt by several practical programming languages.
+Both systems are adopted by several practical programming languages.
 
 \paragraph{Declarative Typing}
 The bidirectional type system has three judgments shown in Figure~\ref{fig:decl:typing}.
@@ -167,37 +176,37 @@ The application judgment $\Psi\vdash \appInf{A}{e}{C}$ means that if a function 
 (which could be a polymorphic one) is applied to the argument $e$, then the whole application
 synthesizes type $C$ as its return type.
 
-Some of the rules handles simple cases with common approaches.
+Some of the rules handle simple cases with common approaches.
 Rule $\mathtt{DeclVar}$ looks term variables up in the context.
 Rules $\mathtt{Decl1I}$ and $\mathtt{Decl1I{\To}}$ checks and synthesizes the unit type, respectively.
 Rule $\mathtt{DeclAnno}$ synthesizes the type of the annotated expression $(e:A)$
-to its annotated type $A$, and requires $e$ to be checked agains $A$.
+to its annotated type $A$, and requires $e$ to be checked against $A$.
 Checking an expression $e$ against a polymorphic type $\all A$ under the context $\Psi$ succeeds
 if $e$ checks against A under an extended context $(\Psi, a)$, where $a$ is picked as a free variable.
 
 The subsumption rule $\mathtt{DeclSub}$ depends on the subtyping relation,
-and changes mode from checking to synthesis: if $e$ synthesizes $A$ and $A\le B$
+and changes the mode from checking to synthesis: if $e$ synthesizes $A$ and $A\le B$
 ($A$ is more polymorphic than $B$), then $e$ can be checked against $B$.
 If a checking problem does not match any other rules,
 $\mathtt{DeclSub}$ can be applied and try to synthesize a type
 before checking whether the synthesized one is more general.
 
-Lambda-functions is a critical component of bidirectional type system, and they require much attention.
+Lambdas are critical components of the bidirectional type system, and they require much attention.
 Checking $\lam e$ against function type $A\to B$ is simple:
 we check the body $e$ against $B$ under the context extended with $x:A$.
-However, synthesizing a lambda-function is not easy in general,
-and this \emph{predicative} declarative system is able to
-synthesize to a suitable monotype $\sigma\to\tau$.
+However, synthesizing a the type of an unannotated lambda is not easy. 
+Nevertheless the \emph{predicative} declarative system is able to
+synthesize to a suitable monotype $\sigma\to\tau$, if one exists.
 In other words, if no type information is given for a lambda function,
 we will synthesize it to the best mono-typed function according to the context,
 which also requires some guessing similar to the subtyping rule $\mathtt{\forall L}$.
 
-Application $(e_1~e_2)$ is handled by Rule $\mathtt{Decl{\to}E}$,
-which firstly synthesize type $A$ for the function $e_1$.
+Applications $e_1~e_2$ are handled by Rule $\mathtt{Decl{\to}E}$,
+which firstly synthesizes type $A$ for the function $e_1$.
 If $A$ is a function type $B\to C$, Rule $\mathtt{Decl{\to}App}$ is applied,
 by checking the argument $e_2$ against $B$ and returns type $C$.
-The only other possibile kind of types that
-the function $e_1$ could be synthesized is polymorphic types $\all A$.
+The only other possibile kind of type that
+the function $e_1$ could be synthesized to is a polymorphic type $\all A$.
 In that case, we instantiate $A$ to $[\tau/a]A$ with a monotype $\tau$ (which is also guessed)
 according to Rule $\mathtt{Decl{\to}I{\To}}$.
 If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
@@ -210,7 +219,7 @@ if $[\tau/a]A$ is still polymorphic, Rule $\mathtt{Decl{\to}I{\To}}$ is recursiv
 Some of the declarative rules overlaps with each other.
 Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
 both match the conclusion $\Psi\vdash \all A \le \all B$.
-In such case, choose $\mathtt{{\le}\forall R}$ first is always better,
+In such case, choosing $\mathtt{{\le}\forall R}$ first is always better,
 since we introduce the type variable $a$ to the context earlier,
 which gives more flexibility on the choice of $\tau$.
 
@@ -267,7 +276,7 @@ and will successfully derive the judgment.
 %-------------------------------------------------------------------------------
 \subsection{DK's Algorithm}
 
-The DK algorithm revolves around their notion of \emph{algorithmic context}.
+DK's algorithm version revolves around their notion of \emph{algorithmic context}.
 \[
 \begin{array}{l@{\qquad}lcl}
 \text{Algorithmic Contexts}\qquad&\Gamma,\Delta,\Theta &::=&\quad \nil \mid
@@ -306,6 +315,7 @@ The inference task yields an output context $\Theta$ which is applied as a subst
 to the types $A$ and $B$ before performing the subtyping check to propagate any solutions
 of existential variables that appear in $A$ and $B$.
 
+\paragraph{Markers for scoping.}
 The sequential order of entries in the algoritmic context, in combination with
 the threading of contexts,  does not perfectly capture the scoping of all
 existential variables. For this reason the DK algorithm uses scope markers
@@ -350,17 +360,25 @@ Lemma 29 (Parallel Admissibility). See Appendix~\ref{} for a detailed explanatio
 and counterexample. This lemma is a cornerstone of the two metatheoretical results 
 of the algorithm, soundness and completeness with respect to the declarative system.
 In particular, both instantiation soundness (i.e. a part of subtyping
-soundness) and typing completeness both directly require the broken lemma.
+soundness) and typing completeness directly require the broken lemma.
 Moreover, Lemma 54 (Typing Extension) also requires the broken lemma and is
 itself used 13 times in the proof of typing soundness and completeness.
 Unfortunately, we have not yet found a way to fix this problem.
+\footnote{We found the issue with Lemma 29 in 2016 in an earlier attempt to mechanically
+  formalize DK's algorithm. The authors acknowledged the problem after we contacted them through email.
+  Although they briefly mentioned that it should be possible to use a weaker lemma instead they did
+  not go into details.
+}
+\bruno{We should acknowledge Ningning for finding this problem, but I think
+  this may be against the anonymous submission? Perhaps we do not mention her name
+in the submission, and if accepted we mention her?}
 \tom{You have communicated this to the authors and not received a fix, right?
      We could mention that too then.}
 
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 \paragraph{Complex Scoping and Propagation}
 
-Besides the problematic lemmas in the DK metatheory, there are other reasons to
+Besides the problematic lemmas in DK's metatheory, there are other reasons to
 look for an alternative algorithmic formulation of the type system that is more
 amenable to mechanisation. Indeed, two aspects that are particularly
 challenging to mechanise are the scoping of universal and existential type
