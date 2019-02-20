@@ -182,7 +182,6 @@ Rule $\mathtt{DeclAnno}$ synthesizes the annotated type $A$ of the annotated exp
 and checks that $e$ has type $A$.
 Checking an expression $e$ against a polymorphic type $\all A$ in the context $\Psi$ succeeds
 if $e$ checks against $A$ in the extended context $(\Psi, a)$.
-
 The subsumption rule $\mathtt{DeclSub}$ depends on the subtyping relation,
 and changes mode from checking to synthesis: if $e$ synthesizes type $A$ and $A\le B$
 ($A$ is more polymorphic than $B$), then $e$ checks against $B$.
@@ -190,8 +189,8 @@ If a checking problem does not match any other rules,
 this rule can be applied to synthesize a type instead and then
 check whether the synthesized type entails the checked type.
 
-The Lambda abstraction is the most complicated construct of the bidirectional
-type system. 
+Lambda abstractions are the hardest construct of the bidirectional
+type system to deal with. 
 Checking $\lam e$ against function type $A\to B$ is easy:
 we check the body $e$ against $B$ in the context extended with $x:A$.
 However, synthesizing a lambda-function is a lot less easy, and 
