@@ -411,7 +411,7 @@ To avoid the problem of incrementally applying a substitution to remaining
 tasks, we can find inspiration in the formulation of constraint solving
 algorithms. For instance, the well-known unification
 algorithm by \citet{unification} decomposes the problem of unifying two terms $s \stackrel{.}{=} t$ into a set
-of related unification problems between pairs of terms $s_i \stackrel{.}{=} t_i)$. These smaller
+of related unification problems between pairs of terms $s_i \stackrel{.}{=} t_i$. These smaller
 problems are not tackled independently, but kept together in a set $S$. 
 The algorithm itself is typically formulated as a small-step-style state
 transition system $S \rightarrowtail S'$ that rewrites the set of unification
@@ -497,11 +497,10 @@ substitute solutions into these copies.
 %-------------------------------------------------------------------------------
 \subsection{Single-Context Worklist Algorithm for Subtyping}
 
-In recent work~\cite{itp2018}, we have shown how to mechanise a variant of DK's
+In recent work, \citep{itp2018} have shown how to mechanise a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
 subtyping judgment. This approach overcomes the problem's in DK's formulation
 by using a \emph{worklist}-based judgement of the form $$\Gamma \vdash \Omega$$
-\jimmy{emphasize the form of judgment}
 where $\Omega$ is a worklist, i.e. a sequence, of subtyping problems of the
 form $A \leq B$.  The judgement is defined by case analysis on the first
 element of $\Omega$ and recursively processes the worklist until it is empty.
