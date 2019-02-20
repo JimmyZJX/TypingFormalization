@@ -160,48 +160,48 @@ predicative instantiation in their type system.
 Both systems are adopt by several practical programming languages.
 
 \paragraph{Declarative Typing}
-The bidirectional type system has three judgments shown in Figure~\ref{fig:decl:typing}.
-The checking judgment $\Psi\vdash e\Lto A$ checks $e$ against the type $A$ under the context $\Psi$.
-The synthesis judgment $\Psi\vdash e\To A$ means that we can infer the type of $e$ under the context $\Psi$.
-The application judgment $\Psi\vdash \appInf{A}{e}{C}$ means that if a function of type $A$
-(which could be a polymorphic one) is applied to the argument $e$, then the whole application
-synthesizes type $C$ as its return type.
+The bidirectional type system, shown in Figure~\ref{fig:decl:typing}, has three judgments.
+The checking judgment $\Psi\vdash e\Lto A$ checks expression $e$ against the type $A$ in the context $\Psi$.
+The synthesis judgment $\Psi\vdash e\To A$ synthesizes the type $A$ of expression $e$ in the context $\Psi$.
+The application judgment $\Psi\vdash \appInf{A}{e}{C}$ synthesizes the type $C$ of the application of a function of type $A$
+(which could be polymorphic) to the argument $e$.
 
-Some of the rules handles simple cases with common approaches.
-Rule $\mathtt{DeclVar}$ looks term variables up in the context.
-Rules $\mathtt{Decl1I}$ and $\mathtt{Decl1I{\To}}$ checks and synthesizes the unit type, respectively.
-Rule $\mathtt{DeclAnno}$ synthesizes the type of the annotated expression $(e:A)$
-to its annotated type $A$, and requires $e$ to be checked agains $A$.
-Checking an expression $e$ against a polymorphic type $\all A$ under the context $\Psi$ succeeds
-if $e$ checks against A under an extended context $(\Psi, a)$, where $a$ is picked as a free variable.
+Many rules are standard.
+Rule $\mathtt{DeclVar}$ looks up term variables in the context.
+Rules $\mathtt{Decl1I}$ and $\mathtt{Decl1I{\To}}$ respectively check and synthesize the unit type.
+Rule $\mathtt{DeclAnno}$ synthesizes the annotated type $A$ of the annotated expression $(e:A)$
+and checks that $e$ has type $A$.
+Checking an expression $e$ against a polymorphic type $\all A$ in the context $\Psi$ succeeds
+if $e$ checks against $A$ in the extended context $(\Psi, a)$.
 
 The subsumption rule $\mathtt{DeclSub}$ depends on the subtyping relation,
-and changes mode from checking to synthesis: if $e$ synthesizes $A$ and $A\le B$
-($A$ is more polymorphic than $B$), then $e$ can be checked against $B$.
+and changes mode from checking to synthesis: if $e$ synthesizes type $A$ and $A\le B$
+($A$ is more polymorphic than $B$), then $e$ checks against $B$.
 If a checking problem does not match any other rules,
-$\mathtt{DeclSub}$ can be applied and try to synthesize a type
-before checking whether the synthesized one is more general.
+this rule can be applied to synthesize a type instead and then
+check whether the synthesized type entails the checked type.
 
-Lambda-functions is a critical component of bidirectional type system, and they require much attention.
-Checking $\lam e$ against function type $A\to B$ is simple:
-we check the body $e$ against $B$ under the context extended with $x:A$.
-However, synthesizing a lambda-function is not easy in general,
-and this \emph{predicative} declarative system is able to
-synthesize to a suitable monotype $\sigma\to\tau$.
-In other words, if no type information is given for a lambda function,
-we will synthesize it to the best mono-typed function according to the context,
-which also requires some guessing similar to the subtyping rule $\mathtt{\forall L}$.
+The Lambda abstraction is the most complicated construct of the bidirectional
+type system. 
+Checking $\lam e$ against function type $A\to B$ is easy:
+we check the body $e$ against $B$ in the context extended with $x:A$.
+However, synthesizing a lambda-function is a lot less easy, and 
+this type system only synthesizes monotypes $\sigma\to\tau$.
+% and this \emph{predicative} declarative system is able to
+% synthesize to a suitable monotype $\sigma\to\tau$.
+% In other words, if no type information is given for a lambda function,
+% we will synthesize it to the best mono-typed function according to the context,
+% which also requires some guessing similar to the subtyping rule $\mathtt{\forall L}$.
 
 Application $(e_1~e_2)$ is handled by Rule $\mathtt{Decl{\to}E}$,
-which firstly synthesize type $A$ for the function $e_1$.
-If $A$ is a function type $B\to C$, Rule $\mathtt{Decl{\to}App}$ is applied,
-by checking the argument $e_2$ against $B$ and returns type $C$.
-The only other possibile kind of types that
-the function $e_1$ could be synthesized is polymorphic types $\all A$.
-In that case, we instantiate $A$ to $[\tau/a]A$ with a monotype $\tau$ (which is also guessed)
-according to Rule $\mathtt{Decl{\to}I{\To}}$.
+which first synthesizes the type $A$ of the function $e_1$.
+If $A$ is a function type $B\to C$, Rule $\mathtt{Decl{\to}App}$ is applied;
+it checks the argument $e_2$ against $B$ and returns type $C$.
+The synthesized type of function $e_1$ can also be polymorphic, of the form $\all A$.
+In that case, we instantiate $A$ to $[\tau/a]A$ with a monotype $\tau$ % (which is also guessed)
+using according to Rule $\mathtt{Decl{\to}I{\To}}$.
 If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
-if $[\tau/a]A$ is still polymorphic, Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
+if $[\tau/a]A$ has another universal quantifier, Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
 
 \jimmy{Possibly some discussions about the typing rules}
 
