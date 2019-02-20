@@ -9,7 +9,7 @@ time in allowing type-inference to proceed without any type
 annotation. The traditional Hindley-Milner type system supports
 top-level \emph{implicit (parametric) polymorphism}~\cite{reynolds1983types}. With implicit
 polymorphism, type arguments of polymorphic functions are
-automatically instantiated. Thus implicit polymorphism and the absense of
+automatically instantiated. Thus implicit polymorphism and the absence of
 type annotations mean that the Hindley-Milner type system 
 strikes a great balance between expressive power and usability. 
 
@@ -52,8 +52,9 @@ type inference algorithms preserve many of the desirable properties
 of Hindley-Milner. For example the applications of \verb|f| implicitly 
 instantiate the polymorphic type arguments of \verb|f|.
 
-Although type inference is important in practice and also in
-academic research, there is little work in mechanically formalizing
+Although type inference is important in practice and receives a lot of
+attention in
+academic research, there is little work on mechanically formalizing
 such advanced forms of type inference in theorem provers.
 The remarkable exception is some work done on the formalization of 
 certain parts of Hindley-Milner type inference~\cite{naraschewski1999type,
@@ -142,7 +143,7 @@ Due to those two challenges, our work takes a different approach by refining and
 extending the idea of \emph{worklists judgments}~\cite{itp2018},
 proposed recently to mechanically formalize an algorithm for
 \emph{polymorphic subtyping}. A key innovation in our work is how
-to adapt the idea or worklist judgments with
+to adapt the idea of worklist judgments to
 \emph{inference judgements}, which are not needed for polymorphic subtyping.
 In our work we show how worklist
 judgements can be extended to deal with the inference judgements that
@@ -181,7 +182,7 @@ In summary, the contributions of this paper are:
   use a continuation passing style to enable the transfer of inferred information across
   judgements. 
 
-\item {\bf Unified judgment worklists and contexts:} Another technical contribution is the unification
+\item {\bf Unification of judgment worklists and contexts:} Another technical contribution is the unification
   between ordered contexts and judgement worklists. This enables precise scope tracking
   of variables in judgements, and avoids the duplication of context information across
   judgments in worklists.
