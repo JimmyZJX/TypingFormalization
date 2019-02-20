@@ -24,7 +24,6 @@
 The syntax of this declarative system is shown in Figure~\ref{fig:decl:syntax}.
 A declarative type $A$ is either the unit type $1$, a type variable $a$,
 a universal quantification $\forall a. A$ or a function type $A \to B$.
-
 Nested universal quantifiers are allowed for types,
 but monotypes $\tau$ do not have any universal quantifier.
 Terms include a unit term $()$, variables $x$, lambda-functions $\lam e$,
@@ -75,9 +74,11 @@ Declarative Subtyping}\label{fig:decl:sub}
 \end{figure}
 
 \begin{figure}[t]
-\centering \framebox{$\Psi \vdash A \Lto B$} $e$ checks against input type $A$.\\
-\centering \framebox{$\Psi \vdash A \To B$} $e$ synthesizes output type $A$.\\
-\centering \framebox{$\Psi \vdash \appInf{A}{e}{C}$} Applying a function of type $A$ to $e$ synthesizes type $C$.
+\begin{tabular}{rl}
+    \framebox{$\Psi \vdash A \Lto B$} & $e$ checks against input type $A$.\\[0.5mm]
+    \framebox{$\Psi \vdash A \To B$} & $e$ synthesizes output type $A$.\\[0.5mm]
+    \framebox{$\Psi \vdash \appInf{A}{e}{C}$} & Applying a function of type $A$ to $e$ synthesizes type $C$.
+\end{tabular}
 \begin{gather*}
 \inferrule*[right=$\mathtt{DeclVar}$]
     {(x:A)\in\Psi}{\Psi\vdash x\To A}
@@ -159,10 +160,53 @@ predicative instantiation in their type system.
 Both systems are adopt by several practical programming languages.
 
 \paragraph{Declarative Typing}
-\jimmy{TODO decl. typing description}
+The bidirectional type system has three judgments shown in Figure~\ref{fig:decl:typing}.
+The checking judgment $\Psi\vdash e\Lto A$ checks $e$ against the type $A$ under the context $\Psi$.
+The synthesis judgment $\Psi\vdash e\To A$ means that we can infer the type of $e$ under the context $\Psi$.
+The application judgment $\Psi\vdash \appInf{A}{e}{C}$ means that if a function of type $A$
+(which could be a polymorphic one) is applied to the argument $e$, then the whole application
+synthesizes type $C$ as its return type.
+
+Some of the rules handles simple cases with common approaches.
+Rule $\mathtt{DeclVar}$ looks term variables up in the context.
+Rules $\mathtt{Decl1I}$ and $\mathtt{Decl1I{\To}}$ checks and synthesizes the unit type, respectively.
+Rule $\mathtt{DeclAnno}$ synthesizes the type of the annotated expression $(e:A)$
+to its annotated type $A$, and requires $e$ to be checked agains $A$.
+Checking an expression $e$ against a polymorphic type $\all A$ under the context $\Psi$ succeeds
+if $e$ checks against A under an extended context $(\Psi, a)$, where $a$ is picked as a free variable.
+
+The subsumption rule $\mathtt{DeclSub}$ depends on the subtyping relation,
+and changes mode from checking to synthesis: if $e$ synthesizes $A$ and $A\le B$
+($A$ is more polymorphic than $B$), then $e$ can be checked against $B$.
+If a checking problem does not match any other rules,
+$\mathtt{DeclSub}$ can be applied and try to synthesize a type
+before checking whether the synthesized one is more general.
+
+Lambda-functions is a critical component of bidirectional type system, and they require much attention.
+Checking $\lam e$ against function type $A\to B$ is simple:
+we check the body $e$ against $B$ under the context extended with $x:A$.
+However, synthesizing a lambda-function is not easy in general,
+and this \emph{predicative} declarative system is able to
+synthesize to a suitable monotype $\sigma\to\tau$.
+In other words, if no type information is given for a lambda function,
+we will synthesize it to the best mono-typed function according to the context,
+which also requires some guessing similar to the subtyping rule $\mathtt{\forall L}$.
+
+Application $(e_1~e_2)$ is handled by Rule $\mathtt{Decl{\to}E}$,
+which firstly synthesize type $A$ for the function $e_1$.
+If $A$ is a function type $B\to C$, Rule $\mathtt{Decl{\to}App}$ is applied,
+by checking the argument $e_2$ against $B$ and returns type $C$.
+The only other possibile kind of types that
+the function $e_1$ could be synthesized is polymorphic types $\all A$.
+In that case, we instantiate $A$ to $[\tau/a]A$ with a monotype $\tau$ (which is also guessed)
+according to Rule $\mathtt{Decl{\to}I{\To}}$.
+If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
+if $[\tau/a]A$ is still polymorphic, Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
+
+\jimmy{Possibly some discussions about the typing rules}
 
 \paragraph{Overlapping Rules}
-\jimmy{Move to the Alg. Section}
+\jimmy{Mention the resolution of overlapping briefly, and then point to algorithm and metatheory}
 Some of the declarative rules overlaps with each other.
 Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
 both match the conclusion $\Psi\vdash \all A \le \all B$.
@@ -183,7 +227,7 @@ $$
 		{\Psi,a,x:a \vdash x \Lto a}
 		{\Psi,a \vdash \lam x \Lto a \to a}
 	}
-	{\Psi\vdash \lam x \Lto \forall a \to a}
+	{\Psi\vdash \lam x \Lto \all a \to a}
 $$
 $$
 \inferrule*[right={$\mathtt{DeclSub}$}]
@@ -203,7 +247,7 @@ $$
 			}
 			{\Psi\vdash \blue\sigma\to \blue\tau\le \all a \to a}
 	}
-{\Psi\vdash \lam x \Lto \forall a \to a}
+{\Psi\vdash \lam x \Lto \all a \to a}
 $$
 
 Rule $\mathtt{Decl\to I}$ is also better at handling higher-order types.
