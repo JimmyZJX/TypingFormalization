@@ -102,7 +102,7 @@ Declarative Subtyping}\label{fig:decl:sub}
 \inferrule*[right=$\mathtt{Decl1I}$]
     {~}{\Psi\vdash () \Lto 1}
 \qquad
-\inferrule*[right=$\mathtt{Decl1I\To}$]
+\inferrule*[right=$\mathtt{Decl1I{\To}}$]
     {~}{\Psi\vdash () \To 1}
 \\
 \inferrule*[right=$\mathtt{Decl\forall I}$]
@@ -113,19 +113,19 @@ Declarative Subtyping}\label{fig:decl:sub}
     {\Psi \vdash \tau \quad \Psi\vdash \appInf{[\tau/a]A}{e}{C} }
     {\Psi\vdash \appInf{\all A}{e}{C}}
 \\
-\inferrule*[right=$\mathtt{Decl\to I}$]
+\inferrule*[right=$\mathtt{Decl{\to}I}$]
     {\Psi,x:A \vdash e\Lto B}
     {\Psi\vdash \lam e \Lto A \to B}
 \qquad
-\inferrule*[right=$\mathtt{Decl\to I\To}$]
+\inferrule*[right=$\mathtt{Decl{\to}I{\To}}$]
     {\Psi\vdash \sigma\to\tau \quad \Psi,x:\sigma \vdash e\Lto \tau}
     {\Psi\vdash \lam e \To \sigma\to\tau}
 \\
-\inferrule*[right=$\mathtt{Decl\to E}$]
+\inferrule*[right=$\mathtt{Decl{\to} E}$]
     {\Psi\vdash e_1\To A \quad \Psi\vdash \appInf{A}{e_2}{C}}
     {\Psi\vdash e_1~e_2 \To C}
 \qquad
-\inferrule*[right=$\mathtt{Decl\to App}$]
+\inferrule*[right=$\mathtt{Decl{\to}App}$]
     {\Psi\vdash e \Lto A}
     {\Psi\vdash \appInf{A \to C}{e}{C}}
 \end{gather*}
@@ -268,7 +268,7 @@ Rule $\mathtt{Decl\to I}$ keeps the polymorphic argument type $\all a\to a$,
 and will successfully derive the judgment.
 
 %-------------------------------------------------------------------------------
-\subsection{DK's Algorithm}
+\subsection{DK's Algorithm}\label{ssec:DK_Algorithm}
 
 DK's algorithm version revolves around their notion of \emph{algorithmic context}.
 \[
@@ -323,8 +323,19 @@ rule:
 To indicate that the scope of $\hat{\alpha}$ is local to the subtyping check
 $[\hat{\alpha}/a]A \le B$, the marker is pushed onto its input stack and popped
 from the output stack together with the subsequent part $\Theta$, which may
-refer to $\hat{\alpha}$. (Remember that later entries may refer to earlier
+refer to $\hat{\alpha}$. \jimmy{which may contain definition/solution of $\al$ and references to $\al$}
+(Remember that later entries may refer to earlier
 ones, but not vice versa.) This way $\hat{\alpha}$ does not escape its scope.
+
+\jimmy{Do we talk about scoping control without markers as well here?\\
+e.g. $\forall I$ ($e \Lto \all A$) or $\le\forall R$ ($A \le \all B$)\\
+Text about garbage refers to this point!}
+
+Due to the complicated scoping control method,
+it is hard to argue the preciseness of scoping for each variable when designing algorithms.
+We found a scoping issue related to the subsumption rule,
+which might cause existential variable leakage across judgments.
+A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
 
 
 At first sight, the DK algorithm would seem a good basis for mechanisation. After
@@ -543,8 +554,6 @@ of the variable scopes in the usual, natural way: each variables is in scope of
 anything in front of it in the worklist. If there is nothing in front, the
 variable is no longer needed and can be popped from the worklist. This way, no
 garbage builds up.
-
-\jimmy{Compare with DK's algo: subsumption rule might cause leak}
 
 \paragraph{Inference Judgements}
 To express the DK inference judgements, we use a novel form of work entries in

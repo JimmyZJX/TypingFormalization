@@ -5,7 +5,54 @@
 \subsection{Implementation}
 Anything to say about the implementation? Do we have one?
 
-\subsection{Making DK's scoping more precise}
+\subsection{Making DK's scoping more precise}\label{sec:discussion:scoping}
+
+DK's algorithm deals with garbage variables in a different approach,
+as discussed in Section~\ref{ssec:DK_Algorithm},
+through type variables or existential variable markers.
+However, there is still a chance that
+unused existential variables leak to output context and accumulate infinitely.
+For example, the derivation of the judgment $(\lam x)~() \Lto 1$ is as follows
+$$
+\inferrule*
+{
+    \inferrule*
+    {
+        \inferrule*
+        {
+            \inferrule*
+            {\ldots x \To \al \ldots \\ \ldots \al \le \bt \ldots}
+            {\Gm, \al, \bt, x:\al \vdash x \Lto \bt \dashv \Gm_1, x:\al}
+        }
+        {\Gm \vdash \lam x \To \al \to \bt \dashv \Gm_1}
+        \\
+        \inferrule*
+        {\ldots () \Lto \al \ldots}
+        {\Gm_1 \vdash \appInf{\al \to \al}{()}{\al} \dashv \Gm_2}
+    }
+    {\Gm \vdash (\lam x)~() \To \al \dashv \Gm_2}
+    \\
+    \inferrule*
+    {~}
+    {\Gm_2 \vdash 1 \le 1 \dashv \Gm_2}
+}
+{\Gm \vdash (\lam x)~() \Lto 1 \dashv \Gm, \al = 1, \bt = \al}
+$$
+where $\Gm_1 := (\Gm, \al, \bt = \al$) solves $\bt$,
+and $\Gm_2 := (\Gm, \al = 1, \bt = \al$) solves both $\al$ and $\bt$.
+
+If the reader is not familiar with DK's algorithm,
+he/she might be confused about the inconsistency across judgment.
+As an example, $(\lam x)~()$ synthesizes $\al$,
+but the second premise of the subsumption rule uses $1$ for the result.
+This is because a context application $[\Gm,\al=1,\bt=\al]\al = 1$ happens between the premises.
+
+The existential variables $\al$ and $\bt$ are clearly not used after the subsumption rule,
+but according to the algorithm, they are kept in the context
+until some parent judgment recycles a block of variables,
+or to the very end of a type inference task.
+In that sense, DK's algorithm does not control the scoping of variables precisely enough.
+However, it is a minor issue that does not affect the soundness and completeness properties.
 
 \subsection{Scoped type variables}
 
