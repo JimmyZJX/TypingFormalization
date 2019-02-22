@@ -206,8 +206,6 @@ using according to Rule $\mathtt{Decl{\to}I{\To}}$.
 If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
 if $[\tau/a]A$ has another universal quantifier, Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
 
-\jimmy{Possibly some discussions about the typing rules}
-
 \paragraph{Overlapping Rules}
 \jimmy{Mention the resolution of overlapping briefly, and then point to algorithm and metatheory}
 Some of the declarative rules overlaps with each other.
@@ -274,16 +272,16 @@ DK's algorithm version revolves around their notion of \emph{algorithmic context
 \[
 \begin{array}{l@{\qquad}lcl}
 \text{Algorithmic Contexts}\qquad&\Gamma,\Delta,\Theta &::=&\quad \nil \mid
-\Gamma, a \mid \Gamma, \hat{\alpha} \mid \Gamma, \hat{\alpha} = \tau \mid
-\Gamma, \blacktriangleright_{\hat{\alpha}}
+\Gamma, a \mid \Gamma, \al \mid \Gamma, \al = \tau \mid
+\Gamma, \blacktriangleright_{\al}
 \end{array}
 \]
 In addition to the regular (universally quantified) type variables $a$, the
 algorithmic context also contains \emph{existential} type variables
-$\hat{\alpha}$. These are placeholders for monotypes $\tau$ that are still to
+$\al$. These are placeholders for monotypes $\tau$ that are still to
 be determined by the inference algorithm. When the existential variable is
 ``solved'', its entry in the context is replaced by the assignment
-$\hat{\alpha} = \tau$. With the notation $[\Gamma]$ an algorithmic context
+$\al = \tau$. With the notation $[\Gamma]$ an algorithmic context
 $\Gamma$ denotes the substitution that replaces all its solved existential type
 variables with their solution.
 
@@ -313,27 +311,31 @@ of existential variables that appear in $A$ and $B$.
 The sequential order of entries in the algoritmic context, in combination with
 the threading of contexts,  does not perfectly capture the scoping of all
 existential variables. For this reason the DK algorithm uses scope markers
-$\blacktriangleright_{\hat{\alpha}}$ in a few places. An example is given in the following
+$\blacktriangleright_{\al}$ in a few places. An example is given in the following
 rule:
 \[
 \inferrule*
-  {\Gamma,\blacktriangleright_{\hat{\alpha}}, \hat{\alpha} \vdash [\hat{\alpha}/a]A \le B \dashv \Delta,\blacktriangleright_{\hat{\alpha}},\Theta}
+  {\Gamma,\blacktriangleright_{\al}, \al \vdash [\al/a]A \le B \dashv \Delta,\blacktriangleright_{\al},\Theta}
   {\Gamma \vdash \forall a. A \le B \dashv \Delta}
 \]
-To indicate that the scope of $\hat{\alpha}$ is local to the subtyping check
-$[\hat{\alpha}/a]A \le B$, the marker is pushed onto its input stack and popped
+To indicate that the scope of $\al$ is local to the subtyping check
+$[\al/a]A \le B$, the marker is pushed onto its input stack and popped
 from the output stack together with the subsequent part $\Theta$, which may
-refer to $\hat{\alpha}$. \jimmy{which may contain definition/solution of $\al$ and references to $\al$}
+refer to $\al$. \jimmy{which may contain definition/solution of $\al$ and references to $\al$}
 (Remember that later entries may refer to earlier
-ones, but not vice versa.) This way $\hat{\alpha}$ does not escape its scope.
+ones, but not vice versa.) This way $\al$ does not escape its scope.
 
-\jimmy{Do we talk about scoping control without markers as well here?\\
-e.g. $\forall I$ ($e \Lto \all A$) or $\le\forall R$ ($A \le \all B$)\\
-Text about garbage refers to this point!}
+A type variable may have a similar functionality to the scoping markers.
+An example rule that checks an expression against a polymorphic type is as follows:
+$$
+\inferrule*
+{\Gm, a \vdash e \Lto A \dashv \Delta, a, \Theta}
+{\Gm \vdash e \Lto \all A \dashv \Delta}
+$$
 
-Due to the complicated scoping control method,
+Due to the complication of its scoping control method,
 it is hard to argue the preciseness of scoping for each variable when designing algorithms.
-We found a scoping issue related to the subsumption rule,
+Actually we found a scoping issue related to the subsumption rule,
 which might cause existential variable leakage across judgments.
 A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
 

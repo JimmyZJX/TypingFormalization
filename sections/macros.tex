@@ -6,11 +6,11 @@
 
 \newcommand\wh{\widehat}
 
-\newcommand\jg{\omega} % judgment
+\newcommand\jg{\omega}                                 % judgment
 \newcommand\toto{\rightrightarrows}
-\newcommand\To{\Rightarrow}
-\newcommand\Lto{\Leftarrow}
-\newcommand\TTo{\mathrel{\mathrlap{\To}\mkern1mu\To}}
+\newcommand\To{\Rightarrow}                            % =>
+\newcommand\Lto{\Leftarrow}                            % <=
+\newcommand\TTo{\mathrel{\mathrlap{\To}\mkern1mu\To}}  % =>>
 \newcommand\sto{\rightsquigarrow}
 \newcommand\tto{\rightarrowtail}
 
@@ -22,8 +22,8 @@
 % just to fool TexStudio
 \providecommand\inferrule{}
 
-\newcommand\rto{\longrightarrow}
-\newcommand\redto{\longrightarrow^*}
+\newcommand\rto{\longrightarrow}                % "reduce to" arrow ---`
+\newcommand\redto{\longrightarrow^*}            % ---`*
 \newcommand\rrule[1]{~\longrightarrow_{\makebox[0pt][l]{$\scriptstyle#1$}\hphantom{00}}}
 
 \newcommand\jExt{\rightharpoonup}
@@ -31,10 +31,10 @@
 \newcommand{\tRed}[1]{\textcolor{red}{#1}}
 
 \newcommand{\lam}{} %[2]{\lambda {#1}.~{#2}}
-\RenewDocumentCommand \lam {O{x} m} {\lambda {#1}.~{#2}}
+\RenewDocumentCommand \lam {O{x} m} {\lambda {#1}.~{#2}}  % \lambda x.~e --- x is optional. \lam[x]{e}
 
 \newcommand{\all}{} %[2]{\forall {#1}.~{#2}}
-\RenewDocumentCommand \all {O{a} m} {\forall {#1}.~{#2}}
+\RenewDocumentCommand \all {O{a} m} {\forall {#1}.~{#2}}  % \forall a.~A --- a is optional. \all[a]{A}
 
 \newcommand{\appInf}[3]{{#1}\bullet{#2}\TTo{#3}}
 \newcommand{\appInfAlg}{} %[4]{{#1}\bullet{#2}\TTo_{#3} {#4}}
@@ -43,8 +43,8 @@
 \newcommand\al{}
 \newcommand\bt{}
 
-\RenewDocumentCommand \al {O{}} {\wh\alpha_{#1}}
-\RenewDocumentCommand \bt {O{}} {\wh\beta_{#1}}
+\RenewDocumentCommand \al {O{}} {\wh\alpha_{#1}}   % \widehat{\alpha} --- subscript is optional \al[1]
+\RenewDocumentCommand \bt {O{}} {\wh\beta_{#1}}    % \widehat{\beta}
 
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 

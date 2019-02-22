@@ -42,7 +42,7 @@ where $\Gm_1 := (\Gm, \al, \bt = \al$) solves $\bt$,
 and $\Gm_2 := (\Gm, \al = 1, \bt = \al$) solves both $\al$ and $\bt$.
 
 If the reader is not familiar with DK's algorithm,
-he/she might be confused about the inconsistency across judgment.
+he/she might be confused about the inconsistent types across judgment.
 As an example, $(\lam x)~()$ synthesizes $\al$,
 but the second premise of the subsumption rule uses $1$ for the result.
 This is because a context application $[\Gm,\al=1,\bt=\al]\al = 1$ happens between the premises.
@@ -52,7 +52,9 @@ but according to the algorithm, they are kept in the context
 until some parent judgment recycles a block of variables,
 or to the very end of a type inference task.
 In that sense, DK's algorithm does not control the scoping of variables precisely enough.
-However, it is a minor issue that does not affect the soundness and completeness properties.
+%However, it is a minor issue that does not affect the soundness and completeness properties.
+
+
 
 \subsection{Scoped type variables}
 
