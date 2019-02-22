@@ -1,3 +1,23 @@
 \section{Related Work}
 
+\paragraph{Polymorphic Type Inference Algorithms}
+Higher-order polymorphism is a convenient and practical feature of programming language.
+Since full type-inference for System F is undecidable~\cite{wells1999typability},
+various decidable partial type-inference algorithms were developed.
+The declarative system of this paper, proposed by DK, is a \emph{predicative} one,
+where $\forall$'s only instantiate to mono-types.
+The mono-type restriction on instantiation is considered reasonable and practical for most programs,
+except for those that require sophisticated form of higher-order polymorphism.
+In those cases, the bidirectional system accepts guidance through type annotations,
+which also improves readability of the program and is typically not considered as a burden.
+
+Impredicative System F allows instantiation with polymorphic types,
+but unfortunately its subtyping system is already undecidable~\cite{tiuryn1996subtyping}.
+Works on partial impredicative type-inference algorithms\cite{le2003ml,leijen2008hmf,vytiniotis2008fph}
+navigate a variety of design tradeoffs for a decidable algorithm.
+As a result, such algorithms tend to be more complicated, and thus less adopted in practise.
+
+\jimmy{Guarded Impredicative}
+
+\jimmy{Dunfield's new work}
 
