@@ -557,6 +557,13 @@ addresses the open problems.
 done for inference judgements. Actually chains needs some careful
 explanation, I think since they are the hardest to get aspect of the formalization.}
 
+\jimmy{Some high level description for the structure}
+A worklist is structurally a stack with its top element to the right.
+$$\begin{aligned}
+\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
+\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
+\end{aligned}$$
+
 \paragraph{Scope Tracking}
 Firstly, we avoid scoping garbage by blending the ordered context and the
 worklist into a single syntactic sort $\Gamma$, our algorithmic worklist. This
@@ -566,6 +573,19 @@ of the variable scopes in the usual, natural way: each variables is in scope of
 anything in front of it in the worklist. If there is nothing in front, the
 variable is no longer needed and can be popped from the worklist. This way, no
 garbage builds up.
+
+For example, the top judgment of the following worklist
+checks the identity function against $\all a \to a$:
+$$\Gm \Vdash \lam x \Lto \all a \to a$$
+Then, two auxiliary variables $a$ and $x$ are introduced to help the type checking:
+$$\Gm, a, x:a \Vdash x \Lto a$$
+which will be satisfied after several steps, and the worklist becomes
+$$\Gm, a, x:a$$
+Since the variable declarations $a, x:a$ are only used for a judgment already processed,
+they can be safely removed, leaving the remaining worklist $\Gm$ to be further reduced.
+
+% $$\Gm \Vdash \all a \to a \le \all a \to a$$
+% $$\Gm, a, \al \Vdash \al \to \al \le a \to a$$
 
 \paragraph{Inference Judgements}
 To express the DK inference judgements, we use a novel form of work entries in
@@ -579,7 +599,6 @@ in the chain $\omega$ by subsituting it for the placeholder type variable $a$.
 
 Take the following worklist as an example
 $$\al \Vdash \blue{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \blue{\al \le \bt} \Vdash \blue{\bt \le 1}$$
-A worklist is structurally a stack with its top element to the right.
 There are three (blue-colored) judgment chains in the worklist,
 where the first and second judgment chains are two subtyping judgments,
 and the third judgment chain, $(\lam x)~() \To_a a \le \al$,
