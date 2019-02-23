@@ -557,13 +557,6 @@ addresses the open problems.
 done for inference judgements. Actually chains needs some careful
 explanation, I think since they are the hardest to get aspect of the formalization.}
 
-\jimmy{Some high level description for the structure}
-A worklist is structurally a stack with its top element to the right.
-$$\begin{aligned}
-\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
-\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
-\end{aligned}$$
-
 \paragraph{Scope Tracking}
 Firstly, we avoid scoping garbage by blending the ordered context and the
 worklist into a single syntactic sort $\Gamma$, our algorithmic worklist. This
@@ -574,15 +567,29 @@ anything in front of it in the worklist. If there is nothing in front, the
 variable is no longer needed and can be popped from the worklist. This way, no
 garbage builds up.
 
+$$\begin{aligned}
+\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
+\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
+\end{aligned}$$
+
 For example, the top judgment of the following worklist
 checks the identity function against $\all a \to a$:
 $$\Gm \Vdash \lam x \Lto \all a \to a$$
-Then, two auxiliary variables $a$ and $x$ are introduced to help the type checking:
+To proceed, two auxiliary variables $a$ and $x$ are introduced to help the type checking:
 $$\Gm, a, x:a \Vdash x \Lto a$$
 which will be satisfied after several steps, and the worklist becomes
 $$\Gm, a, x:a$$
 Since the variable declarations $a, x:a$ are only used for a judgment already processed,
 they can be safely removed, leaving the remaining worklist $\Gm$ to be further reduced.
+
+Our worklist can be seen as an all-in-one stack,
+containing variable declarations and subtyping/typing judgments.
+The stack is a enriched form of ordered context,
+and it has a similar variable scoping scheme.
+The well-formedness condition, shown in Figure~\ref{fig:alg:syntax},
+states that every variable must be declared prior to it usage.
+Therefore, if any variable declaration is the top element,
+then no usage should appear in the rest of the worklist, so it can be removed.
 
 % $$\Gm \Vdash \all a \to a \le \all a \to a$$
 % $$\Gm, a, \al \Vdash \al \to \al \le a \to a$$
@@ -617,7 +624,8 @@ as a basic property of an ordered context
 (Figure~\ref{fig:alg:syntax} shows its well-formedness criteria),
 we remove all declarations before the first judgment chain to collect unused variables.
 As a result all garbage variables are collected
-once the judgment chains refering to them are processed.
+once the judgment chains refering to them are processed,
+just as what we have mentioned above about the scope tracking.
 
 After that, we proceed the last judgment chain from the left,
 namely an inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
