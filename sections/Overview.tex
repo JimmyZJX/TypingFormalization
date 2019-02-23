@@ -446,7 +446,8 @@ $\Delta$ contains all the typings of meta-variables in the constraint set
 $\mathcal{K}$. The latter consists of constraints like $\Psi \vdash M = N : C$
 that are equipped with their individual context $\Psi$. While acurrately tracking
 the scoping of regular and meta-variables, this approach is not ideal because it
-repeatedly copies contexts when decomposing a unification problem, and later has to 
+repeatedly copies contexts when decomposing a unification problem, and
+later it has to 
 substitute solutions into these copies.
 
 % %-------------------------------------------------------------------------------
@@ -510,7 +511,7 @@ substitute solutions into these copies.
 %-------------------------------------------------------------------------------
 \subsection{Single-Context Worklist Algorithm for Subtyping}
 
-In recent work, \citep{itp2018} have shown how to mechanise a variant of DK's
+In recent work, \citet{itp2018} have shown how to mechanise a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
 subtyping judgment. This approach overcomes the problem's in DK's formulation
 by using a \emph{worklist}-based judgement of the form $$\Gamma \vdash \Omega$$
@@ -546,6 +547,15 @@ instantiations from one typing problem to another, but also an inferred type.
 
 Our new algorithmic type system addresses builds on the work above, but
 addresses the open problems. 
+\bruno{I think this section needs more detail here. The textual
+  description alone does not convey much about the key ideas of the
+  approach. I suggest showing the forms of the judgements and maybe
+  illustrating with some examples why the blend between ordered
+  contexts and worklists leads to precise scope traking. This can be
+  done just by illustrating a concrete instance of an algorithmic
+  context (no derivation is actually needed). Similar things should be
+done for inference judgements. Actually chains needs some careful
+explanation, I think since they are the hardest to get aspect of the formalization.}
 
 \paragraph{Scope Tracking}
 Firstly, we avoid scoping garbage by blending the ordered context and the
