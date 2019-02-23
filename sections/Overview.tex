@@ -546,33 +546,24 @@ instantiations from one typing problem to another, but also an inferred type.
 \subsection{Algorithmic Type Inference for Higher-Ranked Types: Key Ideas}
 
 Our new algorithmic type system addresses builds on the work above, but
-addresses the open problems. 
-\bruno{I think this section needs more detail here. The textual
-  description alone does not convey much about the key ideas of the
-  approach. I suggest showing the forms of the judgements and maybe
-  illustrating with some examples why the blend between ordered
-  contexts and worklists leads to precise scope traking. This can be
-  done just by illustrating a concrete instance of an algorithmic
-  context (no derivation is actually needed). Similar things should be
-done for inference judgements. Actually chains needs some careful
-explanation, I think since they are the hardest to get aspect of the formalization.}
+addresses the open problems.
 
 \paragraph{Scope Tracking}
-Firstly, we avoid scoping garbage by blending the ordered context and the
+We avoid scoping garbage by blending the ordered context and the
 worklist into a single syntactic sort $\Gamma$, our algorithmic worklist. This
 algorithmic worklist interleaves (type and term) variables with \emph{work}
 like checking or inferring types of expressions. The interleaving keeps track
-of the variable scopes in the usual, natural way: each variables is in scope of
+of the variable scopes in the usual, natural way: each variable is in scope of
 anything in front of it in the worklist. If there is nothing in front, the
 variable is no longer needed and can be popped from the worklist. This way, no
-garbage builds up.
+garbage (i.e. variables out-of-scope) builds up.
 
 $$\begin{aligned}
 \text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
 \text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
 \end{aligned}$$
 
-For example, the top judgment of the following worklist
+For example, suppose that the top judgment of the following worklist
 checks the identity function against $\all a \to a$:
 $$\Gm \Vdash \lam x \Lto \all a \to a$$
 To proceed, two auxiliary variables $a$ and $x$ are introduced to help the type checking:
@@ -584,25 +575,26 @@ they can be safely removed, leaving the remaining worklist $\Gm$ to be further r
 
 Our worklist can be seen as an all-in-one stack,
 containing variable declarations and subtyping/typing judgments.
-The stack is a enriched form of ordered context,
+The stack is an enriched form of ordered context,
 and it has a similar variable scoping scheme.
-The well-formedness condition, shown in Figure~\ref{fig:alg:syntax},
-states that every variable must be declared prior to it usage.
-Therefore, if any variable declaration is the top element,
-then no usage should appear in the rest of the worklist, so it can be removed.
+%The well-formedness condition, shown in Figure~\ref{fig:alg:syntax},
+%states that every variable must be declared prior to it usage.
+%Therefore, if any variable declaration is the top element,
+%then no usage should appear in the rest of the worklist, so it can be removed.
 
 % $$\Gm \Vdash \all a \to a \le \all a \to a$$
 % $$\Gm, a, \al \Vdash \al \to \al \le a \to a$$
 
 \paragraph{Inference Judgements}
-To express the DK inference judgements, we use a novel form of work entries in
+To express the DK's inference judgements, we use a novel form of work entries in
 the worklist: our algorithmic judgement chains $\omega$. In its simplest form,
 such a judgement chain is just a check, like a subtyping check $A \leq B$ or a
-term typecheck $e \Leftarrow A$.  The non-trivial forms of chains capture an
+term typecheck $e \Leftarrow A$. 
+However, the non-trivial forms of chains capture an
 inference task together with the the work that depends on its outcome. For
 instance, a type inference task takes the form $e \Rightarrow_a \omega$. It
-denotes that we need to infer the type, say $A$, of expression $e$ and use it
-in the chain $\omega$ by subsituting it for the placeholder type variable $a$.
+denotes that we need to infer the type, say $A$, for expression $e$ and use it
+in the chain $\omega$ by substituting it for the placeholder type variable $a$.
 
 Take the following worklist as an example
 $$\al \Vdash \blue{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \blue{\al \le \bt} \Vdash \blue{\bt \le 1}$$
@@ -611,7 +603,7 @@ where the first and second judgment chains are two subtyping judgments,
 and the third judgment chain, $(\lam x)~() \To_a a \le \al$,
 is a sequence of an inference judgment followed by a subtyping judgment.
 
-The algorithm first analyse the two subtyping judgments and
+The algorithm first analyses the two subtyping judgments and
 will find the best solutions $\al = \bt = 1$
 (please refer to Figure~\ref{fig:alg} for detailed derivations).
 Then we substitute every instance of $\al$ and $\bt$ to $1$,
@@ -619,15 +611,14 @@ so the variable declarations can be safely removed from the worklist.
 Now we reduce the worklist to the following state
 $$\nil \Vdash \blue{(\lam x)~() \To_a a \le 1}, x:1$$
 which has a term variable declaration as the top element.
-Because no judgments before the declaration refer to $x$,
-as a basic property of an ordered context
-(Figure~\ref{fig:alg:syntax} shows its well-formedness criteria),
-we remove all declarations before the first judgment chain to collect unused variables.
-As a result all garbage variables are collected
-once the judgment chains refering to them are processed,
-just as what we have mentioned above about the scope tracking.
-
-After that, we proceed the last judgment chain from the left,
+%Because no judgments before the declaration refer to $x$,
+%as a basic property of an ordered context
+%(Figure~\ref{fig:alg:syntax} shows its well-formedness criteria),
+%we remove all declarations before the first judgment chain to collect unused variables.
+%As a result all garbage variables are collected
+%once the judgment chains refering to them are processed,
+%just as what we have mentioned above about the scope tracking.
+After removing the garbage term variable declaration from the worklist, we process the last judgment chain from the left,
 namely an inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
 Finally the last judgment becomes $1 \le 1$, and is satisfied as a base case.
 
