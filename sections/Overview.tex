@@ -577,6 +577,33 @@ instance, a type inference task takes the form $e \Rightarrow_a \omega$. It
 denotes that we need to infer the type, say $A$, of expression $e$ and use it
 in the chain $\omega$ by subsituting it for the placeholder type variable $a$.
 
+Take the following worklist as an example
+$$\al \Vdash \blue{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \blue{\al \le \bt} \Vdash \blue{\bt \le 1}$$
+A worklist is structurally a stack with its top element to the right.
+There are three (blue-colored) judgment chains in the worklist,
+where the first and second judgment chains are two subtyping judgments,
+and the third judgment chain, $(\lam x)~() \To_a a \le \al$,
+is a sequence of an inference judgment followed by a subtyping judgment.
+
+The algorithm first analyse the two subtyping judgments and
+will find the best solutions $\al = \bt = 1$
+(please refer to Figure~\ref{fig:alg} for detailed derivations).
+Then we substitute every instance of $\al$ and $\bt$ to $1$,
+so the variable declarations can be safely removed from the worklist.
+Now we reduce the worklist to the following state
+$$\nil \Vdash \blue{(\lam x)~() \To_a a \le 1}, x:1$$
+which has a term variable declaration as the top element.
+Because no judgments before the declaration refer to $x$,
+as a basic property of an ordered context
+(Figure~\ref{fig:alg:syntax} shows its well-formedness criteria),
+we remove all declarations before the first judgment chain to collect unused variables.
+As a result all garbage variables are collected
+once the judgment chains refering to them are processed.
+
+After that, we proceed the last judgment chain from the left,
+namely an inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
+Finally the last judgment becomes $1 \le 1$, and is satisfied as a base case.
+
 
 % Our algorithm borrows some ideas from previous work, while adding new ones. 
 % A small-step style processing worklists; \emph{Judgment Chains}; others. 
