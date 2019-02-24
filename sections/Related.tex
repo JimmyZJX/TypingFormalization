@@ -11,6 +11,17 @@ except for those that require sophisticated form of higher-order polymorphism.
 In those cases, the bidirectional system accepts guidance through type annotations,
 which also improves readability of the program and is typically not considered as a burden.
 
+\jimmy{Dunfield's new work}
+DK's algorithm is shown to be sound, complete and decidable with 70 pages of manual proofs.
+Though carefully written, some of the proofs are incorrect,
+thus we find it difficult to formalize in a proof assistant.
+Their follow-up work~\cite{} enriches the bidirectional higher-rank system with
+existentials and indexed types.
+With a more complex declarative system, they developed a proof of over 150 pages.
+It is even more difficult to argue its correctness for every single detail within such a big development.
+Unfortunately, we find its Lemma 26 (Parallel Admissibility) has the same issue with
+a lemma of the same name in their previous work, which has a false conclusion.
+
 Impredicative System F allows instantiation with polymorphic types,
 but unfortunately its subtyping system is already undecidable~\cite{tiuryn1996subtyping}.
 Works on partial impredicative type-inference algorithms\cite{le2003ml,leijen2008hmf,vytiniotis2008fph}
@@ -18,6 +29,40 @@ navigate a variety of design tradeoffs for a decidable algorithm.
 As a result, such algorithms tend to be more complicated, and thus less adopted in practise.
 
 \jimmy{Guarded Impredicative}
+A recent work proposed Guarded Impredicative Polymorphism~\cite{},
+as an improvement on GHC's type inference algorithm with impredicative instantiation.
+They make use of local informations in $n$-ary applications to
+infer polymorphic instantiations with a relatively simple specification and unification algorithm.
+Although not all impredicative instantiation can be handled perfectly,
+their algorithm is already practically useful.
+Unfortunately, no mechanical formalization is provided for this work.
 
-\jimmy{Dunfield's new work}
+\paragraph{Formalizations of Type-Inference Algorithms}
+Since the publication of the {\sc POPLMark} challenge~\cite{aydemir2005mechanized},
+many theorem provers and packages provide new methods for dealing
+with variable binding~\cite{aydemir2008engineering,urban2008nominalTech,chlipala2008parametric},
+and more and more type systems are formalized with these tools.
+However, mechanising algorithmic aspects, like unification and
+constraint solving, have received very little attention and is still challenging.
+Moreover, while most tools supports local (input) contexts in a neat way, which have a simple
+binding and scoping structure, many practical type-inference algorithms require
+more complex binding structures with output contexts or various form of constraint solving procedure.
 
+Algorithm $\mathcal{W}$,
+as one of the classic type inference algorithms for polymorphic type systems,
+has been manually proven to be sound and complete
+with respect to the Hindley-Milner type system~\cite{}.
+After around 15 years, the algorithm is foramlly verified by
+Naraschewski and Nipkow~\cite{naraschewski1999type} in Isabelle/HOL~\cite{nipkow2002isabelle}.
+The treatment of new variables is tricky at that time, while the overall structure follow the
+structure of Damas's manual proof closely.
+%Another complication is the encoding of substitutions,
+%which they chose to formalize as a function instead of an association list.
+Later on, other researchers~\cite{dubois2000proving,dubois1999certification}
+formalized algorithm $\mathcal{W}$ in Coq~\cite{Coq}.
+Nominal techniques~\cite{urban2008nominalTech} in Isabelle/HOL have been
+developed to help programming language formalizations, and are used for a similar
+verification~\cite{urban2008nominal}. Moreover, Garrigue~\cite{garrigue2015certified}
+mechanized a type inference algorithm,
+with the help of locally nameless cofinite quantification~\cite{},
+for Core ML extended with structural polymorphism and recursion.
