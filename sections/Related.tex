@@ -22,14 +22,14 @@ readability of the program, and are not much of a burden in practice.
 
 \jimmy{Dunfield's new work}
 DK's algorithm is shown to be sound, complete and decidable in 70 pages of manual proofs.
-Though carefully written, some of the proofs are incorrect (see discussion in Section~\ref{}),
+Though carefully written, some of the proofs are incorrect (see discussion in Appendix),
 which creates difficulties when formalizing them in a proof assistant.
 Their follow-up work~\cite{} enriches the bidirectional higher-rank system with
 existentials and indexed types.
 With a more complex declarative system, they developed a proof of over 150 pages.
 It is even more difficult to argue its correctness for every single detail within such a big development.
 Unfortunately, we find that their Lemma 26 (Parallel Admissibility) appears to have the same issue 
-as lemma 29 discussed in Section~\ref{}: the conclusion is false.
+as lemma 29 discussed in Appendix: the conclusion is false.
 \bruno{I think you will need to justify this better and in the appendix you must show
 the lemma and counter-example.}
 \bruno{Missing Simon Peyton Jones work: which is the other predicative work.
@@ -56,8 +56,16 @@ In all previous work on type inference for higher-ranked polymorphism
 (predicative and impredicative) discussed above, all proofs and
 metatheory are manual. The only partial effort on mechanizing aspects of type inference
 for higher-ranked types is
-the Abella formalization of \emph{polymorphic subtyping} by
-\citet{itp2018}. ... \bruno{a comparison with our own ITP paper here!}
+the Abella formalization of \emph{polymorphic subtyping} by \citet{itp2018}.
+The judgment form of worklist $\Gm \vdash \Omega$ used in the formalization simplifies
+the propagation of existential variable instantiations.
+However, the approach has two main drawbacks;
+it does not collect unused variable declarations effectively,
+and the simple form of judgment cannot handle inference modes, which outputs types.
+The new worklist introduced in this paper inherits the simplicity of propagating instantiations,
+but overcome both of the issues by mixing judgments with declarations
+and using the continuation-passing-style judgment chains.
+\bruno{a comparison with our own ITP paper here!}
 
 \paragraph{Mechanical Formalizations of Other Type-Inference Algorithms}
 Since the publication of the {\sc POPLMark} challenge~\cite{aydemir2005mechanized},
