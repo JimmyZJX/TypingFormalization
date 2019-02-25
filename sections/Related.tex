@@ -98,8 +98,16 @@ with the help of locally nameless cofinite quantification~\cite{},
 for Core ML extended with structural polymorphism and recursion.
 
 \paragraph{Ordered Contexts in Type Inference}
+Gundry et al.~\cite{gundry2010type}
 
 \paragraph{Lists of Judgements in Unification}
+Some work~\cite{Reed2009,Abel2011higher} adopts a similar idea to this paper
+in dependently typed inference and reconstruction.
+Their algorithms collect unification constraints and simplify them progressively in a single-step style.
+In comparison, our algorithm mixes variable declarations with judgments,
+resulting in a simpler judgment form,
+while processing them in a similar way to those algorithms.
+A detailed discussion is in Section~\ref{sec:overview:list}.
 
 \bruno{Missing: work on type inference and unification of dependent types.
   Also missing: discussion about ordered contexts and the work by Gundry (in addition to DK).
