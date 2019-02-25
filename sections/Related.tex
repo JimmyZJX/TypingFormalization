@@ -98,7 +98,14 @@ with the help of locally nameless cofinite quantification~\cite{},
 for Core ML extended with structural polymorphism and recursion.
 
 \paragraph{Ordered Contexts in Type Inference}
-Gundry et al.~\cite{gundry2010type}
+Gundry et al.~\cite{gundry2010type} revisit algorithm $\mathcal{W}$ and
+propose a new unification algorithm with the help of ordered contexts.
+Similar to DK's algorithm, information of meta variables flow from input contexts to output contexts.
+Not surprisingly, its information increase relation acts as a similar role to DK's context extension.
+Our algorithm, in contrast,
+eliminates the use of output contexts and their variable solution records ($\al = \tau$),
+simplifying the information propagation process through immediate substitution
+by collecting all the judgments in a single worklist.
 
 \paragraph{Lists of Judgements in Unification}
 Some work~\cite{Reed2009,Abel2011higher} adopts a similar idea to this paper
