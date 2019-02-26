@@ -78,26 +78,22 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \end{aligned}
 \end{gather*}
 
-\hfill \framebox{$\Om \rto \Om'$} \hfill $\Om$ reduces to $\Om'$.
+\hfill \framebox{$\Om \rto \Om'$} \hfill Declarative transfer.
 \begin{gather*}
 \begin{aligned}
-\Om,a &\rto \Om \qquad \Om,x:A \rto \Om\\
-\Om\Vdash A\le B &\rto \Om \text{ when } \|\Om\| \vdash A\le B\\
-\Om\Vdash e\Lto A &\rto \Om \text{ when } \|\Om\| \vdash e\Lto A\\
-\Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg \text{ when } \|\Om\| \vdash e\To A\\
-\Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg \text{ when } \|\Om\| \vdash \appInf{A}{e}{C}\\
+\Om,a &\rto \Om \\  \Om,x:A & \rto \Om\\
+\Om\Vdash A\le B &\rto \Om &\text{ when } \|\Om\| \vdash A\le B\\
+\Om\Vdash e\Lto A &\rto \Om & \text{ when } \|\Om\| \vdash e\Lto A\\
+\Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg & \text{ when } \|\Om\| \vdash e\To A\\
+\Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg & \text{ when } \|\Om\| \vdash \appInf{A}{e}{C}\\
 \end{aligned}
 \end{gather*}
-\caption{Declarative Worklist Typing.\bruno{I think your names for the
-  two relations/definitions aren't great. I think what you're defining
-here should be called transfer. The previous relation should probably
-be called something different. Maybe something like Declarative
-worklist instantiation/realization for the previous relation?}}
+\caption{Declarative Transfer.}
 \label{fig:decl:worklist}
 \end{figure}
 
 Figure~\ref{fig:decl:worklist} defines a declarative version $\Om \sto \Om'$ of
-the algorithmic reduction rules, which relates the declarative worklists to the
+the algorithmic reduction rules, which transfers judgements in the declarative worklists to the
 declarative type system, by checking every judgement entry in the worklist with
 the help of the corresponding conventional declarative judgement. Recall that
 the worklist consists of an interleaving of the typing context with judgments.
