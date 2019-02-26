@@ -4,13 +4,19 @@ This section presents the metatheory of the algorithmic system
 presented in the previous section. We show that three main results hold: 
 \emph{soundness}, \emph{completeness} and \emph{decidability}.
 These three results have been mechanically formalized and proved in the 
-Abella theorem prover~\cite{}.
+Abella theorem prover~\cite{AbellaDesc}.
 
-\subsection{Transfer to the Declarative System}
+%-------------------------------------------------------------------------------
+\subsection{Declarative Worklist}
 %\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
 
 \begin{figure}[t]
-\framebox{$\Gm \sto \Om$} $\Gm$ transfers to $\Om$.
+\begin{gather*}
+\begin{aligned}
+\text{Declarative worklist}\qquad&\Om &::=&\quad \nil \mid \Om, a \mid \Om, x: A \mid \Om \Vdash \jg
+\end{aligned}
+\end{gather*}
+\hfill \framebox{$\Gm \sto \Om$} \hfill $\Gm$ instantiates to $\Om$.
 \begin{gather*}
 \inferrule*[right=$\mathtt{{\sto}}\Om$]
 {~}
@@ -20,31 +26,33 @@ Abella theorem prover~\cite{}.
 {\Om\vdash\tau \\ \Om,[\tau/\al]\Gm \sto \Om}
 {\Om,\al,\Gm \sto \Om}
 \end{gather*}
-\caption{Transfer rules}
+\caption{Declarative Worklists and Instantiation}
 \label{fig:trans}
 \end{figure}
 
-To aid formalizing the correspondence between the declarative and
-algorithmic systems, we use a relation that transfers algorithmic
-worklist judgements into corresponding declarative worklist judgements. In essence this
-judgment instantiates every existential variable with a well-formed monotype.
+To aid formalizing the correspondence between the declarative and algorithmic
+systems, we introduce the notion of declarative worklist $\Om$, define in
+Figure~\ref{fig:trans}. A declarative worklist $\Om$ has the same structure as an
+algorithmic worklist $\Gm$, but does not contain any extistential variables $\al$.
 
-The transfer rules are shown in Figure~\ref{fig:trans}.
+The relation $\Gm \sto \Om$ expresses that the algorithmic worklist $\Gm$ can 
+be instiantiated to the declarative worklist $\Om$, namely by appropriately instantiating
+all exitential variables $\al$ in $\Gm$ with well-scoped monotypes $\tau$.
+The rules of this instantiation relation are shown in Figure~\ref{fig:trans} too.
 Rule $\mathtt{{\sto}\al}$ replaces the first existential variable with a well-scoped monotype and
-repeats the process in the resulting worklist.
-Note that $\Om$, as a declarative worklist, contains no existential
-variables. Therefore by recursively applying this rule, the
-algorithmic worklist will finally become a declarative one.
-In order to maintain well-formedness,
-the substitution should affect all the judgments and term variable bindings in the scope of $\al$.
+repeats the process on the resulting worklist until no existential variable remains
+and thus the algorithmic worklist has become a declarative one.
+In order to maintain well-scopedness
+the substitution is applied to all the judgments and term variable bindings in the scope of $\al$.
 
-The transfer $\Gm\sto\Om$ is not deterministic.
+Observe that the instantiation $\Gm\sto\Om$ is not deterministic.
 % \bruno{Do you mean here
 %   ``is not deterministic''? Would that be more appropriate?}
-On the one hand, there are infinite possibilities to instantiate an existential variable,
-thus a judment $\Gm$ could be transferred to different $\Om$'s.
-On the other hand, any valid monotype in $\Om$ can be represented by an existential variable in $\Gm$,
-thus different $\Gm$'s could be transferred to a single $\Om$.
+From left to right, there are infinitely many possibilities to instantiate an existential variable and
+thus infinitely many declarative worklists that one can get from an algorithmic one.
+In the other direction, any valid monotype in $\Om$ can be abstracted to an
+existential variable in $\Gm$. Thus different $\Gm$'s can be instantiated to the same
+$\Om$.
 
 Lemmas~\ref{lem:insert} and \ref{lem:extract}
 generalize Rule $\mathtt{{\sto}\al}$ from substituting the first existential variable
@@ -60,7 +68,7 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \end{lemma}
 
 \begin{figure}[t]
-\framebox{$\|\Om\|$} Judgment erasure for $\Om$, returns a declarative context $\Psi$.
+\hfill \framebox{$\|\Om\|$} \hfill Judgment erasure.
 \begin{gather*}
 \begin{aligned}
 \|\nil\| &= \nil\\
@@ -70,7 +78,7 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \end{aligned}
 \end{gather*}
 
-\framebox{$\Om \rto \Om'$} $\Om$ reduces to $\Om'$.
+\hfill \framebox{$\Om \rto \Om'$} \hfill $\Om$ reduces to $\Om'$.
 \begin{gather*}
 \begin{aligned}
 \Om,a &\rto \Om \qquad \Om,x:A \rto \Om\\
@@ -88,21 +96,15 @@ worklist instantiation/realization for the previous relation?}}
 \label{fig:decl:worklist}
 \end{figure}
 
-Figure~\ref{fig:decl:worklist} relates the worklist-style declarative system
-to the original declarative system.
-A successful reduction means a valid variable declaration,
-a valid subtyping or checking judgment, or a successful guessing for inferences.
-Additionally, judgment chains are unfolded to match the original declarative rules.
-Although $\Om$ is defined differently from $\Psi$,
-our declarative worklist $\Om$ contains a ordered collection of variable definitions,
-which naturally fits declarative subtyping and typing.
-\bruno{I think that to make things precise what you want to show is
-  that you can always define a erasure function that drops the
-  judgements from the worklist, and retains only the variable
-  declarations (thus becomes a declarative environment). Isn't this
-  what you do in your formalization?}
-\jimmy{TODO: a erasure function would make things more clear...}
-
+Figure~\ref{fig:decl:worklist} defines a declarative version $\Om \sto \Om'$ of
+the algorithmic reduction rules, which relates the declarative worklists to the
+declarative type system, by checking every judgement entry in the worklist with
+the help of the corresponding conventional declarative judgement. Recall that
+the worklist consists of an interleaving of the typing context with judgments.
+By means of the auxiliary function $\|\Om\|$ we can extracts the typing context
+out of it, for use in the conventional declarative judgments. What is does to
+obtain the typing context is simply erase the judgment entries from the
+worklist.
 
 \subsection{Non-overlapping Declarative System}
 \label{sec:metatheory:non-overlapping}
