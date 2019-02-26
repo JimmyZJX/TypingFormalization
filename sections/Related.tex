@@ -10,8 +10,10 @@ related work.
 Higher-ranked polymorphism is a convenient and practical feature of
 programming languages.  Since full type-inference for System F is
 undecidable~\cite{wells1999typability}, various decidable partial
-type-inference algorithms were developed~\cite{}.  The declarative system of
-this paper, proposed by \citet{dunfield2013complete}, is \emph{predicative}: 
+type-inference algorithms were developed.
+% No need to cite here: the following text is describing the point ~\cite{}.
+The declarative system of this paper,
+proposed by \citet{dunfield2013complete}, is \emph{predicative}: 
 $\forall$'s only instantiate to monotypes.  The monotype restriction
 on instantiation is considered reasonable and practical for most
 programs, except for those that require sophisticated forms of
@@ -20,11 +22,10 @@ accepts guidance through type annotations, which allow polymorphic types.
 Such annotations also improve
 readability of the program, and are not much of a burden in practice.
 
-\jimmy{Dunfield's new work}
 DK's algorithm is shown to be sound, complete and decidable in 70 pages of manual proofs.
 Though carefully written, some of the proofs are incorrect (see discussion in Appendix),
 which creates difficulties when formalizing them in a proof assistant.
-Their follow-up work~\cite{} enriches the bidirectional higher-rank system with
+Their follow-up work~\cite{DunfieldIndexed} enriches the bidirectional higher-rank system with
 existentials and indexed types.
 With a more complex declarative system, they developed a proof of over 150 pages.
 It is even more difficult to argue its correctness for every single detail within such a big development.
@@ -32,10 +33,15 @@ Unfortunately, we find that their Lemma 26 (Parallel Admissibility) appears to h
 as lemma 29 discussed in Appendix: the conclusion is false.
 \bruno{I think you will need to justify this better and in the appendix you must show
 the lemma and counter-example.}
-\bruno{Missing Simon Peyton Jones work: which is the other predicative work.
-  Maybe the OutsideIn work can also be briefly mentioned (you can ask Tom for details
-  of that work).
- }
+
+\bruno{Missing Simon Peyton Jones work: which is the other predicative work.}
+\citet{jones2007practical} Developed another higher-rank predicative bidirectional type system.
+Their subtyping relation is enriched with deep skolemisation,
+which is more general than ours and allows more valid relations.
+In comparison to DK's system, they do not use the application inference judgment,
+resulting in complicated implicit instantiation taken care by the unification process for the algorithm.
+Although a hand-written proof is given, showing that the algorithm is sound and
+complete with respect to their declarative specification, no machanized proof is provided.
 
 \paragraph{Impredicative Higher-Ranked Polymorphism Type Inference Algorithms}
 Impredicative System F allows instantiation with polymorphic types,
@@ -43,8 +49,7 @@ but unfortunately its subtyping system is already undecidable~\cite{tiuryn1996su
 Works on partial impredicative type-inference algorithms\cite{le2003ml,leijen2008hmf,vytiniotis2008fph}
 navigate a variety of design tradeoffs for a decidable algorithm.
 As a result, such algorithms tend to be more complicated, and thus less adopted in practise.
-\jimmy{Guarded Impredicative}
-A recent work proposed Guarded Impredicative Polymorphism~\cite{},
+A recent work proposed Guarded Impredicative Polymorphism~\cite{GuardedImpredicative},
 as an improvement on GHC's type inference algorithm with impredicative instantiation.
 They make use of local informations in $n$-ary applications to
 infer polymorphic instantiations with a relatively simple specification and unification algorithm.
@@ -96,7 +101,7 @@ Nominal techniques~\cite{urban2008nominalTech} in Isabelle/HOL have been
 developed to help programming language formalizations, and are used for a similar
 verification~\cite{urban2008nominal}. Moreover, Garrigue~\cite{garrigue2015certified}
 mechanized a type inference algorithm,
-with the help of locally nameless cofinite quantification~\cite{},
+with the help of locally nameless cofinite quantification~\cite{LocallyNameless},
 for Core ML extended with structural polymorphism and recursion.
 
 \paragraph{Ordered Contexts in Type Inference}
@@ -112,14 +117,19 @@ by collecting all the judgments in a single worklist.
 \paragraph{Lists of Judgements in Unification}
 Some work~\cite{Reed2009,Abel2011higher} adopts a similar idea to this paper
 in dependently typed inference and reconstruction.
-Their algorithms collect unification constraints and simplify them progressively in a single-step style.
+Either algorithm simplifies a collection of unification constraints progressively in a single-step style.
 In comparison, our algorithm mixes variable declarations with judgments,
 resulting in a simpler judgment form,
 while processing them in a similar way to those algorithms.
+Duplicated context in their unification judgments complicates the unification process,
+instead we make use of the nature of ordered context to control the scoping of unification variables.
+While their algorithms focus only on unification,
+our algorithm also deals with other type of judgments like type inference.
+A detailed discussion is in Section~\ref{sec:overview:list}.
+
 \bruno{Still missing: 1) they duplicate context information; 2) their
   focus is on unification, so they do not have to deal with inference
   judgements as we do.}
-A detailed discussion is in Section~\ref{sec:overview:list}.
 
 
 \bruno{Final comment: You should essentially have all the discussion that we have in ITP +
