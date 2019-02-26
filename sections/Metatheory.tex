@@ -108,6 +108,113 @@ which naturally fits declarative subtyping and typing.
 \jimmy{Talk about the modified subsumption rule, reasoning about the unit rule,
 and the subtyping $\forall$ overlapping}
 
+The original DK's declarative system, shown in Figures \ref{fig:decl:sub} and \ref{fig:decl:typing},
+has a few overlapping rules.
+We propose a slightly modified declarative system, by changing a few rules in DK's declarative system:
+\begin{enumerate}
+\item Add a constraint to the subtyping rule $\mathtt{\forall L}$
+$$
+\inferrule*[right=$\mathtt{\forall L'}$]
+{B \neq \all[b]B' \\ \Psi \vdash \tau \\ \Psi \vdash [\tau/a]A \le B}
+{\Psi \vdash \all A \le B}
+$$
+\item Remove the redundant rule $\mathtt{Decl1I}$,
+which could be easily derived by a combination of
+$\mathtt{DeclSub}$, $\mathtt{Decl1I{\To}}$ and $\mathtt{{\le}Unit}$:
+$$
+\inferrule*[right=$\mathtt{DeclSub}$]
+{
+    \inferrule*[right=$\mathtt{Decl1I{\To}}$]
+    {~}
+    {\Psi \vdash () \To 1}
+    \\
+    \inferrule*[right=$\mathtt{{\le}Unit}$]
+    {~}
+    {\Psi \vdash 1 \le 1}
+}
+{\Psi \vdash () \Lto 1}
+$$
+\item Add constraints to the subsumption rule $\mathtt{DeclSub}$
+$$
+\inferrule*[right=$\mathtt{DeclSub'}$]
+{e \neq \lam e' \\ A \neq \all A' \\ \Psi \vdash e \To A \\ \Psi \vdash A \le B}
+{\Psi \vdash e \Lto B}
+$$
+\end{enumerate}
+
+Now the new declarative system has no overlapping rules
+and becomes more similar to the algorithmic system,
+as the algorithmic rules contain similar constraints.
+In addition, we proved that the modified declarative system is equivalent to the original one.
+
+Modification (2) is relatively easy to justify, with the derivation given above:
+the rule is redundant and can be replaced by a combination of three other rules.
+
+Modificaitons (1) and (3) require inversion lemmas regarding rules that overlaps with them.
+Rule $\mathtt{\forall L}$ initially overlaps with $\mathtt{\forall R}$ when facing judgment
+$\Psi \vdash \all A \le \all[b]B$.
+The following inversion lemma for Rule $\mathtt{\forall R}$ settles the overlapping:
+\begin{lemma}[Invertibility of $\mathtt{\forall R}$]
+If $\Psi \vdash A \le \all B$ then $\Psi, a \vdash A \le B$.
+\end{lemma}
+The lemma implies that giving a higher priority to $\mathtt{\forall R}$ does not affect the derivation.
+Therefore the restriction $B \neq \all[b]B'$ is reasonable.
+
+Rule $\mathtt{DeclSub}$ overlaps with both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
+Two similar inversion lemmas should be proven:
+\begin{lemma}[Invertibility of $\mathtt{Decl\forall I}$]
+If $\Psi \vdash e \Lto \all A$ then $\Psi, a \vdash e \Lto A$.
+\end{lemma}
+\begin{lemma}[Invertibility of $\mathtt{Decl{\to}I}$]
+If $\Psi \vdash \lam e \Lto A \to B$ then $\Psi, x:A \vdash e \Lto B$.
+\end{lemma}
+These lemmas basically state that applying the specific rules is always no worse than
+applying the more general Rule $\mathtt{DeclSub}$.
+Proving both of the lemmas require an important property of the declarative system,
+the subsumption lemma.
+We first define the context subtyping relation in Figure~\ref{fig:context_subtyping},
+and then show the subsumption lemma as follows.
+
+\begin{figure}[t]
+\framebox{$\Psi' \le \Psi$}
+$$\begin{aligned}
+\inferrule*[right=$\mathtt{CtxSubEmpty}$]
+{~}{\nil \le \nil}\qquad
+\inferrule*[right=$\mathtt{CtxSubTyVar}$]
+{\Psi' \le \Psi}{\Psi', a \le \Psi, a}\qquad
+\inferrule*[right=$\mathtt{CtxSubTmVar}$]
+{\Psi' \le \Psi \\ \Psi \vdash A' \le A}{\Psi', x:A' \le \Psi, x:A}\qquad
+\end{aligned}$$
+\caption{Context Subtyping}
+\label{fig:context_subtyping}
+\end{figure}
+
+\begin{lemma}[Subsumption]
+Given $\Psi' \le \Psi$:
+\begin{enumerate}
+    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A$;
+    \item If $\Psi \vdash e \To A$ then there exists
+        $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash e \To A$;
+    \item If $\Psi \vdash \appInf{C}{e}{A}$ and $\Psi \vdash C' \le C$,
+        then there exists $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash \appInf{C'}{e}{A'}$.
+\end{enumerate}
+\end{lemma}
+
+We tried to follow DK's proof on the subsumption lemma,
+but the manual proof has several problems and is not able to be formalized.
+Fortunately we fixed the issues and get the lemma proven.
+Details about this issue can be found in Appendix~\ref{}.
+
+\paragraph{Proof Sketch for Soundness and Completeness Theorems}
+We now have three systems defined: the DK's declarative system,
+the modified non-overlapping declarative system, and the algorithmic system.
+First, we have got the statement that the non-overlapping declarative system,
+as a restricted version, is equivalent to the DK's declarative system.
+Then, the soundness of the algorithm can be directly shown against the original declarative system.
+Finally, the completeness of the algorithm is shown against the non-overlapping declarative system,
+which is equivalent the DK's declarative system.
+As a result, we show that our algorithm is sound and complete with respect to DK's declarative system.
+
 %-------------------------------------------------------------------------------
 \subsection{Soundness}
 
@@ -120,8 +227,15 @@ If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ a
 \end{theorem}
 
 The proof proceeds by induction on derivation of $\Gm\redto\nil$.
+Interesting cases are the those involving existential variable instantiations,
+including Rules 10, 11, 21 and 29.
 Proper applications of lemmas \ref{lem:insert} and \ref{lem:extract}
-finish off the theorem.
+help analyse the full instantiation of those existential variables.
+For example, when $\al$ is solved to be $\al[1] \to \al[2]$ in the algorithm,
+applying Extract gives two instantiations $\al[1] = \sigma$ and $\al[2] = \tau$.
+Inserting back $\al = \sigma \to \tau$ for the induction case
+matches the shape of induction hypothesis and thus finishes the corresponding case.
+
 \bruno{Give a bit more informal explanation here. Something like: If
   $\Gm$ is reducible then we can show that there is always an $\Om$
   where all the corresponding declarative judgements hold.}
@@ -150,8 +264,12 @@ If \emph{wf }$\Gm$ and $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 \end{theorem}
 
 We prove completeness by induction on the derivation of $\Om\redto\nil$.
-Since the declarative worklist is reduced judgment-by-judgment,
+Here we refer to the non-overlapping declarative system without chaning any syntax.
+Since the declarative worklist is reduced judgment-by-judgment
+(shown in Figure~\ref{fig:decl:worklist}),
 the induction always analyses the first judgment until it is satisfied.
+In Abella, we use a different relation to get the correct induction scheme.
+
 As the algorithmic system introduces existential variables,
 a declarative rule may correspond to multiple algorithmic rules,
 and thus we analyse each of the possible cases.
@@ -176,7 +294,10 @@ $\Om \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
 A symmetric lemma holds for $A\to B \le \al$.
 
-All other cases are handled easily... \jimmy{more details if necessary}
+All other cases are relatively easy to prove.
+The Insert and Extract lemmas are applied when the algorithm uses existential variables,
+but transferred to a monotype for the declarative system,
+such as Rules 6, 10, 11, 12-17, 21 and 29.
 
 The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
 \begin{corollary}[Completeness, single judgment form]
