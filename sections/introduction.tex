@@ -22,16 +22,15 @@ An important challenge is that full type inference for higher-ranked
 polymorphism is know to be undecidable~\cite{wells1999typability}. Therefore some type
 annotations are necessary to guide type inference. In response to this 
 challenge several decidable type systems requiring some annotations 
-have been proposed~\cite{,dunfield2013complete,jones2007practical}
-\bruno{works on impredicative type inference are still missing}.
+have been proposed~\cite{,dunfield2013complete,jones2007practical,Serrano2018,le2003ml,leijen2008hmf,vytiniotis2008fph}.
 Two closely related type systems that 
 support \emph{predicative} higher-ranked type inference were proposed 
 by Peyton Jones et al.~\cite{jones2007practical} and Dunfield and
 Krishnaswami~\cite{dunfield2013complete} (henceforth denoted as DK). 
 These type systems are
 popular among language designers and their ideas have been adopted by
-several modern functional languages, including Haskell, PureScript~\cite{} and
-Unison~\bruno{Add references. Here is the one for unison\url{http://unisonweb.org}} among others.
+several modern functional languages, including Haskell, PureScript~\cite{PureScript} and
+Unison~\cite{Unison} among others.
 In those type systems
 type annotations are required for polymorphic arguments of functions,
 but other type annotations can be omitted. A canonical example (here written in Haskell) is:
@@ -56,7 +55,7 @@ Although type inference is important in practice and receives a lot of
 attention in
 academic research, there is little work on mechanically formalizing
 such advanced forms of type inference in theorem provers.
-The remarkable exception is some work done on the formalization of 
+The remarkable exception is work done on the formalization of 
 certain parts of Hindley-Milner type inference~\cite{naraschewski1999type,
 dubois2000proving,dubois1999certification,urban2008nominal,
 garrigue2015certified}. However
@@ -142,13 +141,11 @@ is non-trivial.
 Due to those two challenges, our work takes a different approach by refining and
 extending the idea of \emph{worklists judgments}~\cite{itp2018},
 proposed recently to mechanically formalize an algorithm for
-\emph{polymorphic subtyping}. A key innovation in our work is how
+\emph{polymorphic subtyping}~\cite{odersky1996putting}. A key innovation in our work is how
 to adapt the idea of worklist judgments to
-\emph{inference judgements}, which are not needed for polymorphic subtyping.
-In our work we show how worklist
-judgements can be extended to deal with the inference judgements that
-are necessary for type-inference.  The idea is to use a continuation
-passing style to enable the transfer of inferred information across
+\emph{inference judgements}, which are not needed for polymorphic
+subtyping, but are necessary for type-inference.  The idea is to use a \emph{continuation
+passing style} to enable the transfer of inferred information across
 judgements. A further refinement to the idea of worklist judgements is
 the \emph{unification between ordered
   contexts~\cite{gundry2010type,dunfield2013complete} and worklists}.  This
@@ -182,8 +179,8 @@ In summary, the contributions of this paper are:
   use a continuation passing style to enable the transfer of inferred information across
   judgements. 
 
-\item {\bf Unification of judgment worklists and contexts:} Another technical contribution is the unification
-  between ordered contexts and judgement worklists. This enables precise scope tracking
+\item {\bf Unification of worklists and contexts:} Another technical contribution is the unification
+  between ordered contexts and worklists. This enables precise scope tracking
   of variables in judgements, and avoids the duplication of context information across
   judgments in worklists.
 
