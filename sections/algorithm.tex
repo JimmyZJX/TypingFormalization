@@ -8,24 +8,24 @@ several novelties.\bruno{fill in/summarize novelties. I think
 
 \subsection{Syntax and Well-Formedness}
 
-Figure~\ref{fig:alg:syntax} shows the syntax and the well-formedness judgement.
+Figure~\ref{fig:alg:syntax} shows the syntax---with accompanying well-formedness judgement---used by the algorithm.
 
 \begin{figure}
 \begin{gather*}
 \begin{aligned}
-\text{Type variables}\qquad&a, b\\
+% \text{Type variables}\qquad&a, b\\
 \text{Existential variables}\qquad&\al, \bt
 \\[2mm]
 %\text{Types}\qquad&A', B', C' &::=&\quad 1 \mid a \mid \forall x. A' \mid A'\to B'\\
-\text{Mono-types}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
+% \text{Mono-types}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
 %\text{Context}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A' \color{red} \\[2mm]
 % \text{Declarative Judgements}\qquad&\jo &::=&\quad \nil \mid \P\vdash A' \le B' \jc \jo\\
 % &&&\quad \mid \P\vdash e\Leftarrow A' \jc \jo \mid \P\vdash e\To A' \jc \jo \mid \P\vdash A' \bullet e\TTo C' \jc \jo\\
 % \noalign{\jimmy{\text{What do the markers do: $\G \vdash,a \vdash,b\vdash \j_1;\j_2;\j_3$ means $\G,a,b\vdash \j_1 \land \G,a\vdash \j_1,\j_2 \land \G\vdash \j_3$}}} \\[2mm]
-\text{Algorithmic types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B
+\text{Algorithmic types}\qquad&A, B, C &::=& \quad \ldots \mid \al % \quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B
 \\[2mm]
-\text{Terms}\qquad&e&::=&\quad x \mid () \mid \lam{e} \mid e_1~e_2 \mid (e:A)
-\\[2mm]
+% \text{Terms}\qquad&e&::=&\quad x \mid () \mid \lam{e} \mid e_1~e_2 \mid (e:A)
+% \\[2mm]
 \text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
 \\[2mm]
 \text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
@@ -73,13 +73,16 @@ Figure~\ref{fig:alg:syntax} shows the syntax and the well-formedness judgement.
 {\text{wf }\Gm \\ \Gm\vdash\jg}
 {\text{wf }\Gm \Vdash\jg}
 \end{gather*}
-\caption{Syntax and Well-Formedness for the Algorithmic System}\label{fig:alg:syntax}
+\caption{Extended Syntax and Well-Formedness for the Algorithmic System}\label{fig:alg:syntax}
 \end{figure}
 
-\paragraph{Existential Variables} In order to find unknown types $\tau$ in the declarative system,
-the algorithmic system introduces \emph{existential variables} $\al, \bt$.
-They behave similarly to unification variables,
-but their scoping is restricted by their position in the
+\paragraph{Existential Variables} 
+The algorithmic system inherits the syntax of terms and types from 
+the declartive system. It only introduces one additional feature.
+In order to find unknown types $\tau$ in the declarative system, the
+algorithmic system extends the declarative types $A$ with \emph{existential variables} $\al, \bt$.
+They behave like unification variables,
+but their scope is restricted by their position in the
 worklist\bruno{be careful to ensure that the reader knows about
   worklist at this point},
 rather than being global.
@@ -89,43 +92,33 @@ The point is that the mono-type $\tau$ represented by the corresponding existent
 is always well-formed under the corresponding declarative context.
 In other words, the position of $\al$'s reflects the well-formedness restriction of $\tau$'s.
 
-\paragraph{Monotypes, types and terms} The algorithm system also has a
-notion of monotypes, which is identical to the declarative system.
-\bruno{Since monotypes are identical to declarative system, maybe they
-do not need to be presented again. Perhaps drop their definition from 
-the syntax?} Algorithmic types include all the declarative types plus
-existential variables $\al$. \bruno{Aren't terms identical to the
-  Declarative system too? If they are briefly state that terms are
-  identical and do not show them here. Otherwise say what is different.}
-
 %% A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
 
-\paragraph{Judgments and judgment chains} 
-\emph{Judgment chain}s $\jg$ are the core components of our algorithmic
-type-checking. For conciseness, in the rest of the paper, we usually
-refer to ``judgment chains'' simply by ``judgments''.  There are four kinds
-of judgments in our system: subtyping ($A \le B$), checking ($e\Lto
+\paragraph{Judgment Chains} 
+Judgment chains, or judgments for short, $\jg$ are the core components of our algorithmic
+type-checking. There are four kinds
+of these judgments in our system: subtyping ($A \le B$), checking ($e\Lto
 A$), inference ($e\To_{a} \jg$) and
 application inference ($\appInfAlg{A}{e}$).  Subtyping and checking are relatively simple,
 since their result is only success or failure. However both inference and
-application inference return a type that is used in further computation. We use
+application inference return a type that is used in further computation. We use a
 continuation-passing-style encoding to accomplish this. For example, the judgment
 chain $e \To_a (a \le B)$ contains two judgments: first we want to
 infer the type of the expression $e$, and then check if that type is a
 subtype of $B$. The \emph{unknown} type of $e$ is represented by a
-type variable $a$, which is used in the second judgement to denote the 
+type variable $a$, which is used as a placeholder in the second judgement to denote the 
 type of $e$.
 
 \paragraph{Worklist Judgments} Our algorithm has a non-standard form.
-We combine the traditional contexts and judgment(s) into a single worklist.
-The worklist collects variable bindings and judgments in \emph{order}, which represents their scopings:
-each variable is visible only after it is declared.
-For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a]$ is not (the red-colored symbols are out of scope).
+We combine traditional contexts and judgment(s) into a single object, the \emph{worklist} $\Gm$.
+The worklist is an \emph{ordered} collection of both variable bindings and judgments. The order captures the scope:
+only the objects that come after a variable's binding in the worklist can refer to it.
+For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\textcolor{red}{x} \Lto a, x:\textcolor{red}{a},a]$ is not (the red symbols refer to out-of-scope variables).
 
 \paragraph{Hole Notation}
 We use the syntax $\Gm[\Gm_M]$ to denote the worklist $\Gm_L,\Gm_M,\Gm_R$,
 where $\Gm$ is the worklist $\Gm_L,\bullet,\Gm_R$ with a hole ($\bullet$).
-Hole notations with the same name implicitly shares the same structure $\Gm_L$ and $\Gm_R$.
+Hole notations with the same name implicitly share the same structure $\Gm_L$ and $\Gm_R$.
 A multi-hole notation splits the worklist into more parts.
 For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 
@@ -136,7 +129,7 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 
 % TODO rules too long
 \begin{figure}[htp]
-\framebox{$\Gm\rto \Gm'$} $\Gm$ reduces to $\Gm'$.
+\hfill \framebox{$\Gm\rto \Gm'$} \hfill $\Gm$ reduces to $\Gm'$.
 %\jimmy{Whenever there is a change on judgment count, marker should be properly added/removed. Decidability: all valid judgment chain should be reduced to nil.}
 \begin{gather*}
 \begin{aligned}
@@ -190,28 +183,33 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \caption{Algorithmic Typing}\label{fig:alg}
 \end{figure}
 
-The algorithmic typing reduction rules, defined in Figure~\ref{fig:alg}, have the form $\Gm \rto \Gm'$.
-The worklists $\Gm, \Gm'$ contain both variable declarations and judgments.
-The reduction process treats the worklist as a stack.
-In every step it pops the first judgment from the worklist for processing,
-possibly pushes new judgments onto the worklist, and repeats this process until the list is empty.
-A worklist that fully reduces to empty corresponds to a successful type-checking.
+The algorithmic typing reduction rules, defined in Figure~\ref{fig:alg}, have
+the form $\Gm \rto \Gm'$.
+% The worklists $\Gm, \Gm'$ contain both variable declarations and judgments.
+The reduction process treats the worklist as a stack.  In every step it pops
+the first judgment from the worklist for processing and possibly pushes new
+judgments onto the worklist.  The syntax $\Gm\redto \Gm'$ denotes multiple
+reduction steps. If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully;
+this corresponds to a successful type checking.
 
+Let us explain the rulres in more detail:
 Rules 1-3 pop a variable declaration; this garbage collects variables that are
 out of scope for the remaining judgements.
+All other rules concern a judgement at the front of the worklist. Logically we
+can discern 6 group of rules.
 
-All other rules concern a judgement at the front of the worklist. Logically we can discern 6 group of rules.
-
-Firstly, we have six subtyping rules (Rules 4-9) that have similar 
-declarative counterparts.  For instance, Rule 7 consumes a subtyping
+\begin{description}
+\item[1. Declarative Rules]
+We have six subtyping rules (Rules 4-9) that are similar to their
+declarative counterparts. For instance, Rule 7 consumes a subtyping
 judgment and pushes two back to the worklist.  Rule 8 differs from
 declarative Rule ${\le}{\forall}L$ by introducing an existential
 variable $\al$ instead of guessing the monotype $\tau$ for
-instantiation.  Each existential variable is later solved to a
+instantiation. Each existential variable is later solved to a
 monotype $\tau$ with the same context, so the final solution $\tau$ of
 $\al$ should be well-formed under context $\Gm$.
 
-\paragraph{Variable scopings within worklist}
+\paragraph{Worklist Variable Scoping}
 Rules 8 and 9 involve variable declarations and demonstrate how our
 worklist treats variable scopings. Rule 8 introduces an existential
 variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
@@ -246,26 +244,26 @@ By making use of the continuation-passing-style judgement chain,
 inner judgments always shares context with its parent judgment,
 therefore we preserve well-formedness during reduction.
 
-\paragraph{Existential decomposition}
-Secondly, Rules 10 and 11 are algorithmic extensions to Rule $\mathtt{{\le}{\to}}$.
-Both of them partially instantiate $\al$ to function types.
+\item[2. Existential decomposition]
+Rules 10 and 11 are algorithmic versions of Rule $\mathtt{{\le}{\to}}$; they
+both partially instantiate $\al$ to function types.
 The domain $\al[1]$ and range $\al[2]$ of the new function type are not determined:
 they are fresh existential variables with the same scope as $\al$.
-We remove $\al$ from the worklist, and insert $\al[1], \al[2]$ back to the same position.
-To propagate the instantiation to the rest of the worklist and maintain the well-formedness,
-every $\al$ is replaced by $\al[1] \to \al[2]$.
-The \emph{occurs-check} condition is to prevent a diverging infinite loop.
-For example, without such check $\al \le 1 \to \al$ would diverge.
+We remove replace $\al$ in the worklist with  $\al[1], \al[2]$.
+To propagate the instantiation to the rest of the worklist and maintain well-formedness,
+every reference to $\al$ is replaced by $\al[1] \to \al[2]$.
+The \emph{occurs-check} condition prevents divergence as usual.
+For example, without it $\al \le 1 \to \al$ would diverge.
 
-\paragraph{Solving existentials.} Thirdly, Rules 12-17 are base cases where an existential variable is solved.
-Each of the rules removes an existential variable and substitutes the
+\item[3. Solving existentials] Rules 12-17 are base cases where an existential variable is solved.
+They all remove an existential variable and substitute the
 variable with its solution in the remaining worklist. Importantly the rules
-respect the scoping of existential variables. For example, rule 12 
+respect the scope of existential variables. For example, rule 12 
 states that an existential variable $\al$ can be solved with another
 existential variable $\bt$ only if $\bt$ occurs after $\al$.
 
-\paragraph{Checking judgements}
-Fourthly, Rules 18-21 deal with checking judgments.
+\item[4. Checking judgements]
+Rules 18-21 deal with checking judgments.
 Rule 18 is similar to $\mathtt{DeclSub}$, but rewritten in the
 continuation-passing-style.
 \bruno{The side condition needs to be explained, and some mention of
@@ -275,11 +273,11 @@ Rule 21 is a special case of $\mathtt{Decl\to I}$.\bruno{Rule 21
   deserves some more explanation. What is the motivation for this
   rule? You may want to give some concrete example to motivate it.}
 The same instantiation technique as in Rules 10 and 11 applies.
-The declarative checking rule $\mathtt{Decl1I}$ is not translated to the algorithm,
-since combining Rule 18 and Rule 24 would give the same result.
+The declarative checking rule $\mathtt{Decl1I}$ does not have a direct counterpart in the algorithm, 
+because Rules 18 and 24 can be combined to give the same result.
 
-\paragraph{Inference judgments}
-Fifthly, Rules 22-26 deal with inference judgments.
+\item[5. Inference judgments]
+Rules 22-26 deal with inference judgments.
 Inference judgment chains are written in continuation-passing-style.
 When an inference judgment succeeds with type $A$,
 the algorithm continues to work on the inner-chain $\jg$ by assigning $A$ to its placeholder variable $a$.
@@ -289,21 +287,20 @@ Rule 25 infers the type of a lambda expression by introducing $\al, \bt$
 as the input and output types of the function, respectively.
 After checking the body $e$ under the assumption $x:\al$,
 the return type might reflect more information than simply $\al \to \bt$.
-The variable scopings are maintained during the process:
+The variable scopes are maintained during the process:
 the assumption of argument type ($x:\al$) is recycled after checking against the function body;
 the declaration of the function type ($\al,\bt$) is only visible to
 the checking and the remaining chain $[\al\to\bt/a]\jg$.
 \bruno{You have some note ``differs'' on the rules. Should that
   deserve an explanation here?}
 
-\paragraph{Application inferences judgements}
+\item[6. Application inferences judgements]
 Finally, Rules 27-29 deal with application inference judgments.
 Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}$ and $\mathtt{Decl\to App}$.
-Rule 29 instantiate $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
+Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
 
-\subsection{Multiple reduction}
-The syntax $\Gm\redto \Gm'$ denotes multiple reduction steps.
-If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully.
+\end{description}
+
 
 \paragraph{Example}
 
@@ -333,23 +330,22 @@ Figure~\ref{fig:alg:sample} shows a sample derivation of the
 algorithm.
 \bruno{Derivation should be explained briefly at least.}
 
-\subsection{Non-overlapping and Deterministic Reduction}
-An interesting and important aspect of our algorithmic rules is that
-they are directly implementable.
-Although written in the form of reduction rules, they do not overlap with each other.
+\paragraph{Non-overlapping and Deterministic Reduction}
+An important feature of our algorithmic rules is that they are directly
+implementable. Indeed, although written in the form of reduction rules, they do
+not overlap and are thus deterministic.  This has the added benefit that our
+algorithm runs in polynomial time, which makes it suitable for practical use.
 
-For subtyping, Rules 8 and 9 corresponds to declarative rules
-$\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$,
-where both of them matches the goal $\all A\le \all[b]B$.
-We eliminate the overlapping by restricting Rule 8 ($B\neq\all B'$)
-and thus always applying Rule 9 first for algorithmic reduction.
+Consider in particular Rules 8 and 9, which correspond to the declarative rules
+$\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$. While those
+declarative rules both match the goal $\all A\le \all[b]B$,
+we have eliminated this overlap in the algorithm by restricting Rule 8
+($B\neq\all B'$) and thus always applying Rule 9 to $\all A\le \all[b]B$.
 
-Rule 18 is the most general case for checking,
-where its corresponding rule in DK's algorithm overlaps with all other checking rules.
-We prevent the non-determinism by adding conditions to Rule 18,
-namely $e\neq\lam e'$ and $B\neq\all B'$.
-In other words, Rules 19, 20 and 21 have higher priority to Rule 18 when implemented.
-Thus our algorithm runs in polymorphic time, which is suitable for practical scenarios.
+Similarly, the declarative rule $\mathtt{DeclSub}$ overlaps highly with the
+other checking rules. Its algorithmic counterpart is Rule 18. Yet, we have
+avoided the overlap with other algorithmic checking rules by adding
+side-conditions to Rule 18, namely $e\neq\lam e'$ and $B\neq\all B'$.
 
 \jimmy{Describe how to achieve the non-overlapping: a proof of declarative system,
 and then link to the metatheory for more details.}
