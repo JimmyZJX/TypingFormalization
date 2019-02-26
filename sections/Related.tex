@@ -59,13 +59,15 @@ for higher-ranked types is
 the Abella formalization of \emph{polymorphic subtyping} by \citet{itp2018}.
 The judgment form of worklist $\Gm \vdash \Omega$ used in the formalization simplifies
 the propagation of existential variable instantiations.
-However, the approach has two main drawbacks;
-it does not collect unused variable declarations effectively,
-and the simple form of judgment cannot handle inference modes, which outputs types.
+However, the approach has two main drawbacks:
+it does not collect unused variable declarations effectively;
+and the simple form of judgment cannot handle inference modes, which output types.
 The new worklist introduced in this paper inherits the simplicity of propagating instantiations,
-but overcome both of the issues by mixing judgments with declarations
-and using the continuation-passing-style judgment chains.
-\bruno{a comparison with our own ITP paper here!}
+but overcomes both of the issues by mixing judgments with declarations
+and using the continuation-passing-style judgment chains. Furthermore,
+we formalize the complete bidirectional type system by
+\citet{dunfield2013complete}, whereas Zhao et al. only formalize
+the subtyping relation. 
 
 \paragraph{Mechanical Formalizations of Other Type-Inference Algorithms}
 Since the publication of the {\sc POPLMark} challenge~\cite{aydemir2005mechanized},
@@ -114,12 +116,11 @@ Their algorithms collect unification constraints and simplify them progressively
 In comparison, our algorithm mixes variable declarations with judgments,
 resulting in a simpler judgment form,
 while processing them in a similar way to those algorithms.
+\bruno{Still missing: 1) they duplicate context information; 2) their
+  focus is on unification, so they do not have to deal with inference
+  judgements as we do.}
 A detailed discussion is in Section~\ref{sec:overview:list}.
 
-\bruno{Missing: work on type inference and unification of dependent types.
-  Also missing: discussion about ordered contexts and the work by Gundry (in addition to DK).
-  Regarding these two, since we have an extended discussion in Section 2 you can have
-  a summarized discussion here, pointoing to Section 2 for further deatils.}
 
 \bruno{Final comment: You should essentially have all the discussion that we have in ITP +
   some more. So, double-check carefully that all the works we cite in our related work in ITP
