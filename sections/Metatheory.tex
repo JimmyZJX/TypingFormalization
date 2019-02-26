@@ -129,7 +129,15 @@ finish off the theorem.
   theorem) would be helpful to complement the explanation.}
 
 \begin{corollary}[Soundness, single judgment form]
-
+Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
+\begin{enumerate}
+    \item If $\Gm \Vdash A \le B \redto \nil$ then $\Psi \vdash A \le B$;
+    \item If $\Gm \Vdash e \Lto A \redto \nil$ then $\Psi \vdash e \Lto A$;
+    \item If $\Gm \Vdash e \To_a \jg \redto \nil$ for any $\jg$, then there exists $A$
+        s.t. $\Psi \vdash e \To A$;
+    \item If $\Gm \Vdash \appInfAlg{A}{e} \redto \nil$ for any $\jg$, then there exists $C$
+        s.t. $\Psi \vdash \appInf{A}{e}{C}$.
+\end{enumerate}
 \end{corollary}
 
 \subsection{Completeness}
@@ -137,7 +145,7 @@ finish off the theorem.
 Completeness of the algorithm means that any declarative system has an algorithmic counterpart.
 
 \begin{theorem}[Completeness]
-If \emph{wf }$\Gm$ and $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
+If \emph{wf }$\Gm$ and $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 \label{thm:completeness}
 \end{theorem}
 
@@ -172,6 +180,13 @@ All other cases are handled easily... \jimmy{more details if necessary}
 
 The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
 \begin{corollary}[Completeness, single judgment form]
+Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
+\begin{enumerate}
+    \item If $\Psi \vdash A \le B$ then $\Gm \Vdash A \le B \redto \nil$;
+    \item If $\Psi \vdash e \Lto A$ then $\Gm \Vdash e \Lto A \redto \nil$;
+    \item If $\Psi \vdash e \To A$ then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
+    \item If $\Psi \vdash \appInf{A}{e}{C}$ then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
+\end{enumerate}
 \end{corollary}
 
 \subsection{Decidability}
@@ -182,7 +197,7 @@ Given \emph{wf }$\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 We have proven this theorem by a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 on the worklist $\Gm$.
-$|\cdot|_e$ and $|\cdot|_\Leftrightarrow$ measure the total ``size'' of teams
+$|\cdot|_e$ and $|\cdot|_\Leftrightarrow$ measure the total ``size'' of terms
 and the total ``difficulty'' of judgments, respectively;
 $|\cdot|_\forall$ and $|\cdot|_\to$ count the total number of
 universal quantifiers and function types, respectively;
@@ -305,5 +320,6 @@ by consuming that instantiation judgment. Other cases are relatively straightfor
 Combining all the three main results, we know that the declarative system is decidable,
 with the help of our algorithm.
 \begin{corollary}[Decidability of Declarative Typing]
+Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 \end{corollary}
 \subsection{Abella}
