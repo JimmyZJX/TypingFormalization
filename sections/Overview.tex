@@ -131,7 +131,6 @@ Declarative Subtyping}\label{fig:decl:sub}
 \end{gather*}
 \caption{Declarative Typing}\label{fig:decl:typing}
 \end{figure}
-\bruno{Some of the rule names are messed up.}
 
 %The DK subtyping relation was adopted from \citet{odersky1996putting}.
 
@@ -164,7 +163,7 @@ polymorphic (or impredicative) instantiation.
 However this restriction ensures that the subtyping relation remains
 decidable. Allowing an arbitrary type (rather than a monotype) in rule $\mathtt{{\le}\forall L}$
 is know to give rise to an undecidable subtyping relation~\cite{tiuryn1996subtyping}.
-Peyton Jones et al.~\cite{jones2007practical} also impose the restriction of
+\citet{jones2007practical} also impose the restriction of
 predicative instantiation in their type system.
 Both systems are adopted by several practical programming languages.
 
@@ -188,7 +187,6 @@ and changes mode from checking to synthesis: if $e$ synthesizes type $A$ and $A\
 If a checking problem does not match any other rules,
 this rule can be applied to synthesize a type instead and then
 check whether the synthesized type entails the checked type.
-
 Lambda abstractions are the hardest construct of the bidirectional
 type system to deal with. 
 Checking $\lam e$ against function type $A\to B$ is easy:
@@ -207,19 +205,19 @@ If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
 if $[\tau/a]A$ has another universal quantifier, Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
 
 \paragraph{Overlapping Rules}
-\jimmy{Mention the resolution of overlapping briefly, and then point to algorithm and metatheory}
 Some of the declarative rules overlaps with each other.
 Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
 both match the conclusion $\Psi\vdash \all A \le \all B$.
 In such case, choosing $\mathtt{{\le}\forall R}$ first is always better,
 since we introduce the type variable $a$ to the context earlier,
 which gives more flexibility on the choice of $\tau$.
-
 Declarative typing rule $\mathtt{DeclSub}$ overlaps with
 both $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$.
 However, we could argue that more specific rules are always the best choices,
 i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$ should have
-higher priority to $\mathtt{DeclSub}$.
+higher priority to $\mathtt{DeclSub}$. We will come back to this
+topic in Section~\ref{sec:metatheory}.
+\begin{comment}
 For example, $\Psi\vdash \lam x \Lto \all a\to a$ succeeds if derived from
 Rule $\mathtt{Decl\forall I}$, but fails when applied to $\mathtt{DeclSub}$:
 $$
@@ -264,6 +262,7 @@ which is not a polymorphic type.
 By contrast,
 Rule $\mathtt{Decl\to I}$ keeps the polymorphic argument type $\all a\to a$,
 and will successfully derive the judgment.
+\end{comment}
 
 %-------------------------------------------------------------------------------
 \subsection{DK's Algorithm}\label{ssec:DK_Algorithm}
@@ -321,10 +320,10 @@ rule:
 To indicate that the scope of $\al$ is local to the subtyping check
 $[\al/a]A \le B$, the marker is pushed onto its input stack and popped
 from the output stack together with the subsequent part $\Theta$, which may
-refer to $\al$. \jimmy{which may contain definition/solution of $\al$ and references to $\al$}
+refer to $\al$. 
 (Remember that later entries may refer to earlier
 ones, but not vice versa.) This way $\al$ does not escape its scope.
-
+\begin{comment}
 A type variable may have a similar functionality to the scoping markers.
 An example rule that checks an expression against a polymorphic type is as follows:
 $$
@@ -332,11 +331,12 @@ $$
 {\Gm, a \vdash e \Lto A \dashv \Delta, a, \Theta}
 {\Gm \vdash e \Lto \all A \dashv \Delta}
 $$
+\end{comment}
 
 Due to the complication of its scoping control method,
 it is hard to argue the preciseness of scoping for each variable when designing algorithms.
 Actually we found a scoping issue related to the subsumption rule,
-which might cause existential variable leakage across judgments.
+which might cause existential variables to leak across judgments.
 A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
 
 
@@ -363,7 +363,7 @@ proofs without affecting the appeals to these lemmas.
 % thus are easily misused.
 
 More seriously, we have also found a lemma that simply does not hold, 
-Lemma 29 (Parallel Admissibility). See Appendix~\ref{} for a detailed explanation
+Lemma 29 (Parallel Admissibility). See Appendix~\ref{}~\bruno{reference} for a detailed explanation
 and counterexample. This lemma is a cornerstone of the two metatheoretical results 
 of the algorithm, soundness and completeness with respect to the declarative system.
 In particular, both instantiation soundness (i.e. a part of subtyping
@@ -376,11 +376,6 @@ Unfortunately, we have not yet found a way to fix this problem.
   Although they briefly mentioned that it should be possible to use a weaker lemma instead they did
   not go into details.
 }
-\bruno{We should acknowledge Ningning for finding this problem, but I think
-  this may be against the anonymous submission? Perhaps we do not mention her name
-in the submission, and if accepted we mention her?}
-\tom{You have communicated this to the authors and not received a fix, right?
-     We could mention that too then.}
 
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 \paragraph{Complex Scoping and Propagation}
@@ -391,9 +386,8 @@ amenable to mechanisation. Indeed, two aspects that are particularly
 challenging to mechanise are the scoping of universal and existential type
 variables, and the propagation of the instantiation of existential type
 variables across judgments. 
-
 DK is already quite disciplined on these accounts, in particular compared to
-traditional constraint-based type-inference algorithms like Algorithm W which
+traditional constraint-based type-inference algorithms like Algorithm $\mathcal{W}$~\cite{milner1978theory} which
 features an implicit global scope for all type variables. Indeed, DK uses its
 explicit and ordered context $\Gamma$ that tracks the relative scope of universal and
 existential variables and it is careful to only instantiate existential
@@ -436,8 +430,8 @@ For instance, the variable elimination rule is written as:
 Because the whole set is explicitly available, the variable $x$ can be
 simultaneously substituted everywhere.
 
-In the above standard unification problem, all variables are implicitly in the same
-global scope. In contrast, recent unification algorithms for dependently-typed languages
+In the above unification problem, all variables are implicitly in the same
+global scope. Recent unification algorithms for dependently-typed languages
 are more explicit about scopes. For instance, \citet{Reed2009} represents a unification
 problem as $\Delta \vdash P$ where $P$ is a set of equations to be solved and $\Delta$ is
 a (modal) context. \citet{Abel2011higher} even use multiple contexts within a unification problem.
@@ -515,11 +509,11 @@ In recent work, \citet{itp2018} have shown how to mechanise a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
 subtyping judgment. This approach overcomes the problem's in DK's formulation
 by using a \emph{worklist}-based judgement of the form $$\Gamma \vdash \Omega$$
-where $\Omega$ is a worklist, i.e. a sequence, of subtyping problems of the
+where $\Omega$ is a worklist (or sequence) of subtyping problems of the
 form $A \leq B$.  The judgement is defined by case analysis on the first
 element of $\Omega$ and recursively processes the worklist until it is empty.
 Using both a single common ordered context $\Gamma$ and a worklist $\Omega$ greatly
-simplifies propagating the instantiation of type variables that happen in one
+simplifies propagating the instantiation of type variables in one
 subtyping problem to the remaining ones.
 
 Unfortunately, this work does not solve all problems. In particular, it has two
@@ -592,14 +586,16 @@ such a judgement chain is just a check, like a subtyping check $A \leq B$ or a
 term typecheck $e \Leftarrow A$. 
 However, the non-trivial forms of chains capture an
 inference task together with the the work that depends on its outcome. For
-instance, a type inference task takes the form $e \Rightarrow_a \omega$. It
+instance, a type inference task takes the form $e \Rightarrow_a \omega$.
+This form models a \emph{continuation passing style}:
+it
 denotes that we need to infer the type, say $A$, for expression $e$ and use it
 in the chain $\omega$ by substituting it for the placeholder type variable $a$.
 
 Take the following worklist as an example
 $$\al \Vdash \blue{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \blue{\al \le \bt} \Vdash \blue{\bt \le 1}$$
 There are three (blue-colored) judgment chains in the worklist,
-where the first and second judgment chains are two subtyping judgments,
+where the first and second judgment chains (from the right) are two subtyping judgments,
 and the third judgment chain, $(\lam x)~() \To_a a \le \al$,
 is a sequence of an inference judgment followed by a subtyping judgment.
 
