@@ -229,10 +229,9 @@ our algorithm is also complete with respect to DK's declarative system.
 %-------------------------------------------------------------------------------
 \subsection{Soundness}
 
-Our algorithm is sound with respect to the declarative system.
+Our algorithm is sound with respect to DK's declarative system.
 For any worklist $\Gm$ that reduces successfully,
-we can find a valid instantiation $\Gm\sto\Om$ that solves all the existential variables,
-such that $\Om$ also transfers all judgements successfully.
+there is a valid instantiation $\Om$ that transfers all judgements successfully to the declarative system.
 \begin{theorem}[Soundness]
 If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
 \end{theorem}
@@ -240,13 +239,13 @@ If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ a
 The proof proceeds by induction on derivation of $\Gm\redto\nil$.
 Interesting cases are the those involving existential variable instantiations,
 including Rules 10, 11, 21 and 29.
-Proper applications of lemmas \ref{lem:insert} and \ref{lem:extract}
+Applications of Lemmas \ref{lem:insert} and \ref{lem:extract}
 help analyse the full instantiation of those existential variables.
-For example, when $\al$ is solved to be $\al[1] \to \al[2]$ in the algorithm,
-applying Extract gives two instantiations $\al[1] = \sigma$ and $\al[2] = \tau$.
-Inserting back $\al = \sigma \to \tau$ for the induction case
-matches the shape of induction hypothesis and thus finishes the corresponding case.
-Some immediate corollaries, which show the soundness for specific judgement forms are: 
+For example, when $\al$ is solved to $\al[1] \to \al[2]$ in the algorithm,
+applying the Extract lemma gives two instantiations $\al[1] = \sigma$ and $\al[2] = \tau$.
+It follows that $\al = \sigma \to \tau$, which enables the induction hypothesis
+and finishes the corresponding case. Some immediate corollaries which
+show the soundness for specific judgement forms are: 
 
 
 \begin{corollary}[Soundness, single judgment form]
@@ -272,17 +271,19 @@ Given \emph{wf }$\Gm$:
   it is wrong because there is a ``type error''. Worklists and declarative typing contexts are of different shapes
 so the equality does not make sense.}
 
+%-------------------------------------------------------------------------------
 \subsection{Completeness}
 
-Completeness of the algorithm means that any declarative system has an algorithmic counterpart.
+Completeness of our algorithm means that any derivation in the
+declarative system has an algorithmic counterpart.
 
 \begin{theorem}[Completeness]
 If \emph{wf }$\Gm$ and $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 \label{thm:completeness}
 \end{theorem}
 
-We prove completeness by induction on the derivation of $\Om\redto\nil$.
-Here we refer to the non-overlapping declarative system.
+We prove completeness by induction on the derivation of $\Om\redto\nil$
+and use the non-overlapping declarative system.
 Since the declarative worklist is reduced judgment-by-judgment
 (shown in Figure~\ref{fig:decl:worklist}),
 the induction always analyses the first judgment until it is satisfied.
