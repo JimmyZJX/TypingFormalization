@@ -199,7 +199,7 @@ All other rules concern a judgement at the front of the worklist. Logically we
 can discern 6 group of rules.
 
 \begin{description}
-\item[1. Declarative Rules]
+\item[1. Declarative Subtyping]
 We have six subtyping rules (Rules 4-9) that are similar to their
 declarative counterparts. For instance, Rule 7 consumes a subtyping
 judgment and pushes two back to the worklist.  Rule 8 differs from
@@ -219,13 +219,44 @@ of $\al$ could have leaked into the left part of the worklist.  Moreover,
 the algorithm garbage-collects the $\al$
 variable at the perfect time: it leaves the environment immediately
 after being unreferenced.
-\jimmy{An example on subtyping: $\nil\vdash (1\to 1)\to 1 \le (\forall a. a\to a) \to 1$
+
+\jimmy{New example on Feb 27}
+\paragraph{Example} An example derivation on the subtyping judgment
+$(1\to 1)\to 1 \le (\all 1\to 1) \to 1$ is shown as follows:
+\begin{gather*}
+\begin{aligned}
+  & \nil\vdash (1\to 1)\to 1 \le (\all 1 \to 1) \to 1\\
+\rrule{7}  & \nil \Vdash 1 \le 1 \Vdash \all 1 \to 1 \le 1 \to 1\\
+\rrule{8}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1 \le 1 \to 1\\
+\rrule{7}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1 \Vdash 1 \le 1\\
+\rrule{4} & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1\\
+\rrule{4} & \nil \Vdash 1 \le 1 ,\al\\
+\rrule{2} & \nil \Vdash 1 \le 1\\
+\rrule{4} & \nil
+\end{aligned}
+\end{gather*}
+Firstly, the subtyping of two function types is split into two judgments by Rule 7:
+a convariant subtyping on the return type and a contravariant subtyping on the argument type.
+Then we apply Rule 8 to reduce the $\forall$ quantifier on the left side.
+The type $\forall a. 1 \to 1$ is actually not a general type, which
+has an almost equivalent behavior to the type $1 \to 1$.
+But according to the rule, we still introduce an existential variable $\al$ to the context.
+In the following 3 steps we satisfy the judgment $1 \to 1 \le 1 \to 1$ by Rules 7, 4 and 4.
+
+Now the existential variable $\al$, being introduced before but remains unsolved,
+is on the top of the worklist. By Rule 2 it is effectively recycled.
+The process is carefully designed within the algorithmic rules:
+when $\al$ is introduced,
+we foresee the recycling of $\al$ after all the judgments requiring $\al$ processed.
+Finally Rule 4 reduces one of the base cases and finishes the subtyping derivation.
+
+\jimmy{An example on subtyping: $\nil\vdash (1\to 1)\to 1 \le (\forall a. 1 \to 1) \to 1$
 TODO derivation and explanation}
 \bruno{Perhaps this is better illustrated with a simple example?}
 \tom{Yes, it would be good to show one or more
 example derivations to illustrate the key points.}
 
-The design of our judgment chain is closely related to the property of
+The design of our judgment chain is closely related to the shape of
 the judgments
 \jimmy{requires further clarification}
 \bruno{What property? Not very clear}.
