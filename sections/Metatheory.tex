@@ -335,75 +335,104 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
 \end{corollary}
 \bruno{Similar problem to the soundness corollaries here.}
 
-\subsection{Decidability}
+%-------------------------------------------------------------------------------
+\subsection{Termination and Decidability}
 
-\bruno{Tom, this is the section that I feel less helpful. Maybe
-you can look at this one more closely?}
-
-The decidability theorem is:
-
+Finally, we show that our algorithm terminates. In other words:
 \begin{theorem}[Decidability]
 Given \emph{wf }$\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
-
-We have proven this theorem by a lexicographic group of induction measures\\
+Our termination proof is based on a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
-on the worklist $\Gm$.
-$|\cdot|_e$ and $|\cdot|_\Leftrightarrow$ measure the total ``size'' of terms
-and the total ``difficulty'' of judgments, respectively.
-$|\cdot|_\forall$ and $|\cdot|_\to$ counts the total number of
+on the worklist $\Gm$. The definitions of these measures can be found in Figure~\ref{fig:measures}. The first two, 
+$|\cdot|_e$ and $|\cdot|_\Leftrightarrow$, measure the total size of terms
+and the total difficulty of judgments, respectively. In the latter, check judgements
+count for 2, inference judgments for 1 and function inference judgments for 3.
+The next two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
 universal quantifiers and function types, respectively. Finally,
 $|\cdot|_{\al}$ counts the number of existential variables in the worklist.
 
-\begin{definition}[Worklist Measures]
+\begin{figure}[t]
+\hfill \framebox{$|\Gm|_e$} \hfill  \llap{Size measure.}
 \begin{gather*}
 \begin{aligned}
 |\Gm|_e &= \textstyle\sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
     \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
 \text{where } |x|_e &= |()|_e = 1 \qquad |\lam e|_e = |e|_e + 1\\
-|e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1 \qquad |e:A|_e = |e| + 1\\[2mm]
-%
+|e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1 \qquad |e:A|_e = |e| + 1
+\end{aligned}
+\end{gather*}
+\hfill \framebox{$|\Gm|_\Leftrightarrow$} \hfill  \llap{Judgment measure.}
+\begin{gather*}
+\begin{aligned}
 |\Gm|_\Leftrightarrow &= 2\cdot\#_{e\Lto A\in\Gm} +
-    \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}\\[2mm]
+    \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
+\end{aligned}
+\end{gather*}
+\hfill \framebox{$|\Gm|_\forall$} \hfill  \llap{Polymorphism measure.}
+\begin{gather*}
+\begin{aligned}
 |\Gm|_\forall &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
     \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
 \text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
-|A\to B|_\forall &= |A|_\forall + |B|_\forall \qquad |\all A|_\forall = |A|_\forall + 1\\[2mm]
-%
+|A\to B|_\forall &= |A|_\forall + |B|_\forall \qquad |\all A|_\forall = |A|_\forall + 1
+\end{aligned}
+\end{gather*}
+\hfill \framebox{$|\Gm|_\to$} \hfill  \llap{Function measure.}
+\begin{gather*}
+\begin{aligned}
 |\Gm|_\to &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
     \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
 \text{where } |1|_\to &= |a|_\to = |\al|_\to = 1\\
-|A\to B|_\to &= |A|_\to + |B|_\to + 1 \qquad |\all A|_\to = |A|_\to\\[2mm]
-%
+|A\to B|_\to &= |A|_\to + |B|_\to + 1 \qquad |\all A|_\to = |A|_\to
+\end{aligned}
+\end{gather*}
+\hfill \framebox{$|\Gm|_{\al}$} \hfill  \llap{Existential measure.}
+\begin{gather*}
+\begin{aligned}
 |\Gm|_{\al} &= \#_{\al\in\Gm}\\
 \end{aligned}
 \end{gather*}
-\end{definition}
-\bruno{The definitions look a bit intimidating. I do not have immediate suggestions,
-  but perhaps Tom has suggestions on how to improve the presentation here.}
+\caption{Worklist measures}
+\label{fig:measures}
+\end{figure}
 
 It is not difficult to see that all but two algorithmic reduction rules
-decrease the group of measures.
-(The result of Rule 29 could be directly reduced by Rule 28, which decreases the measures.)
-The two exceptions are Rules 10 and 11. Both rules increase the number of existential variables
-without decreasing the number of universal quantifiers.
-However, at the same time, they both break the subtyping problem into two sub-problems
-(Rule 7 applied right after Rule 10 or 11), in smaller sizes.
-Therefore we argue that such split makes the worklist easier, by analyzing a subset of the worklist,
-which we call \emph{instantiation judgments} $\Gm_i$ (defined with the help of $\Gm_\le$ for the proof).
+decrease the group of measures.  (The result of Rule 29 could be directly
+reduced by Rule 28, which decreases the measures.) The two exceptions are Rules
+10 and 11. Both rules increase the number of existential variables without
+decreasing the number of universal quantifiers. However, they are both
+immediately followed by Rule 7, which breaks the subtyping problem into two
+smaller problems of the form $\al \le A$ and $A \le \al$ which we call
+\emph{instantiation judgements}.
 
-\begin{definition}[$\Gm_\le, \Gm_i$]
+We now show that entirely reducing these smaller problems leaves the worklist
+in a state with an overall smaller measure. Our starting point is a 
+worklist of the form $\Gm,\Gm_i$ where $\Gm_i$ are instantiation judgments.
 \begin{gather*}
 \begin{aligned}
-\Gm_\le &:= \nil \mid \Gm_\le, a \mid \Gm_\le, \al \mid \Gm_\le, A\le B\\
 \Gm_i &:= \nil \mid \Gm_i, \al\le A \mid \Gm_i, A\le\al \quad
     \text{where } \al\notin FV(A) \cup FV(\Gm_i)
 \end{aligned}
 \end{gather*}
-\end{definition}
+Fully reducing these instantiation judgments at the top of the worklist
+has a twofold impact. Firstly, new entries may be pushed onto the worklist which
+are not instantiation judgments. This only happens when $\Gm_i$ contains a universal quantifier
+that is reduced by Rule 8 or 9. The new entries then are of the form $\Gm_\forall$:
+\begin{gather*}
+\begin{aligned}
+\Gm_\le &:= \nil \mid \Gm_\le, a \mid \Gm_\le, \al \mid \Gm_\le, A\le B
+\end{aligned}
+\end{gather*}
+Secondly, reducing the instantiation judgments may also affect the remainder of the worklist $\Gm$,
+by solving existing existentials and introducing new ones. This worklist update is captured in the 
+update judgement $\Gm \jExt \Gm'$ defined in Figure~\ref{fig:worklist_ext}.
+For instance, existential variable instantiation, 
+i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
+can be derived as a combination of the three rules that define the update relation.
 
 \begin{figure}
-\framebox{$\Gm\jExt\Gm'$} $\Gm$ extends to $\Gm'$.
+\hfill \framebox{$\Gm\jExt\Gm'$} \hfill \llap{$\Gm$ updates to $\Gm'$}.
 \begin{gather*}
 \inferrule*[right=$\mathtt{\jExt id}$]
     {~}{\Gm\jExt\Gm}
@@ -414,41 +443,16 @@ which we call \emph{instantiation judgments} $\Gm_i$ (defined with the help of $
 \inferrule*[right=$\mathtt{\jExt \al}$]
     {\Gm_L,\al,\Gm_R \jExt \Gm'}{\Gm_L,\Gm_R \jExt \Gm'}
 \end{gather*}
-\caption{Worklist Extension}\label{fig:worklist_ext}
+\caption{Worklist Update}\label{fig:worklist_ext}
 \end{figure}
 
-\paragraph{Intuition of instantiation decidability}
-These instantiation judgments are the ones consumed and produced by Rules 10 and 11.
-When there are universal quantifiers in the initial instantiation judgments $\Gm_i$,
-the worklist $\Gm,\Gm_i$ will be multi-reduced to match Rule 8 or 9,
-which decreases the number of universal quantifiers by 1, and returns a $\Gm',\Gm_\le$.
-Otherwise, no more variables will be introduced,
-and each instantiation judgment solves one existential variable,
-thus finally there will be $|\Gm_i|$ existential variables solved,
-with the worklist reduced to $\Gm'$.
-$\Gm'$ basically refers to the original part of worklist $\Gm$.
-During the reduction, minor changes to the worklist may occur, such as
-existential variable solving or insertion and instantiation.
-Nevertheless, the main structure of remains unchanged.
-
-Shown in Figure~\ref{fig:worklist_ext},
-worklist extension formally describes the minor changes to worklist during algorithmic reduction.
-When the algorithm processes the worklist, the first judgment is processed,
-and the rest of the worklist roughly preserves its shape.
-Worklist extension is formally defined by two cases:
-existential variable solving ($\mathtt{\jExt solve}$) and insertion ($\mathtt{\jExt \al}$).
-Existential variable instantiation, as another common form of worklist manipulation,
-i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
-can be derived with the combination of the 3 rules.
-Within expectation, some worklist measures are not changed modulo worklist extension.
-
-\newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
+The good news is that worklist update does not affect the three main worklist measures:
+\newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}\label{lemma:inst:invariant}
 \begin{lemma}[Measure Invariants of Worklist Extension]
 If $\Gm\sto\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
 \end{lemma}
 
-With all the definitions, we are able to prove the following instantiation decidability lemma.
-
+Moreover, we can characterise the reduction of the instantiation judgments as follows.
 \begin{lemma}[Instantiation Decidability]\label{lemma:inst:decidable}
 For any well-formed algorithmic worklist $(\Gm, \Gm_i)$,
 \begin{enumerate}[1)]
@@ -458,21 +462,25 @@ For any well-formed algorithmic worklist $(\Gm, \Gm_i)$,
         where $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\sto\Gm'$.
 \end{enumerate}
 \end{lemma}
-
-In short, after reducing any instantiation judgment prefix $\Gm_i$,
+Hence, reducing the instantiation judgment prefix $\Gm_i$ either
+decreases the number of universal quantifiers or 
 the algorithm either decreases the number of $\forall$'s
 or solves one existential variable per instantiation judgment.
-The proof of this lemma is by induction on the measure $2*|\Gm_i|_\to + |\Gm_i|$
+The proof of this lemma proceeds by induction on the measure $2*|\Gm_i|_\to + |\Gm_i|$
 of the instantiation judgment list $\Gm_i$.
 
-In summary, the decidability theorem is shown through a lexicographic group of induction measures
-$\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$.
-The critical case is that, whenever we encounter an instantiation judgment at the top of the worklist,
-we make use of Lemma~\ref{lemma:inst:decidable}, which reduces $|\Gm|_{\al}$ or $|\Gm|_\forall$
-by consuming that instantiation judgment. Other cases are relatively straightforward.
+Let us go back to the whole algorithm and summarize our findings.
+The decidability theorem is shown through a lexicographic group of induction measures
+$\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
+which is decreased by nearly all rules.
+In the exceptional case that the measure does not decrease immediately, 
+we encounter an instantiation judgment at the top of the worklist. We can then
+make use of Lemma~\ref{lemma:inst:decidable} to show that $|\Gm|_{\al}$ or $|\Gm|_\forall$ decreases
+when that instantiation judgment is consumed. Moreover, Lemma~\ref{lemma:inst:invariant} establishes
+that no higher-priority measure component increases. Hence, in the exceptional case we have an overall measure decrease too.
 
-Combining all the three main results, we know that the declarative system is decidable,
-with the help of our algorithm.
+Combining all three main results (soundness, completeness and termination), we conclude that the declarative system is decidable
+by means of our algorithm.
 \begin{corollary}[Decidability of Declarative Typing]
 Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 \end{corollary}
