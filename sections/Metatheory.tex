@@ -103,26 +103,27 @@ auxiliary erasure function $\|\Om\|$. The erasure function
 simply drops all judgment entries from the worklist, keeping only variable
 and type variable declarations.
 
+%-------------------------------------------------------------------------------
 \subsection{Non-Overlapping Declarative System}
 \label{sec:metatheory:non-overlapping}
 
-The original DK's declarative system, shown in Figures
-\ref{fig:decl:sub} and \ref{fig:decl:typing}, has a few overlapping
-rules.
-In contrast our algorithm removes all overlapping and makes it
-clear when to apply each rule.
-It is possible to create a slightly modified declarative system,
-by changing a few rules in DK's declarative system, that is completely
-non-overlapping as well. The changes are as follows:
+DK's declarative system, shown in Figures \ref{fig:decl:sub} and
+\ref{fig:decl:typing}, has a few overlapping rules. In contrast, our algorithm
+has removed all overlap; at most one rule applies in any given situation.
+This discrepancy makes it more difficult to relate the two systems.
+
+To simplify matters, we introduce an intermediate system that is still declarative
+in nature, but has no overlap. This intermediate system differs only in a few 
+rules from DK's declarative system; these are the changes:
 \begin{enumerate}
-\item Add a constraint to the subtyping rule $\mathtt{\forall L}$
+\item Restrict the shape of $B$ in the rule $\mathtt{\forall L}$ subtyping rule:
 $$
 \inferrule*[right=$\mathtt{\forall L'}$]
 {B \neq \all[b]B' \\ \Psi \vdash \tau \\ \Psi \vdash [\tau/a]A \le B}
 {\Psi \vdash \all A \le B}
 $$
-\item Remove the redundant rule $\mathtt{Decl1I}$,
-which could be easily derived by a combination of
+\item Drop the redundant rule $\mathtt{Decl1I}$,
+which can be easily derived by a combination of
 $\mathtt{DeclSub}$, $\mathtt{Decl1I{\To}}$ and $\mathtt{{\le}Unit}$:
 $$
 \inferrule*[right=$\mathtt{DeclSub}$]
@@ -137,46 +138,49 @@ $$
 }
 {\Psi \vdash () \Lto 1}
 $$
-\item Add constraints to the subsumption rule $\mathtt{DeclSub}$
+\item Restrict the shapes of $e$ and $A$ in the subsumption rule $\mathtt{DeclSub}$:
 $$
 \inferrule*[right=$\mathtt{DeclSub'}$]
 {e \neq \lam e' \\ A \neq \all A' \\ \Psi \vdash e \To A \\ \Psi \vdash A \le B}
 {\Psi \vdash e \Lto B}
 $$
 \end{enumerate}
+The resulting declarative system has no overlapping rules
+and more closely resembles the aglorithmic system, which contains
+the same shape constraints.
 
-Now the new declarative system has no overlapping rules
-and becomes more similar to the algorithmic system,
-as the algorithmic rules contain similar constraints.
-In addition, we proved soundness and completeness lemmas that show that
-the modified declarative system is equivalent to the original one. Thus the
-``restrictions'' do not change the expressive power of the system.
+We have proven soundness and completeness of the non-overlapping declarative
+system with respect to the overlapping one to establish their equivalence.
+Thus the restrictions do not change the expressive power of the system.
 Modification (2) is relatively easy to justify, with the derivation given above:
 the rule is redundant and can be replaced by a combination of three other rules.
-Modifications (1) and (3) require inversion lemmas regarding rules that overlaps with them.
-Rule $\mathtt{\forall L}$ initially overlaps with $\mathtt{\forall R}$ when facing judgment
+Modifications (1) and (3) require inversion lemmas for the rules that overlap.
+Firstly, Rule $\mathtt{\forall L}$ overlaps with Rule $\mathtt{\forall R}$ for the judgment
 $\Psi \vdash \all A \le \all[b]B$.
-The following inversion lemma for Rule $\mathtt{\forall R}$ settles the overlapping:
+The following inversion lemma for Rule $\mathtt{\forall R}$ resolves the overlap:
 \begin{lemma}[Invertibility of $\mathtt{\forall R}$]
 If $\Psi \vdash A \le \all B$ then $\Psi, a \vdash A \le B$.
 \end{lemma}
-The lemma implies that giving a higher priority to $\mathtt{\forall R}$ does not affect the derivation.
-Therefore the restriction $B \neq \all[b]B'$ is reasonable.
+The lemma implies that preferring Rule $\mathtt{\forall R}$ does not affect the derivability of the judgment.
+Therefore the restriction $B \neq \all[b]B'$ in $\mathtt{\forall L'}$ is valid.
 
-Rule $\mathtt{DeclSub}$ overlaps with both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
-Two similar inversion lemmas should be proven:
+Secondly, Rule $\mathtt{DeclSub}$ overlaps with both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
+We have proven two inversion lemmas for these overlaps:
 \begin{lemma}[Invertibility of $\mathtt{Decl\forall I}$]
 If $\Psi \vdash e \Lto \all A$ then $\Psi, a \vdash e \Lto A$.
 \end{lemma}
 \begin{lemma}[Invertibility of $\mathtt{Decl{\to}I}$]
 If $\Psi \vdash \lam e \Lto A \to B$ then $\Psi, x:A \vdash e \Lto B$.
 \end{lemma}
-These lemmas basically state that applying the specific rules is never worse than
-applying the more general Rule $\mathtt{DeclSub}$.
-Proving both of the lemmas require an important property of the declarative system,
-the subsumption lemma.
-We first define the context subtyping relation in Figure~\ref{fig:context_subtyping},
-and then show the subsumption lemma as follows.
+These lemmas express that applying the more specific rules, rather than the more general rule $\mathtt{DeclSub}$, does not reduce the expressive power.
+
+The proofs of the above two lemmas rely on an important property of the
+declarative system, the \emph{subsumption lemma}. To be able to formulate this
+lemma, Figure~\ref{fig:context_subtyping} introduces the \emph{context
+subtyping relation} $\Psi \le \Psi'$. Context $\Psi$ subsumes context $\Psi'$ if they
+bind the same variables in the same order, but the types $A$ of the term variables $x$
+in the former are subtypes of types $A'$ assigned to those term variables in the latter.
+Now we can state the subsumption lemma:
 
 \begin{figure}[t]
 \framebox{$\Psi' \le \Psi$}
@@ -202,21 +206,25 @@ Given $\Psi' \le \Psi$:
         then there exists $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash \appInf{C'}{e}{A'}$.
 \end{enumerate}
 \end{lemma}
+This lemma expresses that any derivation in a context $\Psi$ has a corresponding derivation in any context
+$\Psi'$ that it subsumes.
 
-We tried to follow DK's proof on the subsumption lemma,
-but the manual proof had several problems and we were not able to formalize it directly.
-Fortunately we found a different way todo the proof and get the lemma proven.
-Details about this issue can be found in Appendix~\ref{}.\bruno{reference}
+We have tried to follow DK's manual proof of this lemma,
+but we discovered several problems in their reasoning that we have been able to address.
+Fortunately we have found a different way to prove the lemma.
+The details of this issue can be found in Appendix~\ref{}.\bruno{reference}
 
 \paragraph{Three-Way Soundness and Completeness Theorems}
-We now have three systems defined: the DK's declarative system,
-the modified non-overlapping declarative system, and the algorithmic system.
-First, we have got the statement that the non-overlapping declarative system,
-as a restricted version, is equivalent to the DK's declarative system.
-Then, the soundness of the algorithm can be directly shown against the original declarative system.
-Finally, the completeness of the algorithm is shown against the non-overlapping declarative system,
-which is equivalent the DK's declarative system.
-As a result, we show that our algorithm is sound and complete with respect to DK's declarative system.
+We now have three systems that can be related: DK's overlapping declarative system,
+our non-overlapping declarative system, and our algorithmic system.
+We have already establishes the first relation, that the two declarative
+systems are equivalent.
+
+In what follows, we will establish the soundness of our algorithm directly
+against the original overlapping declarative system. However, we have found
+that showing completeness of the algorithm is easier against the
+non-overlapping declarative system. Of course, as a corollary, it follows that
+our algorithm is also complete with respect to DK's declarative system.
 
 %-------------------------------------------------------------------------------
 \subsection{Soundness}
