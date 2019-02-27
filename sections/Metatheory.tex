@@ -242,14 +242,21 @@ Some immediate corollaries, which show the soundness for specific judgement form
 
 
 \begin{corollary}[Soundness, single judgment form]
-Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
+Given \emph{wf }$\Gm$:
 \begin{enumerate}
-    \item If $\Gm \Vdash A \le B \redto \nil$ then $\Psi \vdash A \le B$;
-    \item If $\Gm \Vdash e \Lto A \redto \nil$ then $\Psi \vdash e \Lto A$;
-    \item If $\Gm \Vdash e \To_a \jg \redto \nil$ for any $\jg$, then there exists $A$
-        s.t. $\Psi \vdash e \To A$;
-    \item If $\Gm \Vdash \appInfAlg{A}{e} \redto \nil$ for any $\jg$, then there exists $C$
-        s.t. $\Psi \vdash \appInf{A}{e}{C}$.
+    \item If $\Gm \Vdash A \le B \redto \nil$\\
+        then there exist $A', B', \Om$ s.t.
+        $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$ and $\|\Om\| \vdash A' \le B'$;
+    \item If $\Gm \Vdash e \Lto A \redto \nil$\\
+        then there exist $e', A', \Om$ s.t.
+        $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$ and $\|\Om\| \vdash e \Lto A'$;
+    \item If $\Gm \Vdash e \To_a \jg \redto \nil$ for any $\jg$\\
+        then there exists $\Om, \jg', A$ s.t.
+        $\Gm \sto \Om$ and $\|\Om\| \vdash e \To A$;
+    \item If $\Gm \Vdash \appInfAlg{A}{e} \redto \nil$ for any $\jg$\\
+        then there exists $\Om, \jg', A', C$ s.t.
+        $\Gm \Vdash \appInfAlg{A}{e} \sto \Om \Vdash \appInfAlg{A'}{e}[a][\jg']$
+            and $\|\Om\| \vdash \appInf{A'}{e}{C}$.
 \end{enumerate}
 \end{corollary}
 \bruno{I do not think the corollary is precisely stated. I think you want todo
@@ -298,17 +305,23 @@ A symmetric lemma holds for $A\to B \le \al$.
 
 \begin{lemma}[Prune Transfer for Instantiation]
 If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and
-$\Om \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
+$\|\Om\| \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
 
 The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
 \begin{corollary}[Completeness, single judgment form]
-Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
+Given \emph{wf }$\Gm$ containing no judgment chains:
 \begin{enumerate}
-    \item If $\Psi \vdash A \le B$ then $\Gm \Vdash A \le B \redto \nil$;
-    \item If $\Psi \vdash e \Lto A$ then $\Gm \Vdash e \Lto A \redto \nil$;
-    \item If $\Psi \vdash e \To A$ then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
-    \item If $\Psi \vdash \appInf{A}{e}{C}$ then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
+    \item If $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$ and $\|\Om\| \vdash A' \le B'$
+        then $\Gm \Vdash A \le B \redto \nil$;
+    \item If $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$ and $\|\Om\| \vdash e \Lto A'$
+        then $\Gm \Vdash e \Lto A \redto \nil$;
+    \item If $\Gm \sto \Om$ and exists $A$ s.t. $\|\Om\| \vdash e \To A$
+        then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
+    \item If $\Gm \Vdash \appInfAlg{A}{e}[a][1 \to 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \to 1]$
+        and exists $C$ s.t. $\|\Om\| \vdash \appInf{A'}{e}{C}$
+        \\
+        then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
 \end{corollary}
 \bruno{Similar problem to the soundness corollaries here.}
