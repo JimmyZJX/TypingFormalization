@@ -412,7 +412,7 @@ worklist of the form $\Gm,\Gm_i$ where $\Gm_i$ are instantiation judgments.
 Fully reducing these instantiation judgments at the top of the worklist
 has a twofold impact. Firstly, new entries may be pushed onto the worklist which
 are not instantiation judgments. This only happens when $\Gm_i$ contains a universal quantifier
-that is reduced by Rule 8 or 9. The new entries then are of the form $\Gm_\forall$:
+that is reduced by Rule 8 or 9. The new entries then are of the form $\Gm_\le$:
 \begin{gather*}
 \begin{aligned}
 \Gm_\le &:= \nil \mid \Gm_\le, a \mid \Gm_\le, \al \mid \Gm_\le, A\le B
@@ -443,7 +443,7 @@ can be derived as a combination of the three rules that define the update relati
 The good news is that worklist update does not affect the three main worklist measures:
 \newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}\label{lemma:inst:invariant}
 \begin{lemma}[Measure Invariants of Worklist Extension]
-If $\Gm\sto\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
+If $\Gm\jExt\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
 \end{lemma}
 
 Moreover, we can characterise the reduction of the instantiation judgments as follows.
@@ -451,9 +451,9 @@ Moreover, we can characterise the reduction of the instantiation judgments as fo
 For any well-formed algorithmic worklist $(\Gm, \Gm_i)$,
 \begin{enumerate}[1)]
     \item When $|\Gm_i|_\forall = 0$, $(\Gm, \Gm_i) \redto \Gm'$,
-        where $|\Gm'|_{\al} = |\Gm|_{\al} - |\Gm_i|$ and $\Gm\sto\Gm'$.
+        where $|\Gm'|_{\al} = |\Gm|_{\al} - |\Gm_i|$ and $\Gm\jExt\Gm'$.
     \item When $|\Gm_i|_\forall > 0$, $(\Gm, \Gm_i) \redto (\Gm', \Gm_\le)$,
-        where $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\sto\Gm'$.
+        where $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\jExt\Gm'$.
 \end{enumerate}
 \end{lemma}
 Hence, reducing the instantiation judgment prefix $\Gm_i$ either
@@ -464,7 +464,7 @@ The proof of this lemma proceeds by induction on the measure $2*|\Gm_i|_\to + |\
 of the instantiation judgment list $\Gm_i$.
 
 Let us go back to the whole algorithm and summarize our findings.
-The decidability theorem is shown through a lexicographic group of induction measures
+The termination theorem is shown through a lexicographic group of induction measures
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 which is decreased by nearly all rules.
 In the exceptional case that the measure does not decrease immediately, 
