@@ -7,7 +7,7 @@ These three results have been mechanically formalized and proved in the
 Abella theorem prover~\cite{AbellaDesc}.
 
 %-------------------------------------------------------------------------------
-\subsection{Declarative Worklist}
+\subsection{Declarative Worklist and Transfer}
 %\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
 
 \begin{figure}[t]
@@ -31,13 +31,14 @@ Abella theorem prover~\cite{AbellaDesc}.
 \end{figure}
 
 To aid formalizing the correspondence between the declarative and algorithmic
-systems, we introduce the notion of declarative worklist $\Om$, define in
+systems, we introduce the notion of a declarative worklist $\Om$, defined in
 Figure~\ref{fig:trans}. A declarative worklist $\Om$ has the same structure as an
 algorithmic worklist $\Gm$, but does not contain any extistential variables $\al$.
 
+\paragraph{Worklist instantiation.}
 The relation $\Gm \sto \Om$ expresses that the algorithmic worklist $\Gm$ can 
-be instiantiated to the declarative worklist $\Om$, namely by appropriately instantiating
-all exitential variables $\al$ in $\Gm$ with well-scoped monotypes $\tau$.
+be instiantiated to the declarative worklist $\Om$, by appropriately instantiating
+all existential variables $\al$ in $\Gm$ with well-scoped monotypes $\tau$.
 The rules of this instantiation relation are shown in Figure~\ref{fig:trans} too.
 Rule $\mathtt{{\sto}\al}$ replaces the first existential variable with a well-scoped monotype and
 repeats the process on the resulting worklist until no existential variable remains
@@ -92,24 +93,27 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \label{fig:decl:worklist}
 \end{figure}
 
-Figure~\ref{fig:decl:worklist} defines a declarative version $\Om \sto \Om'$ of
-the algorithmic reduction rules, which transfers judgements in the declarative worklists to the
-declarative type system, by checking every judgement entry in the worklist with
-the help of the corresponding conventional declarative judgement. Recall that
-the worklist consists of an interleaving of the typing context with judgments.
-By means of the auxiliary function $\|\Om\|$ we can extracts the typing context
-out of it, for use in the conventional declarative judgments. What is does to
-obtain the typing context is simply erase the judgment entries from the
-worklist.
+\paragraph{Declarative transfer.}
+Figure~\ref{fig:decl:worklist} defines a relation $\Om \rto \Om'$,
+which transfers all judgements in the declarative worklists to the
+declarative type system. This relation checks that every judgement entry in the worklist
+holds using a corresponding conventional declarative judgement. 
+The typing contexts of declarative judgements are recovered using an
+auxiliary erasure function $\|\Om\|$. The erasure function
+simply drops all judgment entries from the worklist, keeping only variable
+and type variable declarations.
 
-\subsection{Non-overlapping Declarative System}
+\subsection{Non-Overlapping Declarative System}
 \label{sec:metatheory:non-overlapping}
-\jimmy{Talk about the modified subsumption rule, reasoning about the unit rule,
-and the subtyping $\forall$ overlapping}
 
-The original DK's declarative system, shown in Figures \ref{fig:decl:sub} and \ref{fig:decl:typing},
-has a few overlapping rules.
-We propose a slightly modified declarative system, by changing a few rules in DK's declarative system:
+The original DK's declarative system, shown in Figures
+\ref{fig:decl:sub} and \ref{fig:decl:typing}, has a few overlapping
+rules.
+In contrast our algorithm removes all overlapping and makes it
+clear when to apply each rule.
+It is possible to create a slightly modified declarative system,
+by changing a few rules in DK's declarative system, that is completely
+non-overlapping as well. The changes are as follows:
 \begin{enumerate}
 \item Add a constraint to the subtyping rule $\mathtt{\forall L}$
 $$
@@ -144,12 +148,12 @@ $$
 Now the new declarative system has no overlapping rules
 and becomes more similar to the algorithmic system,
 as the algorithmic rules contain similar constraints.
-In addition, we proved that the modified declarative system is equivalent to the original one.
-
+In addition, we proved soundness and completeness lemmas that show that
+the modified declarative system is equivalent to the original one. Thus the
+``restrictions'' do not change the expressive power of the system.
 Modification (2) is relatively easy to justify, with the derivation given above:
 the rule is redundant and can be replaced by a combination of three other rules.
-
-Modificaitons (1) and (3) require inversion lemmas regarding rules that overlaps with them.
+Modifications (1) and (3) require inversion lemmas regarding rules that overlaps with them.
 Rule $\mathtt{\forall L}$ initially overlaps with $\mathtt{\forall R}$ when facing judgment
 $\Psi \vdash \all A \le \all[b]B$.
 The following inversion lemma for Rule $\mathtt{\forall R}$ settles the overlapping:
@@ -167,7 +171,7 @@ If $\Psi \vdash e \Lto \all A$ then $\Psi, a \vdash e \Lto A$.
 \begin{lemma}[Invertibility of $\mathtt{Decl{\to}I}$]
 If $\Psi \vdash \lam e \Lto A \to B$ then $\Psi, x:A \vdash e \Lto B$.
 \end{lemma}
-These lemmas basically state that applying the specific rules is always no worse than
+These lemmas basically state that applying the specific rules is never worse than
 applying the more general Rule $\mathtt{DeclSub}$.
 Proving both of the lemmas require an important property of the declarative system,
 the subsumption lemma.
@@ -200,11 +204,11 @@ Given $\Psi' \le \Psi$:
 \end{lemma}
 
 We tried to follow DK's proof on the subsumption lemma,
-but the manual proof has several problems and is not able to be formalized.
-Fortunately we fixed the issues and get the lemma proven.
-Details about this issue can be found in Appendix~\ref{}.
+but the manual proof had several problems and we were not able to formalize it directly.
+Fortunately we found a different way todo the proof and get the lemma proven.
+Details about this issue can be found in Appendix~\ref{}.\bruno{reference}
 
-\paragraph{Proof Sketch for Soundness and Completeness Theorems}
+\paragraph{Three-Way Soundness and Completeness Theorems}
 We now have three systems defined: the DK's declarative system,
 the modified non-overlapping declarative system, and the algorithmic system.
 First, we have got the statement that the non-overlapping declarative system,
@@ -219,8 +223,8 @@ As a result, we show that our algorithm is sound and complete with respect to DK
 
 Our algorithm is sound with respect to the declarative system.
 For any worklist $\Gm$ that reduces successfully,
-we can find a valid transfer $\Gm\sto\Om$ that solves all the existential variables,
-such that $\Om$ also reduces successfully.
+we can find a valid instantiation $\Gm\sto\Om$ that solves all the existential variables,
+such that $\Om$ also transfers all judgements successfully.
 \begin{theorem}[Soundness]
 If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
 \end{theorem}
@@ -234,12 +238,8 @@ For example, when $\al$ is solved to be $\al[1] \to \al[2]$ in the algorithm,
 applying Extract gives two instantiations $\al[1] = \sigma$ and $\al[2] = \tau$.
 Inserting back $\al = \sigma \to \tau$ for the induction case
 matches the shape of induction hypothesis and thus finishes the corresponding case.
+Some immediate corollaries, which show the soundness for specific judgement forms are: 
 
-\bruno{Give a bit more informal explanation here. Something like: If
-  $\Gm$ is reducible then we can show that there is always an $\Om$
-  where all the corresponding declarative judgements hold.}
-\bruno{I wonder if 1 or 2 examples (concrete instantiations of the
-  theorem) would be helpful to complement the explanation.}
 
 \begin{corollary}[Soundness, single judgment form]
 Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
@@ -252,6 +252,10 @@ Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
         s.t. $\Psi \vdash \appInf{A}{e}{C}$.
 \end{enumerate}
 \end{corollary}
+\bruno{I do not think the corollary is precisely stated. I think you want todo
+  instantiation on $\Gm$ and then use erasure on the judgements, right? As it stands
+  it is wrong because there is a ``type error''. Worklists and declarative typing contexts are of different shapes
+so the equality does not make sense.}
 
 \subsection{Completeness}
 
@@ -263,7 +267,7 @@ If \emph{wf }$\Gm$ and $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 \end{theorem}
 
 We prove completeness by induction on the derivation of $\Om\redto\nil$.
-Here we refer to the non-overlapping declarative system without chaning any syntax.
+Here we refer to the non-overlapping declarative system.
 Since the declarative worklist is reduced judgment-by-judgment
 (shown in Figure~\ref{fig:decl:worklist}),
 the induction always analyses the first judgment until it is satisfied.
@@ -274,29 +278,28 @@ a declarative rule may correspond to multiple algorithmic rules,
 and thus we analyse each of the possible cases.
 \jimmy{Cite DK's proof as the sketch.}
 
-For subtyping, algorithmic Rules 10 and 11 require special treatment.
+Most cases are relatively easy to prove.
+The Insert and Extract lemmas are applied when the algorithm uses existential variables,
+but transferred to a monotype for the declarative system,
+such as Rules 6, 10, 11, 12-17, 21 and 29.
+Algorithmic Rules 10 and 11 require special treatment.
 When the induction reaches the $\mathtt{{\le}{\to}}$ case,
 the first judgment is of shape $A_1 \to A_2 \le B_1 \to B_2$.
-One of the corresponding algorithmic judgment is $\al \le A \to B$.
+One of the corresponding algorithmic judgments is $\al \le A \to B$.
 However, the case analysis does not imply that $\al$ is fresh in $A$ and $B$,
 therefore Rule~10 cannot be applied and the proof gets stuck.
 The following lemma helps us out in those cases:
 the success in declarative subtyping indicates the freshness of $\al$ in $A$ and $B$
 in its corresponding algorithmic judgment.
-In other words, the declarative system does not accept infinite types,
-thus, as an example, we cannot find a monotype $\tau$ such that $\tau\le 1\to \tau$,
-which could be transferred by $\al\le 1\to\al$.
+In other words, the declarative system does not accept infinite types.
+A symmetric lemma holds for $A\to B \le \al$.
+%thus, as an example, we cannot find a monotype $\tau$ such that $\tau\le 1\to \tau$,
+%which could be transferred by $\al\le 1\to\al$.
 
 \begin{lemma}[Prune Transfer for Instantiation]
 If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and
 $\Om \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
-A symmetric lemma holds for $A\to B \le \al$.
-
-All other cases are relatively easy to prove.
-The Insert and Extract lemmas are applied when the algorithm uses existential variables,
-but transferred to a monotype for the declarative system,
-such as Rules 6, 10, 11, 12-17, 21 and 29.
 
 The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
 \begin{corollary}[Completeness, single judgment form]
@@ -308,8 +311,15 @@ Given \emph{wf }$\Psi$ and $\Gm = \Psi$:
     \item If $\Psi \vdash \appInf{A}{e}{C}$ then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
 \end{corollary}
+\bruno{Similar problem to the soundness corollaries here.}
 
 \subsection{Decidability}
+
+\bruno{Tom, this is the section that I feel less helpful. Maybe
+you can look at this one more closely?}
+
+The decidability theorem is:
+
 \begin{theorem}[Decidability]
 Given \emph{wf }$\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
@@ -318,9 +328,9 @@ We have proven this theorem by a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 on the worklist $\Gm$.
 $|\cdot|_e$ and $|\cdot|_\Leftrightarrow$ measure the total ``size'' of terms
-and the total ``difficulty'' of judgments, respectively;
-$|\cdot|_\forall$ and $|\cdot|_\to$ count the total number of
-universal quantifiers and function types, respectively;
+and the total ``difficulty'' of judgments, respectively.
+$|\cdot|_\forall$ and $|\cdot|_\to$ counts the total number of
+universal quantifiers and function types, respectively. Finally,
 $|\cdot|_{\al}$ counts the number of existential variables in the worklist.
 
 \begin{definition}[Worklist Measures]
@@ -347,16 +357,18 @@ $|\cdot|_{\al}$ counts the number of existential variables in the worklist.
 \end{aligned}
 \end{gather*}
 \end{definition}
+\bruno{The definitions look a bit intimidating. I do not have immediate suggestions,
+  but perhaps Tom has suggestions on how to improve the presentation here.}
 
 It is not difficult to see that all but two algorithmic reduction rules
-decreases the group of measures.
+decrease the group of measures.
 (The result of Rule 29 could be directly reduced by Rule 28, which decreases the measures.)
-The two exceptions are Rules 10 and 11; they increases the number of existential variables
+The two exceptions are Rules 10 and 11. Both rules increase the number of existential variables
 without decreasing the number of universal quantifiers.
 However, at the same time, they both break the subtyping problem into two sub-problems
 (Rule 7 applied right after Rule 10 or 11), in smaller sizes.
-Therefore we argue that such split makes the worklist easier, by analyzing a subset of worklist,
-which we call \emph{instantiation judgments} $\Gm_i$, with the help of $\Gm_\le$ for the proof.
+Therefore we argue that such split makes the worklist easier, by analyzing a subset of the worklist,
+which we call \emph{instantiation judgments} $\Gm_i$ (defined with the help of $\Gm_\le$ for the proof).
 
 \begin{definition}[$\Gm_\le, \Gm_i$]
 \begin{gather*}
@@ -393,14 +405,14 @@ and each instantiation judgment solves one existential variable,
 thus finally there will be $|\Gm_i|$ existential variables solved,
 with the worklist reduced to $\Gm'$.
 $\Gm'$ basically refers to the original part of worklist $\Gm$.
-During the reduction, minor changes to worklist might occur, such as
-existential variable solving, insertion and instantiation,
-but the main structure of it remains unchanged.
+During the reduction, minor changes to the worklist may occur, such as
+existential variable solving or insertion and instantiation.
+Nevertheless, the main structure of remains unchanged.
 
 Shown in Figure~\ref{fig:worklist_ext},
-worklist extension formally describe the minor changes to worklist during algorithmic reduction.
+worklist extension formally describes the minor changes to worklist during algorithmic reduction.
 When the algorithm processes the worklist, the first judgment is processed,
-and the rest of the worklist roughly remains its shape.
+and the rest of the worklist roughly preserves its shape.
 Worklist extension is formally defined by two cases:
 existential variable solving ($\mathtt{\jExt solve}$) and insertion ($\mathtt{\jExt \al}$).
 Existential variable instantiation, as another common form of worklist manipulation,
