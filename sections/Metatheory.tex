@@ -266,10 +266,6 @@ Given \emph{wf }$\Gm$:
             and $\|\Om\| \vdash \appInf{A'}{e}{C}$.
 \end{enumerate}
 \end{corollary}
-\bruno{I do not think the corollary is precisely stated. I think you want todo
-  instantiation on $\Gm$ and then use erasure on the judgements, right? As it stands
-  it is wrong because there is a ``type error''. Worklists and declarative typing contexts are of different shapes
-so the equality does not make sense.}
 
 %-------------------------------------------------------------------------------
 \subsection{Completeness}
@@ -284,10 +280,9 @@ If \emph{wf }$\Gm$ and $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
 
 We prove completeness by induction on the derivation of $\Om\redto\nil$
 and use the non-overlapping declarative system.
-Since the declarative worklist is reduced judgment-by-judgment
+Since the declarative worklist is reduced judgment by judgment
 (shown in Figure~\ref{fig:decl:worklist}),
 the induction always analyses the first judgment until it is satisfied.
-In Abella, we use a different relation to get the correct induction scheme.
 
 As the algorithmic system introduces existential variables,
 a declarative rule may correspond to multiple algorithmic rules,
@@ -333,7 +328,6 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
         then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
 \end{corollary}
-\bruno{Similar problem to the soundness corollaries here.}
 
 %-------------------------------------------------------------------------------
 \subsection{Termination and Decidability}
