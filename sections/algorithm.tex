@@ -326,9 +326,33 @@ Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like R
 \label{fig:alg:sample}
 \end{figure}
 
-Figure~\ref{fig:alg:sample} shows a sample derivation of the
-algorithm.
+Figure~\ref{fig:alg:sample} shows a sample derivation of the algorithm.
+The judgment given is to check the application $(\lam x)~()$ against the unit type.
+According to the algorithm, we apply Rule 18 (subsumption), changing to inference mode.
+Type inference of the application breaks into two steps by Rule 26:
+firstly we infer the type of the function,
+and then the application inference judgment help determine the return type.
+The type of the identity function, $\lam x$, is inferred to be $\al \to \al$,
+which can be interpreted as $\tau \to \tau$ for any valid monotype $\tau$,
+after the following 5 steps:
+a checking on the body of the lambda function (Rule 25),
+calling the inference mode for the checking (Rule 18)
+a term variable inference (Rule 22),
+a subtyping on existential variables (Rule 12) and
+a garbage collection of the term variable $x$ (Rule 3).
+
+After that, Rule 28 changes the application inference judgment to
+a checking on the argument against the input type $\al$ and returns the output type $\al$.
+Checking $()$ against the existential variable $\al$ solves $\al$ to the unit type $1$
+through Rules 18, 24 and 16.
+Immediately after $\al$ is solved, the algorithm substitute every occurrence of $\al$ to $1$.
+Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which finishes off by Rule 4.
+Finally we get an empty worklist, indicating the success of the whole derivation.
+
+To summarize, our algorithm accepts the type checking $(\lam x)~() \Lto 1$.
+
 \bruno{Derivation should be explained briefly at least.}
+
 
 \paragraph{Non-overlapping and Deterministic Reduction}
 An important feature of our algorithmic rules is that they are directly
