@@ -2,7 +2,7 @@
 
 This section introduces a novel algorithmic system that implements 
 DK's declarative specification. The new algorithm extends the idea
-of worklists proposed by \citet{itp2018} with two new features. Firstly,
+of worklists proposed by \citet{itp2018} in two ways. Firstly,
 unlike \citet{itp2018}'s worklists, the scope of variables is precisely tracked
 and variables do not escape their scope. This is achieved by unifying algorithmic contexts and the worklists themselves.
 Secondly, our algorithm also
@@ -83,7 +83,7 @@ Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness judgements used
 
 \paragraph{Existential Variables} 
 The algorithmic system inherits the syntax of terms and types from 
-the declartive system. It only introduces one additional feature.
+the declarative system. It only introduces one additional feature.
 In order to find unknown types $\tau$ in the declarative system, the
 algorithmic system extends the declarative types $A$ with \emph{existential variables} $\al, \bt$.
 They behave like unification variables,
@@ -91,14 +91,14 @@ but their scope is restricted by their position in the
 algorithmic worklist rather than being global.
 Any existential variable $\al$ should only be solved to
 a type that is well-formed with respect to the worklist to which $\al$ has been added.
-The point is that the monotype $\tau$ represented by the corresponding existential variable
+The point is that the monotype $\tau$, represented by the corresponding existential variable,
 is always well-formed under the corresponding declarative context.
 In other words, the position of $\al$'s reflects the well-formedness restriction of $\tau$'s.
 
 %% A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
 
 \paragraph{Judgment Chains} 
-Judgment chains, or judgments for short, $\jg$ are the core components of our algorithmic
+Judgment chains $\jg$, or judgments for short, are the core components of our algorithmic
 type-checking. There are four kinds
 of judgments in our system: subtyping ($A \le B$), checking ($e\Lto
 A$), inference ($e\To_{a} \jg$) and
