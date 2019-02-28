@@ -15,12 +15,12 @@ that the unifies \emph{ordered contexts} and the worklists themselves.
 \[
 \begin{array}{l@{\qquad}lcl}
 \text{Type variables}\qquad&a, b
-\\[3mm]
+\\
 \text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \forall a. A \mid A\to B\\
 \text{Monotypes}\qquad&\tau,\sigma &::=&\quad 1 \mid a \mid \tau\to \sigma
-\\[3mm]
+\\
 \text{Expressions}\qquad&e &::=&\quad x \mid () \mid \lam e \mid e_1~e_2 \mid (e:A)
-\\[3mm]
+\\
 \text{Contexts}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A
 \end{array}
 \]
