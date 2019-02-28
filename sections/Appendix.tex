@@ -1,12 +1,95 @@
 
 \section{Appendix}
 
-\jimmy{Lemma 29 is false. TODO structure and more text}
-The first conclusion of the lemma says that if $\Gm_L\longrightarrow \Delta_R$ and
-$\Gm_L,\Gm_R\longrightarrow \Delta_L,\Delta_R$ then
-$\Gm_L,\al,\Gm_R\longrightarrow \Delta_L,\al,\Delta_R$.
-If we pick $\Gm_L = \nil, \Gm_R = \bt, \Delta_L = \bt, \Delta_R = \nil$, the conditions
-$\nil\longrightarrow \bt$ and $\bt\longrightarrow \bt$ hold, but the conclusion
-$\al,\bt \longrightarrow \bt,\al$ does not hold.
+\subsection{False Lemmas in DK's papers}
+\label{appendix:false_lemmas}
 
+We found false lemmas in the manual proofs of DK' two papers
+\cite{dunfield2013complete} and \cite{DunfieldIndexed}.
+\begin{itemize}
+    \item
+        In the first paper, Lemma 29 on page 9 of its appendix says:
+        \begin{lemma}[Parallel Admissibility of~\cite{dunfield2013complete}]~\\
+        If $\Gamma_L \longrightarrow \Delta_L$ and
+        $\Gamma_L, \Gamma_R \longrightarrow \Delta_L, \Delta_R$ then:
+        \begin{enumerate}
+            \item $\Gamma_L,\al,\Gamma_R \longrightarrow \Delta_L, \al, \Delta_R$
+            \item If $\Delta_L \vdash \tau'$ then
+                $\Gamma_L,\al,\Gamma_R \longrightarrow \Delta_L, \al = \tau', \Delta_R$.
+            \item If $\Gamma_L \vdash \tau$ and $\Delta_L \vdash \tau'$ and
+                $[\Delta_L]\tau = [\Delta_L]\tau'$, then
+                $\Gamma_L, \al = \tau, \Gamma_R \longrightarrow \Delta_L, \al = \tau', \Delta_R$.
+        \end{enumerate}
+        \end{lemma}
 
+        We give a counter-example to this lemma:\\
+        Pick $\Gm_L = \nil, \Gm_R = \bt, \Delta_L = \bt, \Delta_R = \nil$, then both conditions
+        $\nil\longrightarrow \bt$ and $\bt\longrightarrow \bt$ hold, but the first conclusion
+        $\al,\bt \longrightarrow \bt,\al$ does not hold.
+    \item
+        In the second paper, as an extended work to the first paper, Lemma 26 on page 22 of its appendix says:
+        \begin{lemma}[Parallel Admissibility of~\cite{DunfieldIndexed}]~\\
+        If $\Gamma_L \longrightarrow \Delta_L$ and
+        $\Gamma_L, \Gamma_R \longrightarrow \Delta_L, \Delta_R$ then:
+        \begin{enumerate}
+            \item $\Gamma_L,\al:\kappa,\Gamma_R \longrightarrow \Delta_L, \al:\kappa, \Delta_R$
+            \item If $\Delta_L \vdash \tau' : \kappa$ then
+                $\Gamma_L,\al:\kappa,\Gamma_R \longrightarrow \Delta_L, \al:\kappa = \tau', \Delta_R$.
+            \item If $\Gamma_L \vdash \tau : \kappa$ and $\Delta_L \vdash \tau' types$ and
+                $[\Delta_L]\tau = [\Delta_L]\tau'$, then
+                $\Gamma_L, \al:\kappa = \tau, \Gamma_R \longrightarrow \Delta_L, \al:\kappa = \tau', \Delta_R$.
+        \end{enumerate}
+        \end{lemma}
+        
+        A similar counter-example is given:\\
+        Pick $\Gm_L = \nil, \Gm_R = \bt:\star, \Delta_L = \bt:\star, \Delta_R = \nil$, then both conditions
+        $\nil\longrightarrow \bt:\star$ and $\bt:\star\longrightarrow \bt:\star$ hold, but the first conclusion
+        $\al:\kappa,\bt:\star \longrightarrow \bt:\star,\al:\kappa$ does not hold.
+\end{itemize}
+
+\subsection{A Fix to DK's Subsumption Lemma}
+\label{appendix:subsumption}
+
+Let's first recall the lemma:
+\begin{lemma}[Subsumption]
+Given $\Psi' \le \Psi$:
+\begin{enumerate}
+    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A$;
+    \item If $\Psi \vdash e \To B$ then there exists
+        $A'$ s.t. $\Psi \vdash B' \le B$ and $\Psi' \vdash e \To B$;
+    \item If $\Psi \vdash \appInf{C}{e}{A}$ and $\Psi \vdash C' \le C$,
+        then there exists $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash \appInf{C'}{e}{A'}$.
+\end{enumerate}
+\end{lemma}
+
+\paragraph{Problem in DK's Manual Proof}
+We tried to follow DK's manual proof for this lemma.
+While being written in a clear format and providing enough details,
+the proof is not fully accepted by the proof assistant.
+Specifically, the first two applications of induction hypotheses on page 22 are not accepted.
+Either of them seems to use a slightly different ``induction hypothesis'' than the true one.
+
+\paragraph{A Fix to the Proof}
+We make use of our worklist measures for the induction.
+Recall that $|e|_e$ measures term size;
+and the judgment measure counts checking as 2, inference as 1 and application inference as 3;
+and $|A|_\forall$ counts the number of $\forall$'s in a type.
+
+The proof is by a nested mutual induction on the lexicographical order of the measures
+$$\langle |e|_e, |\cdot|_\Leftrightarrow, |A \to B|_\forall \rangle,$$
+where the second measure is 2 for checking (1), 1 for inference (2) and 3 for application inference (3);
+and the third measure does not apply to case (2) since no $A$ is used.
+
+All but two cases can be finished easily following the declarative typing derivation,
+and the proof shares a similar structure to DK's.
+One tricky case related to Rule $\mathtt{Decl\forall I}$ inducates that $A$ has the shape $\all A_0$,
+thus the subtyping relation derives from either $\mathtt{{\le}\forall L}$ or $\mathtt{{\le}\forall R}$.
+For each of the case, the third measure $|A \to B|_\forall$ decreases
+(the $\mathtt{{\le}\forall L}$ case requires a type substitution lemma obtaining
+$\Psi \vdash e \Lto [\tau/a]A_0$ from the typing derivation).
+
+Another tricky case is $\mathtt{Decl{\to}I}$.
+When the subtyping relation is derived from $\mathtt{{\le}{\to}}$,
+a simple application of induction hypothesis finishes the proof.
+When the subtyping relation is derived from $\mathtt{{\le}\forall R}$,
+$|B|_\forall$ decreases, and thus the induction hypothesis finishes this case.
