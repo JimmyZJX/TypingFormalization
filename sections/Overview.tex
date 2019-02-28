@@ -307,7 +307,7 @@ to the types $A$ and $B$ before performing the subtyping check to propagate any 
 of existential variables that appear in $A$ and $B$.
 
 \paragraph{Markers for scoping.}
-The sequential order of entries in the algoritmic context, in combination with
+The sequential order of entries in the algorithmic context, in combination with
 the threading of contexts,  does not perfectly capture the scoping of all
 existential variables. For this reason the DK algorithm uses scope markers
 $\blacktriangleright_{\al}$ in a few places. An example is given in the following
@@ -418,7 +418,7 @@ reason about in a mechanised setting.
 To avoid the problem of incrementally applying a substitution to remaining
 tasks, we can find inspiration in the formulation of constraint solving
 algorithms. For instance, the well-known unification
-algorithm by \citet{unification} decomposes the problem of unifying two terms $s \stackrel{.}{=} t$ into a set
+algorithm by \citet{unification} decomposes the problem of unifying two terms $s \stackrel{.}{=} t$ into a number
 of related unification problems between pairs of terms $s_i \stackrel{.}{=} t_i$. These smaller
 problems are not tackled independently, but kept together in a set $S$. 
 The algorithm itself is typically formulated as a small-step-style state
@@ -439,7 +439,7 @@ a (modal) context. \citet{Abel2011higher} even use multiple contexts within a un
 Such a problem is denoted $\Delta \Vdash \mathcal{K}$ where the meta-context
 $\Delta$ contains all the typings of meta-variables in the constraint set
 $\mathcal{K}$. The latter consists of constraints like $\Psi \vdash M = N : C$
-that are equipped with their individual context $\Psi$. While acurrately tracking
+that are equipped with their individual context $\Psi$. While accurately tracking
 the scoping of regular and meta-variables, this approach is not ideal because it
 repeatedly copies contexts when decomposing a unification problem, and
 later it has to 
@@ -520,7 +520,7 @@ subtyping problem to the remaining ones.
 Unfortunately, this work does not solve all problems. In particular, it has two
 major limitations that prevent it from scaling to the whole DK system. 
 
-\paragraph{Scoping Garbage} Firstly, the single common type ordered context 
+\paragraph{Scoping Garbage} Firstly, the single common ordered context 
 $\Gamma$ does not accurately reflect the type and unification variables
 currently in scope. Instead, it is an overapproximation that steadily accrues
 variables, and only drops those unification variables that are instantiated.
@@ -531,7 +531,7 @@ This complicates establishing the relation with the declarative system.
 \paragraph{No Inference Judgments} 
 Secondly and more importantly, the approach only deals with a judgement for
 \emph{checking} whether one type is the subtype of another. While this may not
-so be difficult to scale to the \emph{checking} mode of term typing $\Gamma
+be so difficult to adapt to the \emph{checking} mode of term typing $\Gamma
 \vdash e \Leftarrow A$, it clearly lacks the functionality to support the
 \emph{inference} mode of term typing $\Gamma \vdash e \Rightarrow A$. Indeed,
 the latter requires not only the communication of unification variable
@@ -569,7 +569,7 @@ Since the variable declarations $a, x:a$ are only used for a judgment already pr
 they can be safely removed, leaving the remaining worklist $\Gm$ to be further reduced.
 
 Our worklist can be seen as an all-in-one stack,
-containing variable declarations and subtyping/typing judgments.
+containing variable declarations and subtyping/ typing judgments.
 The stack is an enriched form of ordered context,
 and it has a similar variable scoping scheme.
 %The well-formedness condition, shown in Figure~\ref{fig:alg:syntax},
@@ -586,7 +586,7 @@ the worklist: our algorithmic judgement chains $\omega$. In its simplest form,
 such a judgement chain is just a check, like a subtyping check $A \leq B$ or a
 term typecheck $e \Leftarrow A$. 
 However, the non-trivial forms of chains capture an
-inference task together with the the work that depends on its outcome. For
+inference task together with the work that depends on its outcome. For
 instance, a type inference task takes the form $e \Rightarrow_a \omega$.
 This form models a \emph{continuation passing style}:
 it
@@ -603,7 +603,7 @@ is a sequence of an inference judgment followed by a subtyping judgment.
 The algorithm first analyses the two subtyping judgments and
 will find the best solutions $\al = \bt = 1$
 (please refer to Figure~\ref{fig:alg} for detailed derivations).
-Then we substitute every instance of $\al$ and $\bt$ to $1$,
+Then we substitute every instance of $\al$ and $\bt$ with $1$,
 so the variable declarations can be safely removed from the worklist.
 Now we reduce the worklist to the following state
 $$\nil \Vdash \blue{(\lam x)~() \To_a a \le 1}, x:1$$
@@ -615,9 +615,9 @@ which has a term variable declaration as the top element.
 %As a result all garbage variables are collected
 %once the judgment chains refering to them are processed,
 %just as what we have mentioned above about the scope tracking.
-After removing the garbage term variable declaration from the worklist, we process the last judgment chain from the left,
+After removing the garbage term variable declaration from the worklist, we process the last remaining judgment chain,
 namely an inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
-Finally the last judgment becomes $1 \le 1$, and is satisfied as a base case.
+Finally the last judgment becomes $1 \le 1$, a trivial base case.
 
 
 % Our algorithm borrows some ideas from previous work, while adding new ones. 
