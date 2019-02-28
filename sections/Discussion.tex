@@ -54,7 +54,39 @@ or to the very end of a type inference task.
 In that sense, DK's algorithm does not control the scoping of variables precisely enough.
 %However, it is a minor issue that does not affect the soundness and completeness properties.
 
+One may blame that the inference rule for lambda functions does not collect garbages correctly.
+Here we also show another rule for application inference with a similar problem:
+$$
+\inferrule*[right=$\mathtt{DK\_{\to}I{\To}}$]
+{\Gamma, \al, \bt, x:\al \vdash e \Lto \bt \dashv \Delta, x:\al, \Theta}
+{\Gamma \vdash \lam e \To \al \to \bt \dashv \Delta}
+\qquad
+\inferrule*[right=$\mathtt{DK\_\forall App}$]
+{\Gamma, \al \vdash [\al/a] \appInf{A}{e}{C} \dashv \Delta}
+{\Gamma \vdash \appInf{\all A}{e}{C} \dashv \Delta}
+$$
+But our algorithm collects the existential variables right after the next judgment chain:
+$$\Gm \Vdash \lambda x. e \To_a \jg \rrule{25}
+\Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt$$
+$$\Gm \Vdash \appInfAlg{\forall a. A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}$$
+But it seems impossible to propose a fix by only modifying this rule.
+Taking $\mathtt{DK\_{\to}I{\To}}$ as an example,
+the declaration or solution for $\al$ and $\bt$ may be referred by following judgments,
+therefore leaving $\al$ and $\bt$ in the output context is the only choice,
+when the next judgments are inaccessible to us at the moment.
 
+To fix the problem, we suggest a modification on the algorithmic subsumption rule,
+as garbage collection for a checking judgment is always safe:
+$$
+\inferrule*[right=$\mathtt{DK\_Sub}$]
+{\Gamma, \blacktriangleright_{\al} \vdash e \To A \dashv \Theta \\
+\Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta, \blacktriangleright_{\al}, \Delta'}
+{\Gamma \vdash e \Lto B \dashv \Delta}
+$$
+We pick this rule because this is the only one where a checking judgment calls an inference judgment.
+And that's the point where our algorithm recycles variables---right after a judgment chain is satisfied.
+After applying this patch, to our best knowledge,
+DK's algorithm behaves equivalently to our algorithm in terms of variable scoping.
 
 \subsection{Scoped type variables}
 
