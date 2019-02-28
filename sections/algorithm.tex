@@ -7,7 +7,7 @@ unlike \citet{itp2018}'s worklists, the scope of variables is precisely tracked
 and variables do not escape their scope. This is achieved by unifying algorithmic contexts and the worklists themselves.
 Secondly, our algorithm also
 accounts for the type system (and not just subtyping). To deal with
-inference judgments that arize in the type system we employ a \emph{continuation
+inference judgments that arise in the type system we employ a \emph{continuation
 passing style} to enable the transfer of inferred information across
 judgements in a worklist.
 
@@ -116,8 +116,8 @@ type of $e$.
 We combine traditional contexts and judgment(s) into a single sort, the \emph{worklist} $\Gm$.
 The worklist is an \emph{ordered} collection of both variable bindings and judgments. The order captures the scope:
 only the objects that come after a variable's binding in the worklist can refer to it.
-For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[{\bf x} \Lto a, x:{\bf a},a]$ is not
-(the symbols in bold refer to out-of-scope variables).
+For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\underline{x} \Lto a, x:\underline{a},a]$ is not
+(the underlined symbols refer to out-of-scope variables).
 
 \paragraph{Hole Notation}
 We use the syntax $\Gm[\Gm_M]$ to denote the worklist $\Gm_L,\Gm_M,\Gm_R$,
@@ -197,7 +197,7 @@ judgments onto the worklist.  The syntax $\Gm\redto \Gm'$ denotes multiple
 reduction steps. If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully;
 this corresponds to a successful type checking.
 
-Let us explain the rulres in more detail:
+Let us explain the rules in more detail:
 Rules 1-3 pop a variable declaration; this garbage collects variables that are
 out of scope for the remaining judgements.
 All other rules concern a judgement at the front of the worklist. Logically we
@@ -208,14 +208,14 @@ We have six subtyping rules (Rules 4-9) that are similar to their
 declarative counterparts. For instance, Rule 7 consumes a subtyping
 judgment and pushes two back to the worklist.  Rule 8 differs from
 declarative Rule ${\le}{\forall}L$ by introducing an existential
-variable $\al$ instead of guessing the monotype $\tau$ for
+variable $\al$ instead of guessing the monotype $\tau$
 instantiation. Each existential variable is later solved to a
 monotype $\tau$ with the same context, so the final solution $\tau$ of
-$\al$ should be well-formed under context $\Gm$.
+$\al$ should be well-formed under $\Gm$.
 
 \paragraph{Worklist Variable Scoping}
 Rules 8 and 9 involve variable declarations and demonstrate how our
-worklist treats variable scopings. Rule 8 introduces an existential
+worklist treats variable scopes. Rule 8 introduces an existential
 variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
 Reduction continues until all the subtyping judgments after $\al$
 are satisfied.  Finally we can safely remove $\al$ since no occurrence
@@ -225,40 +225,34 @@ variable at the perfect time: it leaves the environment immediately
 after being unreferenced.
 
 \jimmy{New example on Feb 27}
-\paragraph{Example} An example derivation on the subtyping judgment
-$(1\to 1)\to 1 \le (\all 1\to 1) \to 1$ is shown as follows:
+\paragraph{Example} The derivation of the subtyping judgment
+$(1\to 1)\to 1 \le (\all 1\to 1) \to 1$ proceeds as follows:
 \begin{gather*}
 \begin{aligned}
   & \nil\vdash (1\to 1)\to 1 \le (\all 1 \to 1) \to 1\\
 \rrule{7}  & \nil \Vdash 1 \le 1 \Vdash \all 1 \to 1 \le 1 \to 1\\
 \rrule{8}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1 \le 1 \to 1\\
-\rrule{7}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1 \Vdash 1 \le 1\\
-\rrule{4} & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1\\
+\rrule{7}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \le 1 \Vdash 1 \le 1\\
+\rrule{4} & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \le 1\\
 \rrule{4} & \nil \Vdash 1 \le 1 ,\al\\
 \rrule{2} & \nil \Vdash 1 \le 1\\
 \rrule{4} & \nil
 \end{aligned}
 \end{gather*}
-Firstly, the subtyping of two function types is split into two judgments by Rule 7:
-a convariant subtyping on the return type and a contravariant subtyping on the argument type.
+First, the subtyping of two function types is split into two judgments by Rule 7:
+a covariant subtyping on the return type and a contravariant subtyping on the argument type.
 Then we apply Rule 8 to reduce the $\forall$ quantifier on the left side.
-The type $\forall a. 1 \to 1$ is actually not a general type, which
-has an almost equivalent behavior to the type $1 \to 1$.
-But according to the rule, we still introduce an existential variable $\al$ to the context.
+The rule introduces an existential variable $\al$ to the context (even though 
+the type $\forall a. 1 \to 1$ does not actually refer to the quantified type
+variable $a$).
 In the following 3 steps we satisfy the judgment $1 \to 1 \le 1 \to 1$ by Rules 7, 4 and 4.
 
-Now the existential variable $\al$, being introduced before but remains unsolved,
-is on the top of the worklist. By Rule 2 it is effectively recycled.
+Now the existential variable $\al$, introduced before but still unsolved,
+is at the top of the worklist and Rule 2 garbage collects it.
 The process is carefully designed within the algorithmic rules:
 when $\al$ is introduced,
-we foresee the recycling of $\al$ after all the judgments requiring $\al$ processed.
+we foresee the recycling of $\al$ after all the judgments requiring $\al$ have been processed.
 Finally Rule 4 reduces one of the base cases and finishes the subtyping derivation.
-
-\jimmy{An example on subtyping: $\nil\vdash (1\to 1)\to 1 \le (\forall a. 1 \to 1) \to 1$
-TODO derivation and explanation}
-\bruno{Perhaps this is better illustrated with a simple example?}
-\tom{Yes, it would be good to show one or more
-example derivations to illustrate the key points.}
 
 \paragraph{\bf 2. Existential decomposition.}
 Rules 10 and 11 are algorithmic versions of Rule $\mathtt{{\le}{\to}}$; they
@@ -274,7 +268,7 @@ For example, without it $\al \le 1 \to \al$ would diverge.
 \paragraph{\bf 3. Solving existentials} Rules 12-17 are base cases where an existential variable is solved.
 They all remove an existential variable and substitute the
 variable with its solution in the remaining worklist. Importantly the rules
-respect the scope of existential variables. For example, rule 12 
+respect the scope of existential variables. For example, Rule 12 
 states that an existential variable $\al$ can be solved with another
 existential variable $\bt$ only if $\bt$ occurs after $\al$.
 
@@ -282,41 +276,54 @@ existential variable $\bt$ only if $\bt$ occurs after $\al$.
 Rules 18-21 deal with checking judgments.
 Rule 18 is similar to $\mathtt{DeclSub}$, but rewritten in the
 continuation-passing-style.
-The side conditions $e \neq \lam e'$ and $B \neq \all B'$ is to
-prevent overlapping with Rules 19, 20 and 21,
-which are further discussed in the last part of this section.
-\bruno{The side condition needs to be explained, and some mention of
-  the overlapping is probably needed here.}
+The side conditions $e \neq \lam e'$ and $B \neq \all B'$ 
+prevent overlap with Rules 19, 20 and 21;
+this is further discussed at the end of this section.
+% \bruno{The side condition needs to be explained, and some mention of
+%   the overlapping is probably needed here.}
 Rules 19 and 20 adapt their declarative counterparts to the worklist style.
 Rule 21 is a special case of $\mathtt{Decl\to I}$,
 dealing with the case when the input type is an existential variable,
 representing a monotype \emph{function} as in the declarative system
 (it must be a function type, since the expression is a function).
-\bruno{Rule 21
-  deserves some more explanation. What is the motivation for this
-  rule? You may want to give some concrete example to motivate it.}
+% \bruno{Rule 21
+%   deserves some more explanation. What is the motivation for this
+%   rule? You may want to give some concrete example to motivate it.}
 The same instantiation technique as in Rules 10 and 11 applies.
 The declarative checking rule $\mathtt{Decl1I}$ does not have a direct counterpart in the algorithm, 
 because Rules 18 and 24 can be combined to give the same result.
 
-\paragraph{Design Variant for Rule 21}
-A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
-may result in a similar effect to Rule 21.
-Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
-The only difference is that a subtyping relation is introduced by Rule $18'$,
-and is to be processed after the type inference:
-$$\Gm \Vdash \lam e \Lto \al \rrule{18'} \Gm \Vdash \lam e \To_a a \le \al
-\rrule{25} \Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$$
-Since two monotypes with a valid subtyping relation indicates equality,
-eventually $\bt[1] \to \bt[2]$ and $\al$ should be unified with each other.
-DK's algorithm takes a similar approach to such variant,
-and we believe that they are equivalent.
+\paragraph{Rule 21 Design Choice}
+The addition of Rule 21 is a design choice we have made to simplify the side
+condition of Rule 18 (which avoids overlap). It also streamlines the algorithm
+and the meatatheory as we now treat all cases
+where we can see that an existential variable should be instantiated to a
+function type  (i.e., Rules 10, 11, 21 and 29) uniformly.
 
-Choosing Rule 21 simplifies the side condition on Rule 18,
-the metatheory and the design: whenever an input type could be a function type,
-the algorithmic rule should always take care of
-the possibility when the type being a single existential variable.
-This pattern applies to all the possible cases, including Rules 10, 11, 21 and 29.
+The alternative would have been to omit Rule 21 and drop the condition on $e$
+in Rule 18. The modified Rule 18 would then handle $\Gm \Vdash \lam e \Lto \al$
+and yield $\Gm \Vdash \lam e \To_a a \le \al$, which would be further processed
+by Rule 25 to $\Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$.
+As a subtyping constraint between two monotypes only succeeds when the types are equal, $\bt[1] \to \bt[2] \le \al$
+must end up equating $\bt[1] \to \bt[2]$ with $\al$ and thus have the same effect as Rule 21, but in a more roundabout
+fashion. DK's original algorithm also avoids this detour and contains a rule similar to our Rule 21.
+% A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
+% may result in a similar effect to Rule 21.
+% Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
+% The only difference is that a subtyping relation is introduced by Rule $18'$,
+% and is to be processed after the type inference:
+% $$\Gm \Vdash \lam e \Lto \al \rrule{18'} \Gm \Vdash \lam e \To_a a \le \al
+% \rrule{25} \Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$$
+% Since two monotypes with a valid subtyping relation indicates equality,
+% eventually $\bt[1] \to \bt[2]$ and $\al$ should be unified with each other.
+% DK's algorithm takes a similar approach to such variant,
+% and we believe that they are equivalent.
+% 
+% Choosing Rule 21 simplifies the side condition on Rule 18,
+% the metatheory and the design: whenever an input type could be a function type,
+% the algorithmic rule should always take care of
+% the possibility when the type being a single existential variable.
+% This pattern applies to all the possible cases, including Rules 10, 11, 21 and 29.
 
 \paragraph{\bf 5. Inference judgments.}
 Inference judgments behave differently compared with subtyping and checking judgments:
@@ -326,7 +333,7 @@ it may happen that the output type of an inference judgment refers to new existe
 such as Rule 25.
 In comparison to Rule 8 and 9, where new variables are only refered by the sub-derivation,
 Rule 25 introduces variables $\al, \bt$ that affect the remaining judgment chain.
-This rule is carefully designed so that the output variables are bounded by declarations before,
+This rule is carefully designed so that the output variables are bound by earlier declarations,
 thus the well-formedness of the worklist is preserved,
 and the garbage will be collected at the correct time.
 By making use of the continuation-passing-style judgement chain,
@@ -371,8 +378,8 @@ the checking and the remaining chain $[\al\to\bt/a]\jg$.
 The recycling process of Rule 25 differs from DK's corresponding rule significantly,
 and we further discuss the differences in Section~\ref{sec:discussion:scoping}.
 
-\bruno{You have some note ``differs'' on the rules. Should that
-  deserve an explanation here?}
+% \bruno{You have some note ``differs'' on the rules. Should that
+%   deserve an explanation here?}
 
 \paragraph{\bf 6. Application inferences judgements}
 Finally, Rules 27-29 deal with application inference judgments.
@@ -407,32 +414,27 @@ Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like R
 \end{figure}
 
 Figure~\ref{fig:alg:sample} shows a sample derivation of the algorithm.
-The judgment given is to check the application $(\lam x)~()$ against the unit type.
+It checks the application $(\lam x)~()$ against the unit type.
 According to the algorithm, we apply Rule 18 (subsumption), changing to inference mode.
 Type inference of the application breaks into two steps by Rule 26:
-firstly we infer the type of the function,
-and then the application inference judgment help determine the return type.
-The type of the identity function, $\lam x$, is inferred to be $\al \to \al$,
-which can be interpreted as $\tau \to \tau$ for any valid monotype $\tau$,
-after the following 5 steps:
-a checking on the body of the lambda function (Rule 25),
-calling the inference mode for the checking (Rule 18)
-a term variable inference (Rule 22),
-a subtyping on existential variables (Rule 12) and
-a garbage collection of the term variable $x$ (Rule 3).
+first we infer the type of the function,
+and then the application inference judgment helps determine the return type.
+In the following 5 steps The type of the identity function, $\lam x$, is inferred to be $\al \to \al$:
+checking the body of the lambda function (Rule 25),
+switching from check mode to inference mode (Rule 18),
+inferring the type of a term variable (Rule 22),
+solving a subtyping between existential variables (Rule 12) and
+garbage collecting the term variable $x$ (Rule 3).
 
 After that, Rule 28 changes the application inference judgment to
-a checking on the argument against the input type $\al$ and returns the output type $\al$.
+a check of the argument against the input type $\al$ and returns the output type $\al$.
 Checking $()$ against the existential variable $\al$ solves $\al$ to the unit type $1$
 through Rules 18, 24 and 16.
-Immediately after $\al$ is solved, the algorithm substitute every occurrence of $\al$ to $1$.
-Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which finishes off by Rule 4.
+Immediately after $\al$ is solved, the algorithm replaces every occurrence of $\al$ with $1$.
+Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which is finished off by Rule 4.
 Finally we get an empty worklist, indicating the success of the whole derivation.
 
-To summarize, our algorithm accepts the type checking $(\lam x)~() \Lto 1$.
-
-\bruno{Derivation should be explained briefly at least.}
-
+In summary, our algorithm accepts the type checking $(\lam x)~() \Lto 1$.
 
 \paragraph{Non-overlapping and Deterministic Reduction}
 An important feature of our algorithmic rules is that they are directly
@@ -451,8 +453,8 @@ other checking rules. Its algorithmic counterpart is Rule 18. Yet, we have
 avoided the overlap with other algorithmic checking rules by adding
 side-conditions to Rule 18, namely $e\neq\lam e'$ and $B\neq\all B'$.
 
-Such restrictions are not arbitrarily imposed:
-we foramlly proved that the restricted algorithm is still complete.
-In Section~\ref{sec:metatheory:non-overlapping} we discuss the relavant metatheory,
-with the help of a restricted version of declarative system.
+These restrictions have not been imposed arbitrarily:
+we formally prove that the restricted algorithm is still complete.
+In Section~\ref{sec:metatheory:non-overlapping} we discuss the relevant metatheory,
+with the help of a non-overlapping version of the declarative system.
 
