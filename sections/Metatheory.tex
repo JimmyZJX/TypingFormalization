@@ -497,7 +497,7 @@ The proof script consists of 7683 lines of code with a total of
 Figure~\ref{fig:proof_statistics} briefly summarizes the contents in each file.
 The files are linealy dependent due to the limitation of Abella.
 
-\begin{figure}
+\begin{figure}[ht]
 \centering\begin{tabular}{|c|c|c|l|}\hline
     File(s) & SLOC & \#Theorems & Description\\\hline
     olist.thm, nat.thm  &  309 & 56  & Basic data structures\\\hline
@@ -514,8 +514,8 @@ The files are linealy dependent due to the limitation of Abella.
                             Lemma~\ref{lem:prune_inst}}\\\hline
     \makecell{dcl.thm, \\completeness.thm} & 1458 & 73  &
                             Completeness theorem; aux. lemmas and relations\\\hline
-    inst\_decidable.thm &  830 & 42  & Lemma~\ref{lemma:inst:decidable} Instantiation Decidability\\\hline
-    decidability.thm    &  885 & 50  & Lemma~\ref{lemma:inst:decidable}\\\hline
+    inst\_decidable.thm &  830 & 42  & Lemma~\ref{lemma:inst:decidable}\\\hline
+    decidability.thm    &  885 & 50  & Decidability theorem\\\hline
     Total               & 7683 & 567 & (51 definitions in total)\\\hline
 \end{tabular}
 \caption{Statistics for the proof scripts}
