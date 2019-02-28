@@ -282,15 +282,41 @@ existential variable $\bt$ only if $\bt$ occurs after $\al$.
 Rules 18-21 deal with checking judgments.
 Rule 18 is similar to $\mathtt{DeclSub}$, but rewritten in the
 continuation-passing-style.
+The side conditions $e \neq \lam e'$ and $B \neq \all B'$ is to
+prevent overlapping with Rules 19, 20 and 21,
+which are further discussed in the last part of this section.
 \bruno{The side condition needs to be explained, and some mention of
   the overlapping is probably needed here.}
 Rules 19 and 20 adapt their declarative counterparts to the worklist style.
-Rule 21 is a special case of $\mathtt{Decl\to I}$.\bruno{Rule 21
+Rule 21 is a special case of $\mathtt{Decl\to I}$,
+dealing with the case when the input type is an existential variable,
+representing a monotype \emph{function} as in the declarative system
+(it must be a function type, since the expression is a function).
+\bruno{Rule 21
   deserves some more explanation. What is the motivation for this
   rule? You may want to give some concrete example to motivate it.}
 The same instantiation technique as in Rules 10 and 11 applies.
 The declarative checking rule $\mathtt{Decl1I}$ does not have a direct counterpart in the algorithm, 
 because Rules 18 and 24 can be combined to give the same result.
+
+\paragraph{Design Variant for Rule 21}
+A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
+may result in a similar effect to Rule 21.
+Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
+The only difference is that a subtyping relation is introduced by Rule $18'$,
+and is to be processed after the type inference:
+$$\Gm \Vdash \lam e \Lto \al \rrule{18'} \Gm \Vdash \lam e \To_a a \le \al
+\rrule{25} \Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$$
+Since two monotypes with a valid subtyping relation indicates equality,
+eventually $\bt[1] \to \bt[2]$ and $\al$ should be unified with each other.
+DK's algorithm takes a similar approach to such variant,
+and we believe that they are equivalent.
+
+Choosing Rule 21 simplifies the side condition on Rule 18,
+the metatheory and the design: whenever an input type could be a function type,
+the algorithmic rule should always take care of
+the possibility when the type being a single existential variable.
+This pattern applies to all the possible cases, including Rules 10, 11, 21 and 29.
 
 \paragraph{\bf 5. Inference judgments.}
 Inference judgments behave differently compared with subtyping and checking judgments:
@@ -337,7 +363,7 @@ Rule 25 infers the type of a lambda expression by introducing $\al, \bt$
 as the input and output types of the function, respectively.
 After checking the body $e$ under the assumption $x:\al$,
 the return type might reflect more information than simply $\al \to \bt$
-through propagation when existential varaibles are solved or partially solved.
+through propagation when existential variables are solved or partially solved.
 The variable scopes are maintained during the process:
 the assumption of argument type ($x:\al$) is recycled after checking against the function body;
 the declaration of the function type ($\al,\bt$) is only visible to
