@@ -158,7 +158,7 @@ Modifications (1) and (3) require inversion lemmas for the rules that overlap.
 Firstly, Rule $\mathtt{\forall L}$ overlaps with Rule $\mathtt{\forall R}$ for the judgment
 $\Psi \vdash \all A \le \all[b]B$.
 The following inversion lemma for Rule $\mathtt{\forall R}$ resolves the overlap:
-\begin{lemma}[Invertibility of $\mathtt{\forall R}$]
+\begin{lemma}[Invertibility of $\mathtt{\forall R}$]\label{lem:inv_allR}
 If $\Psi \vdash A \le \all B$ then $\Psi, a \vdash A \le B$.
 \end{lemma}
 The lemma implies that preferring Rule $\mathtt{\forall R}$ does not affect the derivability of the judgment.
@@ -166,10 +166,10 @@ Therefore the restriction $B \neq \all[b]B'$ in $\mathtt{\forall L'}$ is valid.
 
 Secondly, Rule $\mathtt{DeclSub}$ overlaps with both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
 We have proven two inversion lemmas for these overlaps:
-\begin{lemma}[Invertibility of $\mathtt{Decl\forall I}$]
+\begin{lemma}[Invertibility of $\mathtt{Decl\forall I}$]\label{lem:inv_chkAll}
 If $\Psi \vdash e \Lto \all A$ then $\Psi, a \vdash e \Lto A$.
 \end{lemma}
-\begin{lemma}[Invertibility of $\mathtt{Decl{\to}I}$]
+\begin{lemma}[Invertibility of $\mathtt{Decl{\to}I}$]\label{lem:inv_chkLam}
 If $\Psi \vdash \lam e \Lto A \to B$ then $\Psi, x:A \vdash e \Lto B$.
 \end{lemma}
 These lemmas express that applying the more specific rules, rather than the more general rule $\mathtt{DeclSub}$, does not reduce the expressive power.
@@ -196,7 +196,7 @@ $$\begin{aligned}
 \label{fig:context_subtyping}
 \end{figure}
 
-\begin{lemma}[Subsumption]
+\begin{lemma}[Subsumption]\label{lem:subsumption}
 Given $\Psi' \le \Psi$:
 \begin{enumerate}
     \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A$;
@@ -307,7 +307,7 @@ A symmetric lemma holds for $A\to B \le \al$.
 %thus, as an example, we cannot find a monotype $\tau$ such that $\tau\le 1\to \tau$,
 %which could be transferred by $\al\le 1\to\al$.
 
-\begin{lemma}[Prune Transfer for Instantiation]
+\begin{lemma}[Prune Transfer for Instantiation]\label{lem:prune_inst}
 If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and
 $\|\Om\| \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 \end{lemma}
@@ -477,4 +477,47 @@ by means of our algorithm.
 \begin{corollary}[Decidability of Declarative Typing]
 Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 \end{corollary}
-\subsection{Abella}
+
+% ---------------------------------------------
+\subsection{Abella and Proof Statistics}
+We have chosen the Abella (v2.0.7-dev) proof assistant~\cite{AbellaDesc} to develop our formalization.
+Abella is designed to help such formalizations for programming languages,
+due to its built-in support for variable bindings and
+the $\lambda$-tree syntax~\cite{}, i.e. a form of HOAS.
+Nominal variables, or $\nabla$-quantified variables, are used as an unlimited name supply,
+which supports explicit freshness control and substitutions.
+
+Although Abella lacks packages, tactics and support on modules,
+we enjoy its higher-order system and the ease of formalizing substitution-intensive relations,
+which are widely used in our algorithm.
+
+\paragraph{Statistics of the Proof}
+The proof script consists of 7683 lines of code with a total of
+51 definitions and 567 theorems.
+Figure~\ref{fig:proof_statistics} briefly summarizes the contents in each file.
+The files are linealy dependent due to the limitation of Abella.
+
+\begin{figure}
+\centering\begin{tabular}{|c|c|c|l|}\hline
+    File(s) & SLOC & \#Theorems & Description\\\hline
+    olist.thm, nat.thm  &  309 & 56  & Basic data structures\\\hline
+    typing.thm          &  238 & 5   & Declarative \& algorithmic system, debug examples\\\hline
+    decl.thm            &  226 & 33  & Basic declarative properties\\\hline
+    order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strenthening\\\hline
+    alg.thm             &  655 & 72  & Basic algorithmic properties\\\hline
+    trans.thm           &  628 & 53  & \makecell[l]{Transfer and its basic properties \\
+                            Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
+    declTyping.thm      &  944 & 72  & \makecell[l]{Additional properties for declarative typing \\
+                            Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll}, \ref{lem:inv_chkLam}}\\\hline
+    soundness.thm       & 1069 & 70  & Soundness theorem; aux. lemmas on transfer\\\hline
+    depth.thm           &  206 & 14  & \makecell[l]{The $|\cdot|_\to$ measure; \\
+                            Lemma~\ref{lem:prune_inst}}\\\hline
+    \makecell{dcl.thm, \\completeness.thm} & 1458 & 73  &
+                            Completeness theorem; aux. lemmas and relations\\\hline
+    inst\_decidable.thm &  830 & 42  & Lemma~\ref{lemma:inst:decidable} Instantiation Decidability\\\hline
+    decidability.thm    &  885 & 50  & Lemma~\ref{lemma:inst:decidable}\\\hline
+    Total               & 7683 & 567 & (51 definitions in total)\\\hline
+\end{tabular}
+\caption{Statistics for the proof scripts}
+\label{fig:proof_statistics}
+\end{figure}
