@@ -594,8 +594,8 @@ denotes that we need to infer the type, say $A$, for expression $e$ and use it
 in the chain $\omega$ by substituting it for the placeholder type variable $a$.
 
 Take the following worklist as an example
-$$\al \Vdash \blue{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \blue{\al \le \bt} \Vdash \blue{\bt \le 1}$$
-There are three (blue-colored) judgment chains in the worklist,
+$$\al \Vdash \underline{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \underline{\al \le \bt} \Vdash \underline{\bt \le 1}$$
+There are three (underlined) judgment chains in the worklist,
 where the first and second judgment chains (from the right) are two subtyping judgments,
 and the third judgment chain, $(\lam x)~() \To_a a \le \al$,
 is a sequence of an inference judgment followed by a subtyping judgment.
@@ -606,7 +606,7 @@ will find the best solutions $\al = \bt = 1$
 Then we substitute every instance of $\al$ and $\bt$ with $1$,
 so the variable declarations can be safely removed from the worklist.
 Now we reduce the worklist to the following state
-$$\nil \Vdash \blue{(\lam x)~() \To_a a \le 1}, x:1$$
+$$\nil \Vdash \underline{(\lam x)~() \To_a a \le 1}, x:1$$
 which has a term variable declaration as the top element.
 %Because no judgments before the declaration refer to $x$,
 %as a basic property of an ordered context
