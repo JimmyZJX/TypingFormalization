@@ -2,10 +2,10 @@
 
 % \subsection{Overlapping Rules} Already discussed in previous sections
 
-This section discusses some insights that we gained from our work and contrast
-the scoping mechanisms employed by us with those DK's original algorithm.
-We also discuss a way to improve their scoping tracking precision.
-Furthermore we discuss and sketch out an extension of the our algorithm with
+This section discusses some insights that we gained from our work and contrasts
+the scoping mechanisms we have employed by those in DK's algorithm.
+We also discuss a way to improve the precision of their scope tracking.
+Furthermore we discuss and sketch an extension of our algorithm with
 elaboration to a target calculus.
 
 \begin{comment}
@@ -15,10 +15,10 @@ Anything to say about the implementation? Do we have one?
 
 \subsection{Contrasting our scoping mechanisms with DK's scoping}\label{sec:discussion:scoping}
 
-One nice feature of our worklists is that scoping of variables can be
-made precise, simply by interleaving variable declarations and
-judgement chains.  DK's algorithm deals with garbage variables in a
-different way through type variables or existential variable
+A nice feature of our worklists is that, simply by interleaving variable declarations and
+judgement chains, they make the scope of variables
+precise.  DK's algorithm deals with garbage collecting variables in a
+different way: through type variable or existential variable
 markers (as discussed in Section~\ref{ssec:DK_Algorithm}).  Despite
 the sophistication employed in DK's algorithm to keep scoping precise,
 there is still a chance that unused existential variables leak their
@@ -62,11 +62,11 @@ The existential variables $\al$ and $\bt$ are clearly not used after the subsump
 but according to the algorithm, they are kept in the context
 until some parent judgment recycles a block of variables,
 or to the very end of a type inference task.
-In that sense, DK's algorithm does not control the scoping of variables precisely enough.
+In that sense, DK's algorithm does not control the scoping of variables precisely.
 %However, it is a minor issue that does not affect the soundness and completeness properties.
 
-One may blame the inference rule for lambda functions for not collecting garbage correctly.
-Here we also show another rule for application inference with a similar problem:
+Two rules we may blame for not garbage collecting correctly are the inference rule for lambda
+functions and an application inference rule:
 $$
 \inferrule*[right=$\mathtt{DK\_{\to}I{\To}}$]
 {\Gamma, \al, \bt, x:\al \vdash e \Lto \bt \dashv \Delta, x:\al, \Theta}
@@ -76,17 +76,17 @@ $$
 {\Gamma, \al \vdash [\al/a] \appInf{A}{e}{C} \dashv \Delta}
 {\Gamma \vdash \appInf{\all A}{e}{C} \dashv \Delta}
 $$
-In contrast Rule 25 of our algorithm collects the existential variables
+In contrast, Rule 25 of our algorithm collects the existential variables
 right after the second judgment chain,
-and Rule 27 collects one exsitential variable similarly:
+and Rule 27 collects one existential variable similarly:
 \[\Gm \Vdash \lambda x. e \To_a \jg \rrule{25}
 \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\]
 \[\Gm \Vdash \appInfAlg{\forall a. A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\]
-But it seems impossible to achieve a similar outcome by only modifying the two rules in DK's system.
+It seems impossible to achieve a similar outcome in DK's system by only modifying these two rules.
 Taking $\mathtt{DK\_{\to}I{\To}}$ as an example,
-the declaration or solution for $\al$ and $\bt$ may be referred to by following judgments.
+the declaration or solution for $\al$ and $\bt$ may be referred to by subsequent judgments.
 Therefore leaving $\al$ and $\bt$ in the output context is the only choice,
-when the next judgments are still inaccessible.
+when the subsequent judgments cannot be consulted.
 
 To fix the problem, one possible modification is on the algorithmic subsumption rule,
 as garbage collection for a checking judgment is always safe:
@@ -96,14 +96,14 @@ $$
 \Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta, \blacktriangleright_{\al}, \Delta'}
 {\Gamma \vdash e \Lto B \dashv \Delta}
 $$
-Here we employ the markers in a way different from what they were originally intended for.
-We create a dummy fresh $\al$ and push a marker into the inference judgement.
+Here we employ the markers in a way they were originally not intended for.
+We create a dummy fresh existential $\al$ and add a marker to the input context of the inference judgement.
 After the subtyping judgement is processed we look for the marker and drop everything afterwards.
-We pick this rule because this is the only one where a checking judgment calls an inference judgment.
-And that's the point where our algorithm recycles variables---right after a judgment chain is satisfied.
-After applying this patch, to our best knowledge,
+We pick this rule because it is the only one where a checking judgment calls an inference judgment.
+That is the point where our algorithm recycles variables---right after a judgment chain is satisfied.
+After applying this patch, to the best of our knowledge,
 DK's algorithm behaves equivalently to our algorithm in terms of variable scoping.
-However this is exploiting markers in a way that they were not intended for and seems ad-hoc.
+However, this exploits markers in a way they were not intended to be used and seems ad-hoc.
 
 % \subsection{Scoped type variables} Not discussed for this paper
 
