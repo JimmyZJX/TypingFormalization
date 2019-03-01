@@ -19,7 +19,7 @@ In particular one popular direction is to allow
 \emph{higher-ranked polymorphism} where polymorphic types can
 occur anywhere in a type signature.  
 An important challenge is that full type inference for higher-ranked
-polymorphism is know to be undecidable~\cite{wells1999typability}. Therefore some type
+polymorphism is known to be undecidable~\cite{wells1999typability}. Therefore some type
 annotations are necessary to guide type inference. In response to this 
 challenge several decidable type systems requiring some annotations 
 have been proposed~\cite{,dunfield2013complete,jones2007practical,Serrano2018,le2003ml,leijen2008hmf,vytiniotis2008fph}.
@@ -71,7 +71,7 @@ languages. Today papers in various programming language venues routinely
 use theorem provers to mechanically formalize: \emph{dynamic and
   static semantics} and their correctness properties~\cite{aydemir2008engineering},
 \emph{compiler correctness}~\cite{leroy2012compcert}, \emph{correctness of
-  optimizations}~\cite{Bertot04}, \emph{program analisys}~\cite{Chang2006}
+  optimizations}~\cite{Bertot04}, \emph{program analysis}~\cite{Chang2006}
 or proofs involving \emph{logical relations}~\cite{abel2018}. The
 main argument for mechanical formalizations is a simple one. Proofs
 for programming languages tend to be \emph{long}, \emph{tedious} and
@@ -97,7 +97,7 @@ Unison. The DK type system has two variants: a declarative
 and an algorithmic one. The two variants have been been
 \emph{manually} proved to be \emph{sound}, \emph{complete} and
 \emph{decidable}.
-We present a mechanical formalization in the Abella theorem prover for
+We present a mechanical formalization in the Abella theorem prover~\cite{AbellaDesc} for
 DK's declarative type system using a different algorithm. While our
 initial goal was to formalize both DK's declarative and algorithmic
 versions, we faced technical challenges with the latter, prompting us to find

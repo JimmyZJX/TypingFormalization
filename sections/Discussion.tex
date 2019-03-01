@@ -79,9 +79,9 @@ $$
 In contrast, Rule 25 of our algorithm collects the existential variables
 right after the second judgment chain,
 and Rule 27 collects one existential variable similarly:
-\[\Gm \Vdash \lambda x. e \To_a \jg \rrule{25}
+\[\Gm \Vdash \lam e \To_a \jg \rrule{25}
 \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\]
-\[\Gm \Vdash \appInfAlg{\forall a. A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\]
+\[\Gm \Vdash \appInfAlg{\all A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\]
 It seems impossible to achieve a similar outcome in DK's system by only modifying these two rules.
 Taking $\mathtt{DK\_{\to}I{\To}}$ as an example,
 the declaration or solution for $\al$ and $\bt$ may be referred to by subsequent judgments.

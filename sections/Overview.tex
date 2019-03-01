@@ -16,7 +16,7 @@ that the unifies \emph{ordered contexts} and the worklists themselves.
 \begin{array}{l@{\qquad}lcl}
 \text{Type variables}\qquad&a, b
 \\
-\text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \forall a. A \mid A\to B\\
+\text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \all A \mid A\to B\\
 \text{Monotypes}\qquad&\tau,\sigma &::=&\quad 1 \mid a \mid \tau\to \sigma
 \\
 \text{Expressions}\qquad&e &::=&\quad x \mid () \mid \lam e \mid e_1~e_2 \mid (e:A)
@@ -30,7 +30,7 @@ that the unifies \emph{ordered contexts} and the worklists themselves.
 \paragraph{Syntax.}
 The syntax of DK's declarative system~\cite{dunfield2013complete} is shown in Figure~\ref{fig:decl:syntax}.
 A declarative type $A$ is either the unit type $1$, a type variable $a$,
-a universal quantification $\forall a. A$ or a function type $A \to B$.
+a universal quantification $\all A$ or a function type $A \to B$.
 Nested universal quantifiers are allowed for types,
 but monotypes $\tau$ do not have any universal quantifier.
 Terms include a unit term $()$, variables $x$, lambda-functions $\lam e$,
@@ -70,11 +70,11 @@ term variables with its type declared $x:A$.
 \\
 \inferrule*[right=$\mathtt{{\le}\forall L}$]
     {\Psi\vdash \tau \quad \Psi\vdash [\tau/a] A \le B}
-    {\Psi\vdash \forall a. A \le B}
+    {\Psi\vdash \all A \le B}
 \qquad
 \inferrule*[right=$\mathtt{{\le}\forall R}$]
     {\Psi, a\vdash A\le B}
-    {\Psi\vdash A \le \forall a. B}
+    {\Psi\vdash A \le \all[b]B}
 \end{gather*}
 \caption{%Well-formedness of Declarative Types and 
 Declarative Subtyping}\label{fig:decl:sub}
@@ -206,7 +206,7 @@ if $[\tau/a]A$ is another universal quantified type,
 Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
 
 \paragraph{Overlapping Rules}
-Some of the declarative rules overlaps with each other.
+Some of the declarative rules overlap with each other.
 Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
 both match the conclusion $\Psi\vdash \all A \le \all B$.
 In such case, choosing $\mathtt{{\le}\forall R}$ first is always better,
@@ -317,7 +317,7 @@ rule:
 \[
 \inferrule*[right=$\mathtt{DK\_{\le}\forall L}$]
   {\Gamma,\blacktriangleright_{\al}, \al \vdash [\al/a]A \le B \dashv \Delta,\blacktriangleright_{\al},\Theta}
-  {\Gamma \vdash \forall a. A \le B \dashv \Delta}
+  {\Gamma \vdash \all A \le B \dashv \Delta}
 \]
 To indicate that the scope of $\al$ is local to the subtyping check
 $[\al/a]A \le B$, the marker is pushed onto its input stack and popped
@@ -434,7 +434,7 @@ For instance, the variable elimination rule is written as:
 Because the whole set is explicitly available, the variable $x$ can be
 simultaneously substituted everywhere.
 
-In the above unification problem, all variables are implicitly in the same
+In the above unification problem, all variables are implicitly bound in the same
 global scope. Recent unification algorithms for dependently-typed languages
 are more explicit about scopes. For instance, \citet{Reed2009} represents a unification
 problem as $\Delta \vdash P$ where $P$ is a set of equations to be solved and $\Delta$ is
@@ -543,7 +543,7 @@ instantiations from one typing problem to another, but also an inferred type.
 %-------------------------------------------------------------------------------
 \subsection{Algorithmic Type Inference for Higher-Ranked Types: Key Ideas}
 
-Our new algorithmic type system addresses builds on the work above, but
+Our new algorithmic type system builds on the work above, but
 addresses the open problems.
 
 \paragraph{Scope Tracking}

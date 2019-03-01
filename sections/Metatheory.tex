@@ -43,7 +43,7 @@ The rules of this instantiation relation are shown in Figure~\ref{fig:trans} too
 Rule $\mathtt{{\sto}\al}$ replaces the first existential variable with a well-scoped monotype and
 repeats the process on the resulting worklist until no existential variable remains
 and thus the algorithmic worklist has become a declarative one.
-In order to maintain well-scopedness
+In order to maintain well-scopedness,
 the substitution is applied to all the judgments and term variable bindings in the scope of $\al$.
 
 Observe that the instantiation $\Gm\sto\Om$ is not deterministic.
