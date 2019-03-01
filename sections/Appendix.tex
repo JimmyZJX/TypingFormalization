@@ -54,11 +54,11 @@ Let's first recall the lemma:
 \begin{lemma}[Subsumption]
 Given $\Psi' \le \Psi$:
 \begin{enumerate}
-    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A$;
+    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A'$;
     \item If $\Psi \vdash e \To B$ then there exists
-        $A'$ s.t. $\Psi \vdash B' \le B$ and $\Psi' \vdash e \To B$;
-    \item If $\Psi \vdash \appInf{C}{e}{A}$ and $\Psi \vdash C' \le C$,
-        then there exists $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash \appInf{C'}{e}{A'}$.
+        $B'$ s.t. $\Psi \vdash B' \le B$ and $\Psi' \vdash e \To B'$;
+    \item If $\Psi \vdash \appInf{A}{e}{C}$ and $\Psi \vdash A' \le A$,
+        then there exists $C'$ s.t. $\Psi \vdash C' \le C$ and $\Psi' \vdash \appInf{A'}{e}{C'}$.
 \end{enumerate}
 \end{lemma}
 
@@ -76,7 +76,7 @@ and the judgment measure counts checking as 2, inference as 1 and application in
 and $|A|_\forall$ counts the number of $\forall$'s in a type.
 
 The proof is by a nested mutual induction on the lexicographical order of the measures
-$$\langle |e|_e, |\cdot|_\Leftrightarrow, |A \to B|_\forall \rangle,$$
+$$\langle |e|_e, |\cdot|_\Leftrightarrow, |A|_\forall + |A'|_\forall \rangle,$$
 where the second measure is 2 for checking (1), 1 for inference (2) and 3 for application inference (3);
 and the third measure does not apply to case (2) since no $A$ is used.
 
@@ -84,7 +84,7 @@ All but two cases can be finished easily following the declarative typing deriva
 and the proof shares a similar structure to DK's.
 One tricky case related to Rule $\mathtt{Decl\forall I}$ inducates that $A$ has the shape $\all A_0$,
 thus the subtyping relation derives from either $\mathtt{{\le}\forall L}$ or $\mathtt{{\le}\forall R}$.
-For each of the case, the third measure $|A \to B|_\forall$ decreases
+For each of the case, the third measure $|A|_\forall + |A'|_\forall$ decreases
 (the $\mathtt{{\le}\forall L}$ case requires a type substitution lemma obtaining
 $\Psi \vdash e \Lto [\tau/a]A_0$ from the typing derivation).
 
@@ -92,4 +92,4 @@ Another tricky case is $\mathtt{Decl{\to}I}$.
 When the subtyping relation is derived from $\mathtt{{\le}{\to}}$,
 a simple application of induction hypothesis finishes the proof.
 When the subtyping relation is derived from $\mathtt{{\le}\forall R}$,
-$|B|_\forall$ decreases, and thus the induction hypothesis finishes this case.
+$|A'|_\forall$ decreases, and thus the induction hypothesis finishes this case.

@@ -200,10 +200,10 @@ $$\begin{aligned}
 Given $\Psi' \le \Psi$:
 \begin{enumerate}
     \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A'$;
-    \item If $\Psi \vdash e \To A$ then there exists
-        $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash e \To A'$;
-    \item If $\Psi \vdash \appInf{C}{e}{A}$ and $\Psi \vdash C' \le C$,
-        then there exists $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash \appInf{C'}{e}{A'}$.
+    \item If $\Psi \vdash e \To B$ then there exists
+        $B'$ s.t. $\Psi \vdash B' \le B$ and $\Psi' \vdash e \To B'$;
+    \item If $\Psi \vdash \appInf{A}{e}{C}$ and $\Psi \vdash A' \le A$,
+        then there exists $C'$ s.t. $\Psi \vdash C' \le C$ and $\Psi' \vdash \appInf{A'}{e}{C'}$.
 \end{enumerate}
 \end{lemma}
 This lemma expresses that any derivation in a context $\Psi$ has a corresponding derivation in any context
