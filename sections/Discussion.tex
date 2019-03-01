@@ -107,21 +107,30 @@ However this is exploiting markers in a way that they were not intended for and 
 
 %-------------------------------------------------------------------------------
 \subsection{Elaboration}
+A common extension to type-inference algorithms is to have an
+associated elaboration.  For example, for languages with implicit
+polymorphism, it is common to have an elaboration to a variant of
+System F~\cite{reynolds1983types}, which recovers type information and explicit type
+applications. Therefore a natural question is whether our algorithm
+can also accomodate an elaboration step.
 While our algorithmic reduction does not elaborate to System F,
-it is not difficult to extend the algorithm with a type-directed translation.
+we believe that it is not difficult to extend the algorithm with a (type-directed) elaboration.
+We explain the rought idea as follows.
+
 Since the judgment form of our algorithmic worklist contains a collection of judgments,
 elaboration expressions are also generated as a list of equal length to
-the number of judgments (NOT judgment chains!) in the worklist.
-Within expectation, subtyping judgments translate to type coercions (denoted by $f$),
+the number of judgments (\emph{not judgment chains}) in the worklist.
+Within expectation, subtyping judgments translate to coercions (denoted by $f$),
 all three other types of judgments translate to terms in System F (denoted by $t$).
+\bruno{Why distinguish coercions and terms? Coercions are just terms, right?}
 
 Let $\Phi$ be the elaboration list, containing translated type coercions and terms:
 $$\Phi ::= \nil \mid \Phi, f \mid \Phi, t$$
 
-And the form of our algorithmic judgment becomes:
+Then the form of our algorithmic judgment becomes:
 $$\Gamma \hookrightarrow \Phi$$
 
-We take Rule 18 as an example, rewritting small-step reduction into a relational style,
+We take Rule 18 as an example, rewritting small-step reduction in a relational style,
 $$
 \inferrule*[right=$\mathtt{Translation\_18}$]
 {\Gamma \Vdash e \To_a a \le B \hookrightarrow \Phi, f, t}
@@ -136,7 +145,7 @@ elaborates to the top element in the elaboration list.
 Existential variables need special treatment, since they may be solved at any step,
 or being recycled if not solved in its scope.
 If an existential variable is solved, we not only propagate the solution to the rest judgments,
-but also replace ocurrances in the elaboration list.
-If an existential variable is recycled, meaning that it is not constraint,
+but also replace ocurrences in the elaboration list.
+If an existential variable is recycled, meaning that it is not constrained,
 we can pick any well-formed monotype as its solution.
 The unit type $1$, as the simplest type in the system, is a good choice.
