@@ -482,24 +482,24 @@ Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 % ---------------------------------------------
 \subsection{Abella and Proof Statistics}
 We have chosen the Abella (v2.0.7-dev
-\footnote{A development version is used because the developers
+\footnote{We use a development version because the developers
 just fixed a serious bug that accepts a simple proof of false,
-which also affects the completeness of our proof.
-The author compiled the scripts against commit 92829a of the GitHub repository of Abella.}
+which also affects the completeness of one of our proofs.
+Specifically, our scipts compile against commit 92829a of Abella's GitHub repository.}
 ) proof assistant~\cite{AbellaDesc} to develop our formalization.
-Abella is designed to help with such formalizations of programming languages,
+Abella is designed to help with formalizations of programming languages,
 due to its built-in support for variable binding and
-the $\lambda$-tree syntax~\cite{miller2000abstract}, i.e. a form of HOAS.
+the $\lambda$-tree syntax~\cite{miller2000abstract}, which is a form of HOAS.
 Nominal variables, or $\nabla$-quantified variables, are used as an unlimited name supply,
 which supports explicit freshness control and substitutions.
-Although Abella lacks packages, tactics and support on modules,
+Although Abella lacks packages, tactics and support for modules,
 its higher-order unification and the ease of formalizing substitution-intensive relations
 are very helpful for our formalization.
 
 \paragraph{Statistics of the Proof}
-The proof script consists of 7683 lines of code with a total of
+The proof script consists of 7683 lines of Abella code with a total of
 51 definitions and 567 theorems.
-Figure~\ref{fig:proof_statistics} briefly summarizes the contents in each file.
+Figure~\ref{fig:proof_statistics} briefly summarizes the contents of each file.
 The files are linearly dependent due to the limitation of Abella.
 
 \begin{figure}[ht]
