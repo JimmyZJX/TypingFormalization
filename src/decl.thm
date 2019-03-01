@@ -1,0 +1,226 @@
+Import "typing".
+
+Theorem append_prune : forall A B AB, nabla (x : ty),
+	append (A x) (B x) AB -> exists FA FB, A = x\FA /\ B = x\FB.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+
+Theorem append_prune_AB : forall A B AB, nabla (x : ty),
+	append A B (AB x) -> exists FAB, AB = x\FAB.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+
+Theorem append_prune_tm : forall A B AB, nabla (x : tm),
+	append (A x) (B x) AB -> exists FA FB, A = x\FA /\ B = x\FB.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+
+Theorem append_prune_AB_tm : forall A B AB, nabla (x : tm),
+	append A B (AB x) -> exists FAB, AB = x\FAB.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+
+
+Theorem env_member_prune : forall (E:olist) B, nabla (x : ty),
+	member (B x) E -> exists Fr, B = x\Fr.
+induction on 1. intros. case H1.
+	search. apply IH to H2. search.
+
+Theorem env_weaken : forall FE F E, append F E FE -> env FE -> env E.
+induction on 2. intros. case H2.
+	case H1. search.
+	case H1. search. backchain IH.
+	case H1. search. backchain IH.
+
+% Weakening
+Theorem wft_weaken : forall E F G T EG EFG,
+	append E G EG -> split3 E F G EFG ->
+	wft EG T -> wft EFG T.
+induction on 3. intros. case H3.
+	search.
+	assert (member (tyvar n1) (EFG n1)). backchain split3_mem.
+		apply append_mem_inv to _ H4.
+		case H5. search. search. search.
+	unfold. apply IH to _ _ H4. search. apply IH to _ _ H5. search.
+	unfold. intros.
+		backchain IH with E = (tyvar n1 :: E), F = F, EFG = (tyvar n1 :: EFG).
+		backchain split3_cons.
+
+Theorem wft_prune : forall E T, nabla (x : ty),
+	wft E (T x) -> exists Fr, T = x\Fr.
+induction on 1. intros. case H1.
+	search.
+	case H2. search.
+	case H3. search. search.
+	apply env_member_prune to H2.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. search.
+Theorem wft_weaken_f : forall E F EF T,
+	append E F EF -> wft F T -> wft EF T.
+intros. backchain wft_weaken with E = nil, F = E, G = F.
+
+Theorem wft_weaken_a : forall E F G T EG EFG,
+	append E G EG -> split3 E F G EFG ->
+	wft EG T -> wft EFG T.
+induction on 3. intros. case H3.
+	search.
+	assert (member (tyvar n1) (EFG n1)). backchain split3_mem.
+		apply append_mem_inv to _ H4.
+		case H5. search. search. search.
+	unfold. apply IH to _ _ H4. search. apply IH to _ _ H5. search.
+	unfold. intros.
+		backchain IH with E = (tyvar n1 :: E), F = F, EFG = (tyvar n1 :: EFG).
+		backchain split3_cons.
+
+Theorem wft_weaken_af : forall E F EF T,
+	append E F EF -> wft F T -> wft EF T.
+intros. backchain wft_weaken_a with E = nil, F = E, G = F.
+Theorem wft_weaken_j : forall E T J,
+	wft E T -> wft (j J :: E) T.
+intros. backchain wft_weaken_af with E = j J :: nil.
+
+Theorem env_add_last : forall E F, nabla x,
+	append E (tyvar x :: nil) (F x) -> env E -> env (F x).
+induction on 1. intros. case H1. search.
+	case H2. apply append_prune_AB to H3. unfold. backchain IH.
+	apply append_prune_AB_tm to H3. apply IH to H3 _. unfold. search.
+		backchain wft_weaken with E = E3, F = tyvar n1 :: nil, G = nil.
+			apply append_nil_E to H3. search.
+			backchain split3_alt.
+
+Theorem mono_weaken : forall E F G T EG EFG,
+	append E G EG -> split3 E F G EFG ->
+	mono EG T -> mono EFG T.
+induction on 3. intros. case H3.
+	search.
+	assert (member (tyvar n1) (EFG n1)). backchain split3_mem.
+		apply append_mem_inv to _ H4.
+		case H5. search. search. search.
+	apply IH to _ _ H4. apply IH to _ _ H5. search.
+
+Theorem mono_prune : forall E T, nabla (x : ty),
+	mono E (T x) -> exists m, T = x\m.
+induction on 1. intros. case H1.
+	search.
+	case H2. search.
+	case H3. search. search.
+	apply env_member_prune to H2.
+	apply IH to H2. apply IH to H3. search.
+
+Theorem mono_weaken_f : forall E F EF T,
+	append E F EF -> mono F T -> mono EF T.
+intros. backchain mono_weaken with E = nil, F = E, G = F.
+Theorem mono_weaken_ex : forall E A, nabla x,
+	mono E A -> mono (exvar x :: E) A.
+intros. backchain mono_weaken_f with E = exvar n1 :: nil.
+Theorem mono_weaken_ty : forall E A, nabla x,
+	mono E A -> mono (tyvar x :: E) A.
+intros. backchain mono_weaken_f with E = tyvar n1 :: nil.
+Theorem mono_weaken_of : forall E A T, nabla x,
+	mono E A -> mono (of x T :: E) A.
+intros. backchain mono_weaken_f with E = of n1 T :: nil.
+
+Theorem mono_prune_tm : forall E T, nabla (x : tm),
+	mono (E x) (T x) -> exists m, T = x\m.
+induction on 1. intros. case H1.
+	search.
+	case H2. search.
+	case H3. search. search.
+	apply IH to H2. apply IH to H3. search.
+
+Theorem sub_weaken : forall E F G T1 T2 EG EFG,
+	append E G EG -> split3 E F G EFG ->
+	sub EG T1 T2 ->
+	sub EFG T1 T2.
+induction on 3. intros. case H3.
+	search.
+	assert (member (tyvar n1) (EFG n1)). backchain split3_mem.
+		apply append_mem_inv to _ H4. case H5. search. search.
+		search.
+	apply IH to _ _ H4. apply IH to _ _ H5. search.
+	apply IH to _ _ H4. apply mono_weaken to _ _ H5. search.
+	apply IH to _ _ H4 with E = (tyvar n1 :: E), F = F, EFG = (tyvar n1 :: EFG).
+		backchain split3_cons. search.
+Theorem sub_weaken_f : forall E F EF T1 T2,
+	append E F EF -> sub F T1 T2 -> sub EF T1 T2.
+intros. backchain sub_weaken with E = nil, F = E, G = F.
+Theorem sub_weaken_ex : forall E A B, nabla x,
+	sub E A B -> sub (exvar x :: E) A B.
+intros. backchain sub_weaken_f with E = exvar n1 :: nil.
+Theorem sub_weaken_ty : forall E A B, nabla x,
+	sub E A B -> sub (tyvar x :: E) A B.
+intros. backchain sub_weaken_f with E = tyvar n1 :: nil.
+Theorem sub_weaken_of : forall E A B T, nabla x,
+	sub E A B -> sub (of x T :: E) A B.
+intros. backchain sub_weaken_f with E = of n1 T :: nil.
+
+% Substitution
+Theorem wft_subst : forall E T X m,
+	wft E (T X) -> wft E m -> wft E (T m).
+induction on 1. intros. case H1.
+	case H3. search. search.
+	case H3. search. search.
+	case H3. apply IH to H4 H2 with T = T1. apply IH to H5 H2 with T = T2.
+		search. search.
+	case H3. unfold. assert exists T, T1 = x\y\ T y x. case H5.
+		apply IH to H4 _ with X = X, m = m, T = T2 n1.
+		backchain wft_weaken_f with E = tyvar n1 :: nil.
+		search. search.
+Theorem wft_subst_a : forall E T X m, wfj E ->
+	wft E (T X) -> wft E m -> wft E (T m).
+induction on 2. intros. case H2.
+	case H4. search. search.
+	case H4. search. search.
+	case H4. apply IH to _ H5 H3 with T = T1. apply IH to _ H6 H3 with T = T2.
+		search. search.
+	case H4. unfold. assert exists T, T1 = x\y\ T y x. case H6.
+		apply IH to _ H5 _ with X = X, m = m, T = T2 n1.
+		backchain wft_weaken_af with E = tyvar n1 :: nil.
+		search. search.
+
+Theorem mono_subst : forall E T X, nabla (x : ty),
+	mono (E x) (T x) -> mono (E x) X -> mono (E x) (T X).
+induction on 1. intros. case H1.
+	search. search. search. unfold. backchain IH with T = A. backchain IH with T = B.
+
+Theorem sub_subst : forall E A B, nabla (x : ty),
+	sub (E x) (A x) (B x) -> sub (E x) (A i) (B i).
+induction on 1. intros. case H1. search. search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. unfold. exists m i.
+		split. search. backchain mono_subst with T = m, x = n1.
+	apply IH to H2. unfold. search.
+
+Theorem sub_refl : forall E T, wft E T -> sub E T T.
+induction on 1. intros. case H1.
+	search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. search.
+
+Theorem sub_mono : forall E A B, mono E A -> mono E B -> sub E A B \/ sub E B A -> A = B.
+induction on 1. intros. case H1.
+	case H2. search.
+		case H3. case H5. case H5.
+		case H3. case H6. case H6.
+	case H2.
+		case H3. case H5. case H5.
+		case H3. case H6. case H6.
+		search.
+		case H3. case H7. case H7.
+	case H3.
+		case H6. case H2. apply IH to H4 _ _. apply IH to H5 _ _. search.
+			case H2.
+		case H6. case H2. apply IH to H4 _ _. apply IH to H5 _ _. search.
+			case H2.
+
+Theorem member_prune_tm : forall (E : olist) B, nabla (x : tm),
+	member (B x) E -> exists Fr, B = x\Fr.
+induction on 1. intros. case H1.
+	search. apply IH to H2. search.
+
+Theorem sub_inv : forall E A B, nabla x,
+	sub E A (all B) -> sub (tyvar x :: E) A (B x).
+induction on 1. intros. case H1.
+	apply mono_weaken_ty to H3. apply IH to H2. search.
+	search.
+

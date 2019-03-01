@@ -1,0 +1,235 @@
+Import "decl".
+
+Define order : ty -> nat -> prop by
+	order i z;
+	nabla x, order x z;
+	order (arrow A B) K := exists M N, order A M /\ order B N /\ add M N K;
+	order (all A) (s K) := nabla x, order (A x) K.
+
+Theorem order_is_nat : forall A N, order A N -> is_nat N.
+induction on 1. intros. case H1. search. search. apply IH to H3.
+	backchain add_is_nat_k. apply IH to H2. search.
+
+Theorem mono_order : forall E m, mono E m -> order m z.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. search.
+
+Theorem mono_order_z : forall E m n, mono E m -> order m n -> n = z.
+induction on 1. intros. case H1. case H2. search. case H2. search.
+	case H2. apply IH to H3 _. apply IH to H4 _. case H7. search.
+
+Theorem order_subst : forall E F A N m X,
+	mono E X -> mono F m -> order (A X) N -> order (A m) N.
+induction on 3. intros. case H3.
+	case H4. search. backchain mono_order.
+	case H4. search. backchain mono_order.
+	case H4. apply IH to _ H2 H5 with A = A2. apply IH to _ H2 H6 with A = A3. search.
+		case H1. apply mono_order_z to H8 _. apply mono_order_z to H9 _. case H7.
+		backchain mono_order.
+	case H4 (keep). unfold. intros. apply IH to H1 H2 H5 with A = x\ A2 x n1. search.
+		case H1.
+
+Theorem wft_strenthen_tyvar : forall F E FE FxE A, nabla x,
+	append F E FE -> append F (tyvar x :: E) (FxE x) ->
+	env (FxE x) -> env FE -> wft (FxE x) A -> wft FE A.
+induction on 5. intros. case H5. search.
+	apply append_mem_inv to H2 H6. unfold. intros. backchain append_mem.
+		case H7. search. case H8. search.
+	apply IH to H1 H2 _ _ H6. apply IH to H1 H2 _ _ H7. search.
+	assert append (tyvar n2 :: F) (tyvar n1 :: E) (tyvar n2 :: FxE n1).
+		assert append (tyvar n2 :: F) E (tyvar n2 :: FE).
+		apply IH to H8 H7 _ _ H6 with x = n1. search.
+
+Theorem wft_strenthen_tyvar_a : forall F E FE FxE A, nabla x,
+	append F E FE -> append F (tyvar x :: E) (FxE x) ->
+	wfj (FxE x) -> wfj FE -> wft (FxE x) A -> wft FE A.
+induction on 5. intros. case H5. search.
+	apply append_mem_inv to H2 H6. unfold. intros. backchain append_mem.
+		case H7. search. case H8. search.
+	apply IH to H1 H2 _ _ H6. apply IH to H1 H2 _ _ H7. search.
+	assert append (tyvar n2 :: F) (tyvar n1 :: E) (tyvar n2 :: FxE n1).
+		assert append (tyvar n2 :: F) E (tyvar n2 :: FE).
+		apply IH to H8 H7 _ _ H6 with x = n1. search.
+
+Theorem mono_strenthen_tyvar_fresh : forall F E FE FxE A, nabla x,
+	append F E FE -> append F (tyvar x :: E) (FxE x) ->
+	mono (FxE x) A -> mono FE A.
+induction on 3. intros. case H3. search.
+	apply append_mem_inv to H2 H4. unfold. intros. backchain append_mem.
+		case H5. search. case H6. search.
+	apply IH to H1 H2 H4. apply IH to H1 H2 H5. search.
+
+Theorem sub_strenthen_tyvar_thm : forall F E FE FxE A B m n, nabla x,
+	is_nat n -> lt m n -> order (arrow A B) m ->
+	append F E FE -> append F (tyvar x :: E) (FxE x) ->
+	sub (FxE x) A B -> sub FE A B.
+induction on 1. induction on 6. intros. case H1 (keep). apply lt_false to H2.
+	case H6. search.
+		assert split3 (F n2) (tyvar n1 :: nil) (E n2) (FxE n2 n1).
+			backchain split3_alt. apply split3_mem_inv to H9 _.
+				unfold. intros. case H10.
+				backchain append_mem. case H11. case H12. backchain append_mem.
+		case H3. case H10. case H11.
+		apply add_assoc4 to H15 H18 H12.
+			assert order (arrow B3 A3) ca. assert order (arrow A4 B4) bd.
+			apply add_le_n to _ H2 H21.
+			unfold. backchain IH1 with x = n1, m = ca.
+				backchain IH1 with x = n1, m = bd.
+		case H3. case H10. assert lt K (s K).
+			apply order_is_nat to H13. apply add_total to H15 with n = N1.
+			apply add_ltm to H14 H12 H16. apply lt_trans to _ H17 H2.
+			apply mono_subst to H9 _ with X = i.
+			apply order_subst to _ H19 H13 with A = A2.
+			assert order (arrow (A2 (m1 i)) B) k.
+			apply sub_subst to H8.
+			apply IH to H7 H18 H21 H4 H5 H22. unfold. exists m1 i.
+				split. search. backchain mono_strenthen_tyvar_fresh with x = n1.
+		assert append (tyvar n2 :: F) (tyvar n1 :: E) (tyvar n2 :: FxE n1).
+			assert append (tyvar n2 :: F) E (tyvar n2 :: FE).
+			case H3. case H12. assert lt K (s K).
+				apply order_is_nat to H11. apply add_total to H16 with n = K.
+				apply add_ltn to H15 H13 H17. apply lt_trans to _ H18 H2.
+				assert order (arrow A (B2 n2)) k.
+			apply IH1 to H7 H19 H20 H10 H9 H8 with x = n1. search.
+
+Theorem order_prune : forall A N, nabla (x : ty), order (A x) (N x) ->
+	exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search. search. search.
+	apply IH to H2. apply IH to H3. apply add_prune_k[ty] to H4. search.
+	apply IH to H2 with x = n1. search.
+Theorem order_prune_tm : forall A N, nabla (x : tm), order (A x) (N x) ->
+	exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. apply add_prune_k[tm] to H4. search.
+	apply IH to H2 with x = n1. search.
+
+Theorem order_total : forall E A B, sub E A B -> exists m, order (arrow A B) m. 
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. case H4. case H5.
+		apply order_is_nat to H7. apply add_is_nat_k to _ H8.
+		apply add_total to H13 with n = m1.
+		apply add_comm to _ H8.
+		apply add_assoc4 to H15 H11 H14. apply add_comm to _ H16.
+		assert order (arrow A1 A2) ca. assert order (arrow B1 B2) bd. search.
+	apply IH to H2. case H4. exists s m1. unfold. exists s M, N. split.
+		unfold. intros. backchain order_subst with A = A1. search. search.
+	apply IH to H2. apply order_prune to H3. case H3. apply add_prune[ty] to H6.
+		exists s Nr. unfold. exists mr, s nr. split. search. search. backchain add_s.
+
+Theorem sub_strenthen_tyvar : forall F E FE FxE A B, nabla x,
+	append F E FE -> append F (tyvar x :: E) (FxE x) ->
+	sub (FxE x) A B -> sub FE A B.
+intros. apply order_total to H3. apply order_is_nat to H4. assert is_nat (s m).
+	backchain sub_strenthen_tyvar_thm with x = n1, n = s m.
+
+Theorem sub_strenthen_tyvar_f : forall E A B, nabla x,
+	sub (tyvar x :: E) A B -> sub E A B.
+intros. apply sub_strenthen_tyvar to _ _ H1 with x = n1. search.
+
+Define jJs : olist -> prop by
+	jJs nil;
+	jJs (j J :: E) := jJs E.
+
+Theorem jJs_no_tyvar : forall Js X, jJs Js -> member (tyvar X) Js -> false.
+induction on 1. intros. case H1.
+	case H2. case H2. backchain IH.
+
+Theorem jJs_no_of : forall Js X A, jJs Js -> member (of X A) Js -> false.
+induction on 1. intros. case H1.
+	case H2. case H2. backchain IH.
+
+Theorem mono_remove_j_thm : forall F E FJE FE M Js,
+	mono FJE M -> split3 F Js E FJE -> append F E FE -> jJs Js -> mono FE M.
+induction on 1. intros. case H1. search.
+	apply split3_mem_inv to H2 _. unfold. intros. case H6.
+		backchain append_mem. apply jJs_no_tyvar to _ H7. backchain append_mem.
+	apply IH to H5 _ _ _. apply IH to H6 _ _ _. search.
+
+Theorem mono_remove_j : forall E M J, mono (j J :: E) M -> mono E M.
+induction on 1. intros. case H1. search.
+	case H2. search.
+	apply IH to H2. apply IH to H3. search.
+
+Theorem mono_add_j : forall E M J, mono E M -> mono (j J :: E) M.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2 with J = J. apply IH to H3 with J = J. search.
+
+Theorem sub_remove_j_thm : forall F E FJE FE A B Js,
+	sub FJE A B -> split3 F Js E FJE -> append F E FE -> jJs Js ->
+	sub FE A B.
+induction on 1. intros. case H1. search.
+	case H2. apply split3_mem_inv to _ H5. unfold. intros. case H8.
+		backchain append_mem. apply jJs_no_tyvar to _ H9. backchain append_mem.
+	apply IH to H5 _ _ _. apply IH to H6 _ _ _. search.
+	apply IH to H5 _ _ _. apply mono_remove_j_thm to H6 _ _ _. search.
+	apply IH to H5 _ _ _ with F = tyvar n1 :: F. backchain split3_cons. search.
+
+Theorem sub_remove_j : forall E A B J, sub (j J :: E) A B -> sub E A B.
+intros. assert split3 nil (j J :: nil) E (j J :: E). backchain sub_remove_j_thm.
+
+Theorem wft_remove_j_thm : forall F E FJE FE M Js,
+	wft FJE M -> split3 F Js E FJE -> append F E FE -> jJs Js -> wft FE M.
+induction on 1. intros. case H1. search.
+	apply split3_mem_inv to H2 _. unfold. intros. case H6.
+		backchain append_mem. apply jJs_no_tyvar to _ H7. backchain append_mem.
+	apply IH to H5 _ _ _. apply IH to H6 _ _ _. search.
+	apply IH to H5 _ _ _ with F = tyvar n1 :: F. backchain split3_cons. search.
+
+Theorem decl_remove_j_thm :
+	(forall F E FJE FE X A Js, split3 F Js E FJE -> append F E FE -> jJs Js ->
+		chk FJE X A -> chk FE X A) /\
+	(forall F E FJE FE X A Js, split3 F Js E FJE -> append F E FE -> jJs Js ->
+		inf FJE X A -> inf FE X A) /\
+	(forall F E FJE FE A X C Js, split3 F Js E FJE -> append F E FE -> jJs Js ->
+		infApp FJE A X C -> infApp FE A X C).
+induction on 4 4 4. split.
+	intros. case H4. search.
+		apply IH to _ _ _ H5 with F = tyvar n1 :: F. backchain split3_cons. search.
+		apply IH to _ _ _ H6 with F = of n1 A1 :: F. backchain split3_cons.
+			apply wft_remove_j_thm to H5 _ _ _. search.
+		apply IH1 to _ _ _ H5. apply sub_remove_j_thm to H6 _ _ _. search.
+	intros. case H4.
+		apply split3_mem_inv to H1 _. unfold. intros. case H6.
+			backchain append_mem. apply jJs_no_of to _ H7. backchain append_mem.
+		apply IH to _ _ _ H5. search.
+		search.
+		apply IH to _ _ _ H6 with F = of n1 M1 :: F. backchain split3_cons.
+			apply mono_remove_j_thm to H5 H1 H2 _. search.
+		apply IH1 to _ _ _ H5. apply IH2 to _ _ _ H6. search.
+	intros. case H4.
+		apply IH2 to _ _ _ H5. apply mono_remove_j_thm to H6 _ _ _. search.
+		apply IH to _ _ _ H5. apply wft_remove_j_thm to H6 _ _ _. search.
+
+Theorem chk_remove_j : forall X A J E, chk (j J :: E) X A -> chk E X A.
+intros. assert split3 nil (j J :: nil) E (j J :: E).
+	apply decl_remove_j_thm. backchain H3.
+
+Theorem inf_remove_j : forall X A J E, inf (j J :: E) X A -> inf E X A.
+intros. assert split3 nil (j J :: nil) E (j J :: E).
+	apply decl_remove_j_thm. backchain H4.
+
+Theorem infApp_remove_j : forall A X C J E, infApp (j J :: E) A X C -> infApp E A X C.
+intros. assert split3 nil (j J :: nil) E (j J :: E).
+	apply decl_remove_j_thm. backchain H5.
+
+
+Theorem wft_strenthen_tyvar_noenv : forall F E FE FxE A, nabla x,
+	append F E FE -> append F (tyvar x :: E) (FxE x) ->
+	wft (FxE x) A -> wft FE A.
+induction on 3. intros. case H3. search.
+	apply append_mem_inv to H2 H4. unfold. intros. backchain append_mem.
+		case H5. search. case H6. search.
+	apply IH to H1 H2 H4. apply IH to H1 H2 H5. search.
+	assert append (tyvar n2 :: F) (tyvar n1 :: E) (tyvar n2 :: FxE n1).
+		assert append (tyvar n2 :: F) E (tyvar n2 :: FE).
+		apply IH to H6 H5 H4 with x = n1. search.
+
+Theorem sub_wft : forall E A B, sub E A B -> wft E A /\ wft E B.
+induction on 1. intros. case H1.
+	search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. assert wft (tyvar n1 :: E) (A1 m).
+		backchain wft_weaken_f with E = tyvar n1 :: nil.
+		apply wft_subst to H6 _ with T = A1, m = n1. search.
+	apply IH to H2. apply wft_strenthen_tyvar_noenv to _ _ H3. search.
+

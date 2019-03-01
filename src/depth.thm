@@ -1,0 +1,206 @@
+Import "soundness".
+
+Define depth : ty -> nat -> prop by
+	depth i z;
+	nabla x, depth x z;
+	depth (arrow A B) (s K) := exists M N, depth A M /\ depth B N /\ add M N K;
+	depth (all A) K := nabla x, depth (A x) K.
+
+Theorem depth_is_nat : forall A N, depth A N -> is_nat N.
+induction on 1. intros. case H1. search. search. apply IH to H3.
+	unfold. backchain add_is_nat_k. apply IH to H2. search.
+
+Theorem depth_det : forall A M N, depth A N -> depth A M -> N = M.
+induction on 1. intros. case H1.
+	case H2. search. case H2. search. case H2.
+	apply IH to H3 H6. apply IH to H4 H7. apply add_det to H5 H8. search.
+	case H2. apply IH to H3 H4. search.
+
+Theorem depth_open_ge_mono : forall E A N M m,
+	mono E m -> depth m N -> depth (A m) M -> (exists Ar, A = x\ Ar) \/ lt N (s M).
+induction on 3. intros. case H3.
+	case H4. search. case H2. search.
+	case H4. search. case H2. search.
+	case H4. apply IH to _ _ H5 with A = A2. apply IH to _ _ H6 with A = A3.
+		case H8. case H9. search.
+			apply depth_is_nat to H6. apply add_is_nat_k to H11 H7.
+			apply add_le to _ H7. apply lt_sm_sn to H14. apply lt_trans to _ H10 H15. search.
+			apply depth_is_nat to H6. apply add_is_nat_k to H11 H7.
+			apply add_le to _ H7. apply lt_sm_sn to H13. apply lt_trans to _ H10 H15. search.
+		case H2. apply depth_det to H5 H8. apply depth_det to H6 H9.
+			apply add_det to H7 H10. search.
+	case H4.
+		apply IH to _ _ H5 with A = x\ A2 x n1. case H6. search. search.
+		case H2. apply depth_det to H5 H6. search.
+
+Theorem depth_open_ge_A : forall A N M m, depth (all A) N -> depth (A m) M -> lt N (s M).
+induction on 2. intros. case H2.
+	case H3. case H1. case H4. search. case H1. case H4. search.
+	case H3. case H1. case H4. search. case H1. case H4. search.
+	case H3. case H1. case H7. apply add_prune[ty] to H10.
+		assert depth (all A2) mr. assert depth (all A3) nr.
+		apply IH to H11 H4. apply IH to H12 H5.
+			apply add_is_nat to H6. apply add_total to H15 with n = nr.
+			apply add_s to H6. apply add_ltn to H14 _ H16. apply add_ltm to H13 _ H10.
+			backchain lt_sm_sn. apply lt_sm_sn to H18. apply lt_trans to _ H19 H20.
+				apply depth_is_nat to H5. apply add_is_nat_k to _ H6. search. search.
+		case H1. case H7. backchain lt_z_sn. apply depth_is_nat to H5.
+			apply add_is_nat_k to _ H6. search.
+	case H3. case H1. case H5. assert depth (all (x\ A2 x n1)) N. apply IH to H7 H4. search.
+		case H1. case H5. backchain lt_z_sn. backchain depth_is_nat.
+
+Theorem depth_prune : forall A N, nabla (x : ty), depth (A x) (N x) ->
+	exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search. search. search.
+	apply IH to H2. apply IH to H3. apply add_prune_k[ty] to H4. search.
+	apply IH to H2 with x = n1. search.
+
+Theorem depth_wft_total : forall E A, wft E A -> exists N, depth A N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. apply depth_is_nat to H4.
+		apply add_total to H6 with n = N1. exists s k. search.
+	apply IH to H2. apply depth_prune to H3. search.
+
+Theorem sub_mono_depth_ge :
+	(forall E A m M N, wfj E -> sub E A m -> mono E m -> depth m M -> depth A N -> lt N (s M)) /\
+	(forall E A m M N, wfj E -> sub E m A -> mono E m -> depth m M -> depth A N -> lt N (s M)).
+induction on 2 2. split.
+	intros. case H2 (keep).
+		case H4. case H5. search. case H4. case H5. search.
+		case H4. case H5. case H3. apply IH1 to _ H6 _ _ _. apply IH to _ H7 _ _ _.
+			apply depth_is_nat to H11. apply add_total to H18 with n = N1.
+				apply add_ltm to H16 _ H19. apply add_s to H19. apply add_ltn to H17 H21 _.
+				apply depth_is_nat to H9. apply add_is_nat_k to _ H10. apply lt_sm_sn to H20.
+				apply lt_trans to _ H22 H25. backchain lt_sm_sn.
+		apply sub_wft to H6. apply depth_wft_total to H8. apply IH to _ H6 _ _ _.
+			apply depth_open_ge_A to H5 H10. apply lt_sm_sn to H11.
+			backchain lt_trans. apply depth_is_nat to H4. search.
+		case H3.
+	intros. case H2.
+		case H4. case H5. search. case H4. case H5. search.
+		case H4. case H5. case H3. apply IH to _ H6 _ _ _. apply IH1 to _ H7 _ _ _.
+			apply depth_is_nat to H11. apply add_total to H18 with n = N1.
+				apply add_ltm to H16 _ H19. apply add_s to H19. apply add_ltn to H17 H21 _.
+				apply depth_is_nat to H9. apply add_is_nat_k to _ H10. apply lt_sm_sn to H20.
+				apply lt_trans to _ H22 H25. backchain lt_sm_sn.
+		case H3.
+		case H5. apply IH1 to _ H6 _ _ _.
+			apply mono_weaken_f to _ _ with F = E, EF = tyvar n1 :: E. search.
+			search.
+
+Split sub_mono_depth_ge as sub_mono_depth_geR, sub_mono_depth_geL.
+% Theorem sub_mono_depth_geR :
+%	forall E A m M N, env E -> sub E A m -> mono E m -> depth m M -> depth A N -> lt N (s M).
+% Theorem sub_mono_depth_geL :
+%	forall E A m M N, env E -> sub E m A -> mono E m -> depth m M -> depth A N -> lt N (s M).
+
+Theorem depth_wfta_total : forall E A, wfta E A -> exists N, depth A N.
+induction on 1. intros. case H1. search. search. search.
+	apply IH to H2. apply IH to H3. apply depth_is_nat to H4.
+		apply add_total to H6 with n = N1. search.
+	apply IH to H2. apply depth_prune to H3. search.
+
+Theorem depth_tex_geL : forall E A B a b Jo M,
+	tex (j (subty A B) :: E) (j (subty a b) :: Jo) ->
+	wfj (j (subty A B) :: E) -> depth A M -> exists N, depth a N /\ lt M (s N).
+induction on 1. intros. case H1 (keep). search.
+	W: case H2 (keep). apply depth_prune to H3.
+		W: apply mono_wfta to H8.
+		A: case H4. A: case H5. A: apply append_assoc_inv to _ A with C = E1.
+		W: apply wfta_weaken_f to A3 W3.
+		E: apply wfj_remove_exvar_nabla to A A1 _ _.
+		W: apply wfta_strenthen_exvar_notfresh to A1 A _ _ _.
+		W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
+		D: apply depth_wfta_total to W5.
+		L: apply IH to H6 _ _.
+		L: apply depth_open_ge_A to _ D with A = A.
+		apply depth_is_nat to L. apply le_trans to _ L2 L1. search.
+
+Theorem depth_tex_geR : forall E A B a b Jo M,
+	tex (j (subty A B) :: E) (j (subty a b) :: Jo) ->
+	wfj (j (subty A B) :: E) -> depth B M -> exists N, depth b N /\ lt M (s N).
+induction on 1. intros. case H1 (keep). search.
+	W: case H2 (keep). apply depth_prune to H3.
+		W: apply mono_wfta to H8.
+		A: case H4. A: case H5. A: apply append_assoc_inv to _ A with C = E1.
+		W: apply wfta_weaken_f to A3 W3.
+		E: apply wfj_remove_exvar_nabla to A A1 _ _.
+		W: apply wfta_strenthen_exvar_notfresh to A1 A _ _ _.
+		W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
+		D: apply depth_wfta_total to W6.
+		L: apply IH to H6 _ _.
+		L: apply depth_open_ge_A to _ D with A = B.
+		apply depth_is_nat to L. apply le_trans to _ L2 L1. search.
+
+Theorem depth_arrow_ltA_intro : forall E A B M,
+	wfta E (arrow A B) -> depth A M -> exists N, depth (arrow A B) N /\ lt M N.
+intros. W: case H1. D: apply depth_wfta_total to W1.
+	apply depth_is_nat to H2. apply add_total to H3 with n = N.
+	apply depth_is_nat to D. apply add_is_nat_k to _ H4.
+	apply add_le to _ H4. search.
+
+Theorem depth_arrow_ltB_intro : forall E A B M,
+	wfta E (arrow A B) -> depth B M -> exists N, depth (arrow A B) N /\ lt M N.
+intros. W: case H1. D: apply depth_wfta_total to W.
+	apply depth_is_nat to D. apply add_total to H3 with n = M.
+	apply depth_is_nat to H2. apply add_is_nat_k to _ H4.
+	apply add_le to _ H4. search.
+
+
+Theorem prune_tex_instL : forall A B c a b E Jo, nabla x,
+	tex (j (subty x (arrow (A x) (B x))) :: E x) (j (subty c (arrow a b)) :: Jo) ->
+	member (exvar x) (E x) -> wfj (E x) -> wfta (E x) (arrow (A x) (B x)) ->
+	sub Jo c (arrow a b) -> exists Ar Br, A = x\ Ar /\ B = x\ Br.
+intros. T: apply tex_extract_intro to H1 _ _. W: case H4.
+	A: case T. A: case T1. W: apply wfj_remove_exvar_mono to A A1 _ _.
+	A: apply append_subst to A1 with A = m. M: apply mono_weaken_f to A2 _.
+	W: apply mono_wfta to M. W: apply mono_wfta to T2.
+	T: apply tex_uncons to T3.
+	apply tex_wft_L to _ T3. backchain mono_wft. backchain tex_mono.
+	D: apply depth_wfta_total to W3.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W _.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
+	D: apply depth_wfta_total to W5. D: apply depth_wfta_total to W6.
+	L: apply depth_open_ge_mono to M _ D1 with A = A.
+	L: case L. L: apply depth_open_ge_mono to M _ D2 with A = B. L: case L. search.
+		D: apply depth_arrow_ltB_intro to _ D2 with A = Ar.
+			D: apply depth_tex_geR to T3 _ _.
+			D: apply sub_mono_depth_geL to _ H5 _ _ _. backchain tex_mono. backchain tex_wfj.
+			N: apply depth_is_nat to D. N: apply depth_is_nat to D2.
+			L: apply le_trans to _ D6 D7. L: apply le_trans to _ L1 L.
+			apply lt_ge_false to _ D4 L2.
+		D: apply depth_arrow_ltA_intro to _ D1 with B = B c.
+			D: apply depth_tex_geR to T3 _ _.
+			D: apply sub_mono_depth_geL to _ H5 _ _ _. backchain tex_mono. backchain tex_wfj.
+			N: apply depth_is_nat to D. N: apply depth_is_nat to D1.
+			L: apply le_trans to _ D6 D7. L: apply le_trans to _ L1 L.
+			apply lt_ge_false to _ D4 L2.
+
+Theorem prune_tex_instR : forall A B c a b E Jo, nabla x,
+	tex (j (subty (arrow (A x) (B x)) x) :: E x) (j (subty (arrow a b) c) :: Jo) ->
+	member (exvar x) (E x) -> wfj (E x) -> wfta (E x) (arrow (A x) (B x)) ->
+	sub Jo (arrow a b) c -> exists Ar Br, A = x\ Ar /\ B = x\ Br.
+intros. T: apply tex_extract_intro to H1 _ _. W: case H4.
+	A: case T. A: case T1. W: apply wfj_remove_exvar_mono to A A1 _ _.
+	A: apply append_subst to A1 with A = m. M: apply mono_weaken_f to A2 _.
+	W: apply mono_wfta to M. W: apply mono_wfta to T2.
+	T: apply tex_uncons to T3.
+	apply tex_wft_R to _ T3. backchain mono_wft. backchain tex_mono.
+	D: apply depth_wfta_total to W3.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W _.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
+	D: apply depth_wfta_total to W5. D: apply depth_wfta_total to W6.
+	L: apply depth_open_ge_mono to M _ D1 with A = A.
+	L: case L. L: apply depth_open_ge_mono to M _ D2 with A = B. L: case L. search.
+		D: apply depth_arrow_ltB_intro to _ D2 with A = Ar.
+			D: apply depth_tex_geL to T3 _ _.
+			D: apply sub_mono_depth_geR to _ H5 _ _ _. backchain tex_mono. backchain tex_wfj.
+			N: apply depth_is_nat to D. N: apply depth_is_nat to D2.
+			L: apply le_trans to _ D6 D7. L: apply le_trans to _ L1 L.
+			apply lt_ge_false to _ D4 L2.
+		D: apply depth_arrow_ltA_intro to _ D1 with B = B c.
+			D: apply depth_tex_geL to T3 _ _.
+			D: apply sub_mono_depth_geR to _ H5 _ _ _. backchain tex_mono. backchain tex_wfj.
+			N: apply depth_is_nat to D. N: apply depth_is_nat to D1.
+			L: apply le_trans to _ D6 D7. L: apply le_trans to _ L1 L.
+			apply lt_ge_false to _ D4 L2.

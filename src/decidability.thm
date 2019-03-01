@@ -1,0 +1,885 @@
+Import "decidability_inst".
+
+Theorem jExt_wfj : forall E Ext, jExt E Ext -> wfj E -> wfj Ext.
+induction on 1. intros. case H1. search.
+	apply wfj_remove_exvar_nabla to H3 H4 _ _. apply IH to H7 _. search.
+	apply wfj_insert_exvar_raw to H3 H4 _. apply IH to H5 _. search.
+%	apply wfj_insert_exvar to H3 H4 _. apply IH to H5 _. search.
+
+
+Define tmSizel : olist -> nat -> prop by
+	tmSizel nil z;
+	nabla x, tmSizel (exvar x :: E x) N := nabla x, tmSizel (E x) N;
+	nabla x, tmSizel (tyvar x :: E x) N := nabla x, tmSizel (E x) N;
+	nabla x, tmSizel (of x A :: E x) N := nabla x, tmSizel (E x) N;
+	tmSizel (j (subty A B) :: E) N := tmSizel E N;
+	tmSizel (j (check X A) :: E) K := exists M N,
+		tmSize X M /\ tmSizel E N /\ add M N K;
+	tmSizel (j (inferC X Ji) :: E) K := exists M N, nabla x,
+		tmSize X M /\ tmSizel (j (Ji x) :: tyvar x :: E) N /\ add M N K;
+	tmSizel (j (inferAppC A X Ji) :: E) K := exists M N, nabla x,
+		tmSize X M /\ tmSizel (j (Ji x) :: tyvar x :: E) N /\ add M N K.
+
+Theorem tmSizel_prune : forall E N, nabla (x : ty),
+	tmSizel (E x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2. search.
+	apply IH to H3. apply tmSize_prune to H2. apply add_prune_k[ty] to H4. search.
+	apply IH to H3 with x = n1. apply tmSize_prune to H2.
+		apply add_prune_k[ty] to H4. search.
+	apply IH to H3 with x = n1. apply tmSize_prune to H2.
+		apply add_prune_k[ty] to H4. search.
+
+Theorem tmSizel_prune_tm : forall E N, nabla (x : tm),
+	tmSizel (E x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H3. apply tmSize_prune_tm to H2. apply add_prune_k[tm] to H4. search.
+	apply IH to H3 with x = n1. apply tmSize_prune_tm to H2.
+		apply add_prune_k[tm] to H4. search.
+	apply IH to H3 with x = n1. apply tmSize_prune_tm to H2.
+		apply add_prune_k[tm] to H4. search.
+
+Theorem tmSizel_subst_eq : forall E A N N1, nabla (x : ty),
+	tmSizel (E x) N -> tmSizel (E A) N1 -> N = N1.
+induction on 1. intros. case H1.
+	case H2. search.
+	case H2. apply IH to H3 _ with A = A n2. search.
+	case H2. apply tmSizel_prune to H3 with x = n2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 _ with A = A n2. search.
+	case H2. apply tmSizel_prune to H3 with x = n2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 _ with A = A n2. search.
+	case H2. apply IH to H3 H4. search.
+	case H2. apply tmSizel_prune to H4. apply IH to H4 H7.
+		apply tmSize_prune to H3. apply tmSize_subst to H3 with A = A.
+		apply tmSize_det to H9 _. apply add_det to H5 H8. search.
+	case H2. apply tmSizel_prune to H4. apply tmSizel_prune to H4 with x = n1.
+		apply IH to H4 _ with x = n1, A = A.
+		apply tmSize_prune to H3. apply tmSize_subst to H3 with A = A.
+		apply tmSize_det to H9 _. apply add_det to H5 H8. search.
+	case H2. apply tmSizel_prune to H4. apply tmSizel_prune to H4 with x = n1.
+		apply IH to H4 _ with x = n1, A = A.
+		apply tmSize_prune to H3. apply tmSize_subst to H3 with A = A.
+		apply tmSize_det to H9 _. apply add_det to H5 H8. search.
+Theorem tmSizel_det : forall E N N1, tmSizel E N -> tmSizel E N1 -> N = N1.
+intros. apply tmSizel_subst_eq to H1 H2. search.
+
+Theorem tmSizel_append : forall E F EF NE NF NEF, tmSizel E NE -> tmSizel F NF ->
+	append E F EF -> add NE NF NEF -> tmSizel EF NEF.
+induction on 1. intros. case H1.
+	case H3. case H4. search.
+	case H3. apply IH to H5 _ _ _. apply tmSizel_prune to H7. search.
+	case H3. apply IH to H5 _ _ _. apply tmSizel_prune to H7. search.
+	case H3. apply IH to H5 _ _ _. apply tmSizel_prune_tm to H7. search.
+	case H3. apply IH to H5 _ _ _. search.
+	case H3. apply add_assoc to H7 _. apply IH to H6 _ _ _. search.
+	case H3. apply add_assoc to H7 _. apply IH to H6 _ _ _. search.
+	case H3. apply add_assoc to H7 _. apply IH to H6 _ _ _. search.
+
+Theorem tmSizel_is_nat : forall E N, tmSizel E N -> is_nat N.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H3. backchain add_is_nat_k.
+	apply IH to H3. backchain add_is_nat_k.
+	apply IH to H3. backchain add_is_nat_k.
+
+Theorem tmSizel_total_thm : forall F E FE,
+	append F E FE -> wfj FE -> exists N, tmSizel F N.
+induction on 2. intros. case H1. search. case H2.
+	apply append_prune to H3. apply IH to _ H4. search.
+	apply append_prune to H3. apply IH to _ H4. search.
+	apply append_prune_tm to H3. apply IH to _ H4. search.
+	apply IH to _ H6. search.
+	apply tmSize_total to H4. apply tmSize_is_nat to H7.
+		apply IH to _ H6. apply add_total to H8 with n = N2. search.
+	apply IH to _ H5 with E = E. apply tmSizel_prune to H6.
+		apply tmSize_total to H4. apply tmSize_is_nat to H7.
+		apply add_total to H8 with n = Nr. search.
+	apply IH to _ H6 with E = E. apply tmSizel_prune to H7.
+		apply tmSize_total to H5. apply tmSize_is_nat to H8.
+		apply add_total to H9 with n = Nr. search.
+Theorem tmSizel_total_wfj : forall E, wfj E -> exists N, tmSizel E N.
+intros. apply wfj_append_nil to _. backchain tmSizel_total_thm.
+Theorem tmSizel_total_FE : forall F E FE, append F E FE -> wfj FE ->
+	exists NF NE NFE, tmSizel F NF /\ tmSizel E NE /\ tmSizel FE NFE /\ add NF NE NFE.
+intros. apply tmSizel_total_thm to H1 _.
+	apply wfj_weaken to _ H2. apply tmSizel_total_wfj to H4.
+	apply tmSizel_is_nat to H3.
+	apply add_total to H6 with n = N1.
+	apply tmSizel_append to _ _ H1 _. search.
+Theorem tmSizel_total_nat : forall E, wfj E -> exists NE, tmSizel E NE /\ is_nat NE.
+intros. apply tmSizel_total_wfj to H1. apply tmSizel_is_nat to H2. search.
+
+Theorem jExt_tmSizel_eq : forall E Ext NE NExt,
+	wfj E -> jExt E Ext -> tmSizel E NE -> tmSizel Ext NExt -> NE = NExt.
+induction on 2. intros. case H2 (keep).
+	apply tmSizel_det to H3 H4. search.
+	apply tmSizel_total_FE to H5 _. case H11. apply tmSizel_det to *H3 H12.
+		apply tmSizel_append to _ _ H6 _.
+		W: apply wfj_remove_exvar_nabla to H5 H6 _ _. apply tmSizel_total_wfj to W.
+		apply IH to _ H9 H16 H4.
+		apply tmSizel_prune to H15. apply tmSizel_subst_eq to H15 H16. search.
+	apply tmSizel_total_FE to H5 _. apply tmSizel_det to *H3 H10.
+		apply tmSizel_append to _ _ H6 _.
+		W: apply wfj_insert_exvar_raw to H5 H6 _. apply tmSizel_total_wfj to W.
+		apply IH to _ H7 H13 H4.
+		apply tmSizel_prune to H13. apply tmSizel_det to H12 H13. search.
+Theorem jExt_tmSizel : forall E Ext NE,
+	wfj E -> jExt E Ext -> tmSizel E NE -> tmSizel Ext NE.
+intros. apply jExt_wfj to _ _. apply tmSizel_total_wfj to H4.
+	apply jExt_tmSizel_eq to _ _ H3 H5. search.
+
+Theorem tmSizel_subst_tyvar : forall E J m N, nabla x,
+	tmSizel (j (J x) :: tyvar x :: E) N -> wfj (j (J x) :: tyvar x :: E) ->
+	wfta E m -> wfj (j (J m) :: E) /\ tmSizel (j (J m) :: E) N.
+intros. T: apply tmSizel_total_FE to _ H2 with E = tyvar n1 :: E.
+	W: apply wfj_subst_tyvar to H2 _.
+	T: apply tmSizel_total_FE to _ W with E = E.
+	T: case T1. apply tmSizel_det to T5 *T1.
+	apply tmSizel_prune to T. apply tmSizel_subst_eq to T T4.
+	apply add_det to T3 T7. apply tmSizel_det to H1 T2. search.
+
+
+Define jDifficulty : olist -> nat -> prop by
+	jDifficulty nil z;
+	nabla x, jDifficulty (exvar x :: E x) N := nabla x, jDifficulty (E x) N;
+	nabla x, jDifficulty (tyvar x :: E x) N := nabla x, jDifficulty (E x) N;
+	nabla x, jDifficulty (of x A :: E x) N := nabla x, jDifficulty (E x) N;
+	jDifficulty (j (subty A B) :: E) N := jDifficulty E N;
+	jDifficulty (j (check X A) :: E) (s (s N)) := jDifficulty E N;
+	jDifficulty (j (inferC X Ji) :: E) (s N) := nabla x,
+		jDifficulty (j (Ji x) :: tyvar x :: E) N;
+	jDifficulty (j (inferAppC A X Ji) :: E) (s (s (s N))) := nabla x,
+		jDifficulty (j (Ji x) :: tyvar x :: E) N.
+
+Theorem jDifficulty_is_nat : forall E N, jDifficulty E N -> is_nat N.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search. backchain IH.
+	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search.
+
+Theorem jDifficulty_prune : forall E N, nabla (x : ty),
+	jDifficulty (E x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search.
+	apply IH to H2 with x = n1. search. apply IH to H2. search.
+	apply IH to H2 with x = n1. search. apply IH to H2. search.
+	apply IH to H2 with x = n1. search. apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2 with x = n1. search.
+
+Theorem jDifficulty_prune_tm : forall E N, nabla (x : tm),
+	jDifficulty (E x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search.
+	apply IH to H2 with x = n1. search. apply IH to H2. search.
+	apply IH to H2 with x = n1. search. apply IH to H2. search.
+	apply IH to H2 with x = n1. search. apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2 with x = n1. search.
+
+Theorem jDifficulty_subst_eq : forall E A N N1, nabla (x : ty),
+	jDifficulty (E x) N -> jDifficulty (E A) N1 -> N = N1.
+induction on 1. intros. case H1.
+	case H2. search.
+	case H2. apply IH to H3 _ with A = A n2. search.
+	case H2. apply jDifficulty_prune to H3 with x = n2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 _ with A = A n2. search.
+	case H2. apply jDifficulty_prune to H3 with x = n2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 _ with A = A n2. search.
+	case H2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 _ with x = n1, A = A. search.
+	case H2. apply IH to H3 _ with x = n1, A = A. search.
+Theorem jDifficulty_det : forall E N N1, jDifficulty E N -> jDifficulty E N1 -> N = N1.
+intros. apply jDifficulty_subst_eq to H1 H2. search.
+
+Theorem jDifficulty_append : forall E F EF NE NF NEF,
+	jDifficulty E NE -> jDifficulty F NF ->
+	append E F EF -> add NE NF NEF -> jDifficulty EF NEF.
+induction on 1. intros. case H1.
+	case H3. case H4. search.
+	case H3. apply IH to H5 _ _ _. apply jDifficulty_prune to H7. search.
+	case H3. apply IH to H5 _ _ _. apply jDifficulty_prune to H7. search.
+	case H3. apply IH to H5 _ _ _. apply jDifficulty_prune_tm to H7. search.
+	case H3. apply IH to H5 _ _ _. search.
+	case H3. case H4. case H7. apply IH to H5 _ _ _. search.
+	case H3. case H4. apply IH to H5 _ _ _. search.
+	case H3. case H4. case H7. case H8. apply IH to H5 _ _ _. search.
+
+Theorem jDifficulty_total_thm : forall F E FE,
+	append F E FE -> wfj FE -> exists N, jDifficulty F N.
+induction on 2. intros. case H1. search. case H2.
+	apply append_prune to H3. apply IH to _ H4. search.
+	apply append_prune to H3. apply IH to _ H4. search.
+	apply append_prune_tm to H3. apply IH to _ H4. search.
+	apply IH to _ H6. search.
+	apply tmSize_total to H4. apply tmSize_is_nat to H7.
+		apply IH to _ H6. apply add_total to H8 with n = N2. search.
+	apply IH to _ H5 with E = E. apply jDifficulty_prune to H6. search.
+	apply IH to _ H6 with E = E. apply jDifficulty_prune to H7. search.
+Theorem jDifficulty_total_wfj : forall E, wfj E -> exists N, jDifficulty E N.
+intros. apply wfj_append_nil to _. backchain jDifficulty_total_thm.
+Theorem jDifficulty_total_FE : forall F E FE, append F E FE -> wfj FE ->
+	exists NF NE NFE, jDifficulty F NF /\ jDifficulty E NE /\
+		jDifficulty FE NFE /\ add NF NE NFE.
+intros. apply jDifficulty_total_thm to H1 _.
+	apply wfj_weaken to _ H2. apply jDifficulty_total_wfj to H4.
+	apply jDifficulty_is_nat to H3.
+	apply add_total to H6 with n = N1.
+	apply jDifficulty_append to _ _ H1 _. search.
+Theorem jDifficulty_total_nat : forall E, wfj E -> exists NE, jDifficulty E NE /\ is_nat NE.
+intros. apply jDifficulty_total_wfj to H1. apply jDifficulty_is_nat to H2. search.
+
+Theorem jExt_jDifficulty_eq : forall E Ext NE NExt,
+	wfj E -> jExt E Ext -> jDifficulty E NE -> jDifficulty Ext NExt -> NE = NExt.
+induction on 2. intros. case H2 (keep).
+	apply jDifficulty_det to H3 H4. search.
+	apply jDifficulty_total_FE to H5 _. case H11. apply jDifficulty_det to *H3 H12.
+		apply jDifficulty_append to _ _ H6 _.
+		W: apply wfj_remove_exvar_nabla to H5 H6 _ _. apply jDifficulty_total_wfj to W.
+		apply IH to _ H9 H16 H4.
+		apply jDifficulty_prune to H15. apply jDifficulty_subst_eq to H15 H16. search.
+	apply jDifficulty_total_FE to H5 _. apply jDifficulty_det to *H3 H10.
+		apply jDifficulty_append to _ _ H6 _.
+		W: apply wfj_insert_exvar_raw to H5 H6 _. apply jDifficulty_total_wfj to W.
+		apply IH to _ H7 H13 H4.
+		apply jDifficulty_prune to H13. apply jDifficulty_det to H12 H13. search.
+Theorem jExt_jDifficulty : forall E Ext NE,
+	wfj E -> jExt E Ext -> jDifficulty E NE -> jDifficulty Ext NE.
+intros. apply jExt_wfj to _ _. apply jDifficulty_total_wfj to H4.
+	apply jExt_jDifficulty_eq to _ _ H3 H5. search.
+
+Theorem jDifficulty_subst_tyvar : forall E J m N, nabla x,
+	jDifficulty (j (J x) :: tyvar x :: E) N -> wfj (j (J x) :: tyvar x :: E) ->
+	wfta E m -> wfj (j (J m) :: E) /\ jDifficulty (j (J m) :: E) N.
+intros. T: apply jDifficulty_total_FE to _ H2 with E = tyvar n1 :: E.
+	W: apply wfj_subst_tyvar to H2 _.
+	T: apply jDifficulty_total_FE to _ W with E = E.
+	T: case T1. apply jDifficulty_det to T5 *T1.
+	apply jDifficulty_prune to T. apply jDifficulty_subst_eq to T T4.
+	apply add_det to T3 T7. apply jDifficulty_det to H1 T2. search.
+
+
+Theorem orderl_append : forall E F EF NE NF NEF,
+	orderl E NE -> orderl F NF ->
+	append E F EF -> add NE NF NEF -> orderl EF NEF.
+induction on 1. intros. case H1 (keep).
+	case H3. case H4. search.
+	case H3. apply IH to H5 _ _ _. apply orderl_prune to H7. search.
+	case H3. apply IH to H5 _ _ _. apply orderl_prune to H7. search.
+	case H3. apply IH to H5 _ _ _. apply orderl_prune_tm to H7. search.
+	case H3. apply add_assoc to H9 _. apply IH to H8 _ _ _. search.
+	case H3. apply add_assoc to H7 _. apply IH to H6 _ _ _. search.
+	case H3. apply IH to H5 _ _ _. search.
+	case H3. apply add_assoc to H7 _. apply IH to H6 _ _ _. search.
+
+Theorem orderl_total_thm : forall F E FE,
+	append F E FE -> wfj FE -> exists N, orderl F N.
+induction on 2. intros. case H1. search. case H2.
+	apply append_prune to H3. apply IH to _ H4. search.
+	apply append_prune to H3. apply IH to _ H4. search.
+	apply append_prune_tm to H3. apply IH to _ H4. search.
+	apply IH to _ H6. apply orderl_is_nat to H7.
+		apply order_total_wf to H4. apply order_total_wf to H5.
+		apply order_is_nat to H9. apply add_total to H11 with n = m1.
+		apply add_is_nat_k to _ H12. backchain order_is_nat.
+		apply add_total to H13 with n = N1. search.
+	apply IH to _ H6. apply order_total_wf to H5.
+		apply order_is_nat to H8. apply add_total to H9 with n = N1. search.
+	apply IH to _ H5 with E = E. apply orderl_prune to H6. search.
+	apply IH to _ H6 with E = E. apply orderl_prune to H7.
+		apply order_total_wf to H4.
+		apply order_is_nat to H8. apply add_total to H9 with n = Nr. search.
+Theorem orderl_total_wfj : forall E, wfj E -> exists N, orderl E N.
+intros. apply wfj_append_nil to _. backchain orderl_total_thm.
+Theorem orderl_total_FE : forall F E FE, append F E FE -> wfj FE ->
+	exists NF NE NFE, orderl F NF /\ orderl E NE /\
+		orderl FE NFE /\ add NF NE NFE.
+intros. apply orderl_total_thm to H1 _.
+	apply wfj_weaken to _ H2. apply orderl_total_wfj to H4.
+	apply orderl_is_nat to H3.
+	apply add_total to H6 with n = N1.
+	apply orderl_append to _ _ H1 _. search.
+Theorem orderl_total_nat : forall E, wfj E -> exists NE, orderl E NE /\ is_nat NE.
+intros. apply orderl_total_wfj to H1. apply orderl_is_nat to H2. search.
+
+Theorem order_det : forall A N1 N2, order A N1 -> order A N2 -> N1 = N2.
+induction on 1. intros. case H1.
+	case H2. search.
+	case H2. search.
+	case H2. apply IH to H3 H6. apply IH to H4 H7. apply add_det to H5 H8. search.
+	case H2. apply IH to H3 H4. search.
+
+Theorem order_subst_eq : forall A a N N1, nabla (x : ty),
+	order (A x) N -> order (A a) N1 -> order a z -> N = N1.
+induction on 1. intros. case H1 (keep).
+	case H2. search.
+	case H2. search.
+	apply order_det to H2 H3. search.
+	apply order_prune to H4. apply order_prune to H5.
+		case H2. apply IH to H4 _ _. apply IH to H5 _ _. apply add_det to H6 H9. search.
+	case H2. apply IH to H4 _ _. search.
+
+Theorem orderl_subst_eq : forall E A N N1, nabla (x : ty),
+	orderl (E x) N -> orderl (E A) N1 -> order A z -> N = N1.
+induction on 1. intros. case H1.
+	case H2. search.
+	case H2. apply IH to H4 _ H3. search.
+	case H2. apply orderl_prune to H4 with x = n2. apply IH to H4 H5 _. search.
+	case H2. apply IH to H4 _ H3. search.
+	case H2. apply orderl_prune to H4 with x = n2. apply IH to H4 H5 _. search.
+	case H2. apply IH to H4 _ H3. search.
+	case H2. apply orderl_prune to H7. apply IH to H7 H12 _.
+		apply order_prune to H4. apply order_prune to H5.
+		apply order_subst_eq to H4 H9 _. apply order_subst_eq to H5 H10 _.
+		apply add_det to H6 H11. apply add_det to H8 H13. search.
+	case H2. apply orderl_prune to H5. apply order_prune to H4.
+		apply IH to H5 H8 _. apply order_subst_eq to H4 H7 _.
+		apply add_det to H6 H9. search.
+	case H2. apply IH to H4 _ H3 with x = n1. search.
+	case H2. apply orderl_prune to H5 with x = n1. apply order_prune to H4.
+		apply IH to H5 _ H3 with x = n1. apply order_subst_eq to H4 H7 _.
+		apply add_det to H6 H9. search.
+Theorem orderl_det : forall E N N1, orderl E N -> orderl E N1 -> N = N1.
+intros. apply orderl_subst_eq to H1 H2 _. search.
+
+Theorem orderl_subst_tyvar : forall E J m N, nabla x,
+	orderl (j (J x) :: tyvar x :: E) N -> wfj (j (J x) :: tyvar x :: E) ->
+	wfta E m -> order m z -> wfj (j (J m) :: E) /\ orderl (j (J m) :: E) N.
+intros. T: apply orderl_total_FE to _ H2 with E = tyvar n1 :: E.
+	W: apply wfj_subst_tyvar to H2 _.
+	T: apply orderl_total_FE to _ W with E = E.
+	T: case T1. apply orderl_det to T5 *T1.
+	apply orderl_prune to T. apply orderl_subst_eq to T T4 _.
+	apply add_det to T3 T7. apply orderl_det to H1 T2. search.
+
+
+Theorem jExt_orderl_eq : forall E Ext NE NExt,
+	wfj E -> jExt E Ext -> orderl E NE -> orderl Ext NExt -> NE = NExt.
+induction on 2. intros. case H2 (keep).
+	apply orderl_det to H3 H4. search.
+	apply orderl_total_FE to H5 _. case H11. apply orderl_det to *H3 H12.
+		apply orderl_append to _ _ H6 _.
+		W: apply wfj_remove_exvar_nabla to H5 H6 _ _. apply orderl_total_wfj to W.
+		apply IH to _ H9 H16 H4.
+		apply orderl_prune to H15. apply orderl_subst_eq to H15 H16 _. search.
+	apply orderl_total_FE to H5 _. apply orderl_det to *H3 H10.
+		apply orderl_append to _ _ H6 _.
+		W: apply wfj_insert_exvar_raw to H5 H6 _. apply orderl_total_wfj to W.
+		apply IH to _ H7 H13 H4.
+		apply orderl_prune to H13. apply orderl_det to H12 H13. search.
+Theorem jExt_orderl : forall E Ext NE,
+	wfj E -> jExt E Ext -> orderl E NE -> orderl Ext NE.
+intros. apply jExt_wfj to _ _. apply orderl_total_wfj to H4.
+	apply jExt_orderl_eq to _ _ H3 H5. search.
+
+
+Define depthl : olist -> nat -> prop by
+	depthl nil z;
+	nabla x, depthl (exvar x :: E) (s N) := depthl E N;
+	nabla x, depthl (tyvar x :: E) (s N) := depthl E N;
+	nabla x, depthl (of x A :: E) (s N) := depthl E N;
+	depthl (j (subty A B) :: E) (s K) := exists M N MN NE,
+		depth A M /\ depth B N /\ add M N MN /\ depthl E NE /\ add MN NE K;
+	depthl (j (check X A) :: E) (s N) := depthl E N;
+	depthl (j (inferC X Ji) :: E) (s N) := nabla x,
+		depthl (j (Ji x) :: tyvar x :: E) N;
+	depthl (j (inferAppC A X Ji) :: E) (s N) := nabla x,
+		depthl (j (Ji x) :: tyvar x :: E) N.
+
+Theorem depthl_prune : forall E N, nabla (x : ty),
+	depthl (E x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1.
+	search.
+	apply IH to H2. search.
+	search.
+	apply IH to H2. search.
+	search.
+	apply IH to H2. search.
+	apply IH to H5. apply depth_prune to H2. apply depth_prune to H3.
+		apply add_prune_k[ty] to H4. apply add_prune_k[ty] to H6. search.
+	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2 with x = n1. search.
+
+Theorem depthl_total : forall E, wfj E -> exists N, depthl E N.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H4. apply depth_exist to H2. apply depth_exist to H3.
+		apply depth_is_nat to H6. apply add_total to H8 with n = ND1.
+		apply add_is_nat_k to _ H9. backchain depth_is_nat.
+		apply add_total to H10 with n = N. search.
+	apply IH to H4. search.
+	apply IH to H3. apply depthl_prune to H4. search.
+	apply IH to H4. apply depthl_prune to H5. search.
+
+Theorem depthl_is_nat : forall E N, depthl E N -> is_nat N.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search.
+	apply add_is_nat_k to _ H6. backchain IH. search.
+	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search.
+Theorem depthl_total_nat : forall E, wfj E -> exists NE, depthl E NE /\ is_nat NE.
+intros. apply depthl_total to H1. apply depthl_is_nat to H2. search.
+
+
+Theorem subExp_tmSizel_z : forall Exp, subExp Exp -> tmSizel Exp z.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search.
+Theorem subExp_jDifficulty_z : forall Exp, subExp Exp -> jDifficulty Exp z.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search.
+
+Define fresh_ty : ty -> ty -> prop by
+  nabla x, fresh_ty x A.
+
+Theorem equivJ_decidable : forall E F,
+	equivJ E F -> (judge F \/ (judge F -> false)) -> (judge E \/ (judge E -> false)).
+intros. case H1. case H2. apply H4 to H5. search.
+	right. intros. backchain H5. backchain H3.
+
+Theorem fv_decidable : forall E A, nabla (x : ty), wfta (E x) (A x) ->
+	(exists Ar, A = x\ Ar) \/ ((exists Ar, A = x\ Ar) -> false).
+induction on 1. intros. case H1. search. search. search. search. search.
+	apply IH to H2. apply IH to H3. case H4.
+		case H5. search. right. intros. case H7. backchain H6.
+		right. intros. case H7. backchain H6.
+	apply IH to H2. case H3. search. right. intros. case H5. backchain H4.
+
+Define all_ : ty -> prop by
+	all_ (all A).
+
+Theorem decidable_thm : forall E NT NJ NO NV ND, wfj E ->
+	tmSizel E NT -> is_nat NT ->
+	jDifficulty E NJ -> is_nat NJ ->
+	orderl E NO -> is_nat NO ->
+	nVar E NV -> is_nat NV ->
+	depthl E ND -> is_nat ND ->
+	judge E \/ (judge E -> false).
+induction on 3. induction on 5. induction on 7. induction on 9. induction on 11.
+intros W T IT J IJ O IO V IV D ID. W: case W. search.
+	% E, a
+	T: case T. J: case J. O: case O. V: case V. D: case D. ID: case ID.
+		Jg: apply IH4 to W _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg.
+		search. right. intros. case H1. backchain Jg.
+	% E, ^a
+	T: case T. J: case J. O: case O. V: case V. D: case D.
+		IV: case IV. ID: case ID.
+		Jg: apply IH3 to W _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg.
+		search. right. intros. case H1. backchain Jg.
+	% E, x:A
+	T: case T. J: case J. O: case O. V: case V. D: case D. ID: case ID.
+		Jg: apply IH4 to W _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg.
+		search. right. intros. case H1. backchain Jg.
+	% E, A <: B
+	T: case T. J: case J. V: case V. clear IH. clear IH1.
+		Linst: assert name A -> member (exvar A) E1 -> fresh_ty A B ->
+			judge (j (subty A B) :: E1) \/ (judge (j (subty A B) :: E1) -> false).
+			intros A M B. case A. case B.
+			Jg: apply instantiation_decidable_L to W1 _ _. Jg: case Jg. search.
+			W: apply jExt_wfj to Jg _.
+			T: apply jExt_tmSizel to _ Jg _. J: apply jExt_jDifficulty to _ Jg _.
+			Jg: case Jg1.
+				O: case O. apply order_det to Jg1 *O1. case O. case O2. case O4.
+					apply nVar_det to V *Jg2. IV: case IV.
+					O: apply jExt_orderl to _ Jg _. D: apply depthl_total_nat to W3.
+					Jg: apply IH3 to W3 _ IT _ IJ _ IO _ IV _ D2. backchain equivJ_decidable.
+				O: case O. case O. apply order_det to Jg2 *O1. case O2. P: case O4.
+					IO: case IO. O: apply jExt_orderl to _ Jg _.
+					O: apply orderl_append to _ _ Jg1 _.
+					TI: apply subExp_tmSizel_z to Jg4. DI: apply subExp_jDifficulty_z to Jg4.
+					T: apply tmSizel_append to _ T1 Jg1 _. J: apply jDifficulty_append to _ J1 Jg1 _.
+					V: apply nVar_total_nat to Jg5. D: apply depthl_total_nat to Jg5.
+					Jg: apply IH2 to Jg5 _ IT _ IJ _ IO _ V2 _ D2. backchain equivJ_decidable.
+		Rinst: assert name B -> member (exvar B) E1 -> fresh_ty B A ->
+			judge (j (subty A B) :: E1) \/ (judge (j (subty A B) :: E1) -> false).
+			intros A M B. case A. case B.
+			Jg: apply instantiation_decidable_R to W _ _. Jg: case Jg. search.
+			W: apply jExt_wfj to Jg _.
+			T: apply jExt_tmSizel to _ Jg _. J: apply jExt_jDifficulty to _ Jg _.
+			Jg: case Jg1.
+				O: case O. apply order_det to Jg1 *O. case O1. case O2. case O4.
+					apply nVar_det to V *Jg2. IV: case IV.
+					O: apply jExt_orderl to _ Jg _. D: apply depthl_total_nat to W3.
+					Jg: apply IH3 to W3 _ IT _ IJ _ IO _ IV _ D2. backchain equivJ_decidable.
+				O: case O. case O1. apply order_det to Jg2 *O.
+					P: apply add_comm to _ *O2. P: case P. P: case O4.
+					IO: case IO. O: apply jExt_orderl to _ Jg _.
+					O: apply orderl_append to _ _ Jg1 _.
+					TI: apply subExp_tmSizel_z to Jg4. DI: apply subExp_jDifficulty_z to Jg4.
+					T: apply tmSizel_append to _ T1 Jg1 _. J: apply jDifficulty_append to _ J1 Jg1 _.
+					V: apply nVar_total_nat to Jg5. D: apply depthl_total_nat to Jg5.
+					Jg: apply IH2 to Jg5 _ IT _ IJ _ IO _ V2 _ D2. backchain equivJ_decidable.
+		Lall: assert all_ A -> notAll_ B -> judge (j (subty A B) :: E1) \/
+				(judge (j (subty A B) :: E1) -> false). intros A NB. case A. clear IH3. clear IH4.
+			O: case O. O: case O. O: case O2. O: case O4. IO: case IO.
+			W: apply wfta_open_exvar to _ W. W: apply wfta_weaken_ex to W1.
+			W: assert wfj (j (subty (A1 n1) B) :: exvar n1 :: E1).
+			V: apply nVar_total_nat to W5. D: apply depthl_total_nat to W5.
+			Jg: apply IH2 to W5 _ IT _ IJ _ IO _ V2 _ D2. Jg: case Jg. search.
+			W: case W1.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. backchain Jg.
+				W: case W. O: case O1. P: apply add_s_inv to O2.
+				W: apply wfta_weaken_ty to _ with T = all A1.
+				W: assert wfj (j (subty (all A1) (A2 n1)) :: tyvar n1 :: E1).
+				V: apply nVar_total_nat to W7. D: apply depthl_total_nat to W7.
+				Jg: apply IH2 to W7 _ IT _ IJ _ IO _ V4 _ D4. Jg: case Jg1. search.
+					right. intros. case H1. backchain Jg. backchain Jg1.
+		Rall: assert all_ B -> judge (j (subty A B) :: E1) \/
+				(judge (j (subty A B) :: E1) -> false). intros A. case A. clear IH3. clear IH4.
+			O: case O. O: case O1. O: apply add_s_inv to O2. O: case O4. IO: case IO.
+			W: case W1. W: apply wfta_weaken_ty to W.
+			W: assert wfj (j (subty A (A1 n1)) :: tyvar n1 :: E1).
+			V: apply nVar_total_nat to W4. D: apply depthl_total_nat to W4.
+			Jg: apply IH2 to W4 _ IT _ IJ _ IO _ V2 _ D2. Jg: case Jg. search.
+			W: case W.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. backchain Jg.
+				right. intros. case H1. case H2. backchain H4. backchain Jg.
+
+		W: case W.
+			% A = 1
+			clear Linst. W: case W1 (keep).
+				% B = 1.
+				O: case O. case O. case O1. case O2. case O4.
+					D: case D. case D. case D1. case D2. case D4. ID: case ID.
+					Jg: apply IH4 to W2 _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg. search.
+						right. intros. case H1. backchain Jg.
+				% B = a
+				right. intros. case H1. case H2.
+					apply wfj_tyvar_exvar to W2 _ _. backchain append_mem.
+				% B = ^a
+				backchain Rinst.
+				% B = A1 -> B1
+				right. intros. case H1.
+				% B = \forall x. A1
+				backchain Rall.
+			% A = a
+			clear Linst. W: case W1 (keep).
+				% B = 1
+				right. intros. case H1. case H2.
+					apply wfj_tyvar_exvar to W2 _ _. backchain append_mem.
+				% B = b
+				right. intros. case H1.
+					case H2. apply wfj_tyvar_exvar to W2 _ _. backchain split3_mem.
+					case H2. apply wfj_tyvar_exvar to W2 _ _. backchain split3_mem.
+					case H2. apply wfj_tyvar_exvar to W2 _ _ with X = n2. backchain split3_mem.
+					case H2. apply wfj_tyvar_exvar to W2 _ _. backchain split3_mem.
+				% B = a
+				O: case O. case O. case O1. case O2. case O4.
+					D: case D. case D. case D1. case D2. case D4. ID: case ID.
+					Jg: apply IH4 to W2 _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg. search.
+						right. intros. case H1. backchain Jg. apply wfj_tyvar_exvar to W2 _ _.
+				% B = ^b
+				backchain Rinst.
+				% B = ^a
+				apply wfj_tyvar_exvar to W2 _ _.
+				% B = A1 -> B1
+				right. intros. case H1. case H2.
+					apply wfj_tyvar_exvar to W2 _ _. backchain append_mem.
+				% B = \forall x. A1
+				backchain Rall.
+			% A = ^a
+			W: case W1 (keep).
+				% B = 1 or b
+				backchain Linst. backchain Linst.
+				% B = a
+				apply wfj_tyvar_exvar to W2 _ _.
+				% B = ^b
+				backchain Linst.
+				% B = ^a
+				O: case O. case O. case O1. case O2. case O4.
+					D: case D. case D. case D1. case D2. case D4. ID: case ID.
+					Jg: apply IH4 to W2 _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg.
+					search. right. intros. case H1. apply wfj_tyvar_exvar to W2 _ _. backchain Jg.
+				% B = A1 -> B1
+				Fv: apply fv_decidable to W1. Fv: case Fv. backchain Linst.
+					right. intros Jg. case Jg. backchain Fv.
+				% B = \forall x. A1
+				O: case O. case O. O: case O1. case O2. O: case O4. IO: case IO.
+					W: case W1. W: assert wfj (j (subty n1 (A1 n1 n2)) :: tyvar n2 :: E1 n1).
+					V: apply nVar_total to W4. IV: apply nVar_is_nat to V1.
+					D: apply depthl_total to W4. ID: apply depthl_is_nat to D1.
+					Jg: apply IH2 to W4 _ IT _ IJ _ IO _ IV1 _ ID1. Jg: case Jg.
+						search. right. intros. case H1. backchain Jg.
+			% A = A1 -> B1
+			W: case W1 (keep).
+				% B = 1
+				right. intros. case H1.
+				% B = a
+				right. intros. case H1. case H2.
+					apply wfj_tyvar_exvar to W2 _ _. backchain append_mem.
+				% B = ^a
+				Fv: apply fv_decidable to _ with A = x\ arrow (A1 x) (B1 x).
+					Fv: case Fv. backchain Rinst.
+					right. intros Jg. case Jg. backchain Fv.
+				% B = A2 -> B2
+				O: case O. O: case O. O: case O1. P: apply add_assoc4 to O6 O8 _.
+					D: case D. D: case D. D: case D1. P: case D2. P: apply add_s_inv to *P3.
+					P: case D4. P: case P4. P: apply add_assoc4 to D6 D8 _. ID: case ID.
+					W: assert wfj (j (subty A2 A1) :: j (subty B1 B2) :: E1).
+						apply wfta_weaken_j to W4 with J = subty B1 B2.
+						apply wfta_weaken_j to W with J = subty B1 B2. search.
+					Jg: apply IH4 to W6 _ IT _ IJ _ IO _ IV _ ID.
+						P: apply add_s to P7. P: apply add_assoc to P7 P4.
+						P: apply add_s to P10. search.
+						O: apply add_assoc to P2 O4. search.
+					Jg: case Jg. search. right. intros. case H1. backchain Jg.
+				% B = \forall x. A
+				backchain Rall.
+			% A = \forall x. A1
+			W: case W1.
+				backchain Lall.
+				backchain Lall.
+				backchain Lall.
+				backchain Lall.
+				backchain Rall.
+	% E, e <= A
+	T: case T. J: case J. O: case O. V: case V.
+		chkSub: assert notAll_ A -> notLam_ X -> judge (j (check X A) :: E1) \/
+			(judge (j (check X A) :: E1) -> false).
+			W: apply wfta_weaken_ty to W1.
+			W: assert wfj (j (inferC X (a\subty a A)) :: E1).
+			IJ: case IJ. D: apply depthl_total to W4. ID: apply depthl_is_nat to D1.
+			Jg: apply IH1 to W4 _ IT _ IJ _ IO _ IV _ ID1. Jg: case Jg. search.
+				intros. right. intros. case H3.
+					F: case H1. apply F to _.
+					F: case H2. apply F to _.
+					F: case H2. apply F to _. backchain Jg.
+		W: case W1.
+			% A = i
+			W: case W.
+				case T. T: case T2. case T. case O. case O2. D: case D. ID: case ID.
+					IJ: case IJ. IJ: case IJ. IT: case IT.
+					Jg: apply IH1 to W2 _ IT _ IJ _ IO _ IV _ ID. Jg: case Jg. search.
+						right. intros Jg. Jg: case Jg1. Jg: case Jg3. Jg: case Jg3. backchain Jg.
+				backchain chkSub.
+				right. intros. case H1. F: case H3. apply F to _.
+				backchain chkSub. backchain chkSub.
+			% A = a
+			apply wftm_prune_var to W _. W: case W.
+				backchain chkSub. backchain chkSub.
+				right. intros. case H1. case H2.
+					apply append_mem to H4 _. apply wfj_tyvar_exvar to W2 _ _.
+					F: case H3. apply F to _.
+				backchain chkSub. backchain chkSub.
+			% A = ^a
+			W: case W (keep).
+				backchain chkSub. backchain chkSub.
+				T: case T. T: case T2. IT: case IT.
+					A: apply single_append to W1. apply wfj_prune_exvar to _ A.
+					W: apply wfj_insert_exvar_intro to A _.
+					W: apply wftm_prune_var to W _.
+					W: assert wfj (j (check (Xr1 n3) n2) :: of n3 n1 :: FxyE n1 n2).
+						W: apply wftm_insert_exvar to A W5 _ W. apply wftm_anyA to W7 with A = n1.
+						M: apply append_mem to W5 _. M: apply append_mem to W5 _ with X = exvar n1.
+						search.
+					Ext: apply jExt_inst to _ W5 _ with F = A2.
+					T: apply tmSizel_total_wfj to W6. apply jExt_tmSizel_eq to _ Ext _ _.
+					T: assert tmSizel (j (check (Xr1 n3) n2) :: of n3 n1 :: FxyE n1 n2) (K n1).
+					J: apply jDifficulty_total_wfj to W7. IJ: apply jDifficulty_is_nat to J1.
+					O: apply orderl_total_wfj to W7. IO: apply orderl_is_nat to O3.
+					V: apply nVar_total to W7. IV: apply nVar_is_nat to V1.
+					D: apply depthl_total to W7. ID: apply depthl_is_nat to D1.
+					Jg: apply IH to W7 _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+						right. intros. case H1. apply inst_det to H2 _ _ with G = FxyE. backchain Jg.
+						F: case H3. apply F to _.
+				backchain chkSub. backchain chkSub.
+			% A = A1 -> B
+			W: case W (keep).
+				backchain chkSub. backchain chkSub.
+				W: assert wfj (j (check (X1 n1) B) :: of n1 A1 :: E1).
+					W: apply wftm_anyA to W with A = A1. W: apply wfta_weaken_of to W3 with A = A1.
+					search.
+					T: case T. T: case T2. IT: case IT.
+					J: apply jDifficulty_total_wfj to W6. IJ: apply jDifficulty_is_nat to J1.
+					O: apply orderl_total_wfj to W6. IO: apply orderl_is_nat to O3.
+					V: apply nVar_total to W6. IV: apply nVar_is_nat to V1.
+					D: apply depthl_total to W6. ID: apply depthl_is_nat to D1.
+					Jg: apply IH to W6 _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+						right. intros. case H1. backchain Jg.
+						F: case H3. apply F to _.
+				backchain chkSub. backchain chkSub.
+			% A = \forall x. A
+			O: case O. O: case O2. IO: case IO.
+				W: apply wftm_weaken_ty to W.
+				W: assert wfj (j (check X (A1 n1)) :: tyvar n1 :: E1).
+				V: apply nVar_total to W4. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W4. ID: apply depthl_is_nat to D1.
+				Jg: apply IH2 to W4 _ IT _ IJ _ IO _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+					F: case H2. apply F to _.
+	% E, e => w
+	W: case W.
+		% () => 1
+		W: apply wfj_subst_tyvar to W1 _. T: case T. T: case T. T: case T2. case T. IT: case IT.
+			T: apply tmSizel_total_FE to _ W1 with E = tyvar n1 :: E1.
+			T: case T2. apply tmSizel_det to T1 *T3.
+			T: apply tmSizel_total_FE to _ W with E = E1.
+			apply tmSizel_prune to T. apply tmSizel_subst_eq to T *T3 with A = i.
+			apply tmSizel_det to T2 *T5. apply add_det to T4 *T7.
+				J: apply jDifficulty_total_wfj to W. IJ: apply jDifficulty_is_nat to J1.
+				O: apply orderl_total_wfj to W. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W. ID: apply depthl_is_nat to D1.
+				Jg: apply IH to W _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+		% x => A
+		W: apply wfj_weaken2 to W1. W: apply wfj_of_wfta to _ W.
+			T: case T. apply tmSizel_prune_tm to T1. case T. T: case T2. case T. IT: case IT.
+			W: apply tmSizel_subst_tyvar to _ W1 _.
+				J: apply jDifficulty_total_wfj to W4. IJ: apply jDifficulty_is_nat to J1.
+				O: apply orderl_total_wfj to W4. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W4. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W4. ID: apply depthl_is_nat to D1.
+				Jg: apply IH to W4 _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. apply wfj_of_det to _ W H2. backchain Jg.
+		% \lambda x. X => ^a -> ^b
+		W: apply wfj_weaken2 to W1.
+			W: apply wfj_insert_exvar_raw to _ _ W1 with E = E1, F = j (J n1) :: tyvar n1 :: nil.
+			W: apply wfj_subst_tyvar to *W4 _ with m = n2.
+			W: apply wfj_insert_exvar to _ _ W4 with E = E1, F = x\ j (J x) :: nil.
+			W: apply wftm_weaken_f to _ _ with F = E1, T = lam X1,
+				EF = j (J (arrow n2 n3)) :: exvar n3 :: exvar n2 :: E1.
+			W: apply wftm_anyA to *W6 with A = n2.
+			W: assert 6 wfj (j (check (X1 n1) n3) :: of n1 n2 :: j (J (arrow n2 n3)) ::
+				exvar n3 :: exvar n2 :: E1).
+			T: case T. T: case T. T: case T2. IT: case IT.
+			T: assert tmSizel (j (check (X1 n1) n3) :: of n1 n2 :: j (J (arrow n2 n3)) ::
+				exvar n3 :: exvar n2 :: E1) K.
+				T: apply tmSizel_total_FE to _ W1 with E = tyvar n1 :: E1.
+				apply tmSizel_det to T1 *T5. T: case T4. apply tmSizel_prune to T3.
+				T: apply tmSizel_total_FE to _ W5 with E = exvar n3 :: exvar n2 :: E1.
+				T: case T7. T: case T7. apply tmSizel_det to T4 *T7.
+				apply tmSizel_prune to T5. apply tmSizel_prune to T5 with x = n2.
+				apply tmSizel_subst_eq to T3 _ with A = arrow n2 n3.
+				T: apply add_det to T9 _. search.
+			J: apply jDifficulty_total_wfj to W7. IJ: apply jDifficulty_is_nat to J1.
+				O: apply orderl_total_wfj to W7. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W7. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W7. ID: apply depthl_is_nat to D1.
+				Jg: apply IH to W7 _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+		% X1 X2 => ...
+		T: case T. T: case T. T: case T2. IT: case IT.
+			W: apply wfj_weaken2 to W1. W: apply wftm_weaken_ty to W2.
+			W: apply wfj_insert_tyvar_raw to _ _ W1 with F = j (J n1) :: tyvar n1 :: nil.
+			W: assert wfj (j (inferC X1 (a\ inferAppC a Y J)) :: E1).
+			T: apply tmSizel_total_wfj to W5.
+			apply tmSizel_prune to T5. apply tmSizel_prune to T5 with x = n1.
+			T: apply tmSizel_subst_tyvar to T5 _ _ with m = n2.
+			apply tmSizel_det to *T7 _. P: apply add_assoc to T4 T2.
+				J: apply jDifficulty_total_wfj to W6. IJ: apply jDifficulty_is_nat to J1.
+				O: apply orderl_total_wfj to W6. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W6. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W6. ID: apply depthl_is_nat to D1.
+				Jg: apply IH to W6 _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+		% (X : A) => A
+		T: case T. T: case T. T: case T2. IT: case IT.
+			W: apply wfj_weaken2 to W1.
+			W: apply wft_wfta to W2. W: apply wfta_nil to W4 W3.
+			T: apply tmSizel_subst_tyvar to T1 _ _.
+			W: apply wfta_nil to W4 T3. W: apply wftm_weaken_j to W with J = J A.
+			W: assert wfj (j (check X1 A) :: j (J A) :: E1).
+				J: apply jDifficulty_total_wfj to W8. IJ: apply jDifficulty_is_nat to J1.
+				O: apply orderl_total_wfj to W8. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W8. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W8. ID: apply depthl_is_nat to D1.
+				Jg: apply IH to W8 _ IT _ IJ1 _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+	% E, A ` e =>> w
+	clear IH3. clear IH4. W: case W.
+		right. intros. case H1.
+		right. intros. case H1. case H2. apply append_mem to H4 _.
+			W: apply wfj_weaken2 to W2. apply wfj_tyvar_exvar to W3 _ _.
+		% A = ^a
+		W: apply wfj_weaken2 to W2. apply wftm_prune_var to W1 _.
+			A: apply single_append to W. apply wfj_prune_exvar to _ A.
+			A: apply wfj_insert_exvar_intro to A _.
+			W: apply wfj_insert_exvar to _ _ W2 with F = x\ j (J x n1) :: tyvar n1 :: A1 x.
+			M: apply append_mem to A1 _. M: apply append_mem to A1 _ with X = exvar n1.
+			Ext: assert 0 jExt (j (J n3 n1) :: tyvar n1 :: E1 n3)
+				(j (J (arrow n2 n4) n1) :: tyvar n1 :: FxyE n2 n4).
+				backchain jExt_inst.
+			T: case T. apply tmSizel_prune to T1 with x = n2.
+				T: apply tmSizel_total_wfj to W4. T: apply jExt_tmSizel_eq to _ Ext _ _.
+			J: case J. apply jDifficulty_prune to J with x = n2.
+				J: apply jDifficulty_total_wfj to W4. J: apply jExt_jDifficulty_eq to _ Ext _ _.
+			T: apply tmSizel_subst_tyvar to _ W4 _ with m = n4.
+			J: apply jDifficulty_subst_tyvar to _ W4 _ with m = n4. clear J2. IJ: case IJ.
+			W: apply wftm_insert_exvar to A A1 _ _.
+			W: apply wftm_weaken_j to W5 with J = J (arrow n1 n2) n2.
+			W: assert wfj (j (check (Xr) n1) :: j (J (arrow n1 n2) n2) :: FxyE n1 n2).
+				O: apply orderl_total_wfj to W7. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W7. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W7. ID: apply depthl_is_nat to D1.
+				Jg: apply IH1 to W7 _ IT _ IJ _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. case H3.
+					assert instJs E1 FxyE. apply inst_det to H2 *H5 _. backchain Jg.
+		% A = A1 -> B
+		W: apply wfj_weaken2 to W2.
+			T: case T. T: apply tmSizel_subst_tyvar to T1 _ _ with m = B. clear T3.
+			J: case J. J: apply jDifficulty_subst_tyvar to J _ _ with m = B. IJ: case IJ.
+			W: apply wftm_weaken_j to _ with J = J B. W: apply wfta_weaken_j to W with J = J B.
+			W: assert wfj (j (check X A1) :: j (J B) :: E1).
+				O: apply orderl_total_wfj to W7. IO: apply orderl_is_nat to O1.
+				V: apply nVar_total to W7. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W7. ID: apply depthl_is_nat to D1.
+				Jg: apply IH1 to W7 _ IT _ IJ _ IO1 _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+		% A = \forall x. A
+		W: apply wfj_weaken2 to W2.
+			T: case T. J: case J. O: case O.
+			Ext: assert 0 jExt (j (J n1) :: tyvar n1 :: E1)
+				(j (J n1) :: tyvar n1 :: exvar n2 :: E1). unfold 3 (all). right. search 3.
+			W: apply jExt_wfj to Ext _. W: apply wfta_open_exvar to _ _.
+			T: apply tmSizel_total_wfj to W4. T: apply jExt_tmSizel_eq to _ Ext _ _.
+			J: apply jDifficulty_total_wfj to W4. J: apply jExt_jDifficulty_eq to _ Ext _ _.
+			O: apply orderl_total_wfj to W4. O: apply jExt_orderl_eq to _ Ext _ _.
+			O: case O. O: case O2. IO: case IO.
+			W: apply wftm_weaken_ex to W1.
+			W: assert wfj (j (inferAppC (A1 n1) X J) :: exvar n1 :: E1).
+				V: apply nVar_total to W7. IV: apply nVar_is_nat to V1.
+				D: apply depthl_total to W7. ID: apply depthl_is_nat to D1.
+				Jg: apply IH2 to W7 _ IT _ IJ _ IO _ IV1 _ ID1. Jg: case Jg. search.
+					right. intros. case H1. backchain Jg.
+
+
+Theorem decidable : forall E, wfj E -> judge E \/ (judge E -> false).
+intros W.
+	T: apply tmSizel_total_wfj to W. IJ: apply tmSizel_is_nat to T.
+	J: apply jDifficulty_total_wfj to W. IJ: apply jDifficulty_is_nat to J.
+	O: apply orderl_total_wfj to W. IO: apply orderl_is_nat to O.
+	V: apply nVar_total to W. IV: apply nVar_is_nat to V.
+	D: apply depthl_total to W. ID: apply depthl_is_nat to D.
+	backchain decidable_thm.
+
+Theorem decidable_decl : forall E, wfj E -> exFree E -> dc E \/ (dc E -> false).
+intros.
+	Jg: apply decidable to H1. Jg: case Jg.
+	left. apply soundness to _ _. T: case H3. search.
+		apply append_mem to T _. apply exFree_false to H5 _.
+	right. intros D. T: assert tex E E.
+		E: apply tex_exFree to T _.
+		apply dcl_complete to H1 _ _.
+		apply completeness to _ _ _.
+		backchain Jg.
+

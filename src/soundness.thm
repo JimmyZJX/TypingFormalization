@@ -1,0 +1,1086 @@
+Import "declTyping".
+
+Theorem tex_addsubi_total : forall E A Jo,
+	tex E Jo -> wfj E -> wfta E A ->
+		exists Ao, tex (j (subty i A) :: E) (j (subty i Ao) :: Jo).
+induction on 1. intros. case H1.
+	apply exFree_j to H4 with J = subty i A. search.
+	W: apply wfj_remove_exvar_mono to H4 H5 _ _.
+		W: apply wfta_strenthen_exvar_mono to H5 H4 _ H3 _.
+		apply IH to H6 _ _. search.
+
+Theorem tex_nil : tex nil nil.
+unfold. backchain exFree_nil.
+
+Theorem tex_nilL : forall Jo, tex nil Jo -> Jo = nil.
+intros. case H1. search. case H2.
+
+Theorem wft_no_ex : forall E a, nabla x,
+	wft (E x) (a x) -> wfj (E x) -> member (exvar x) (E x) -> exists A, a = x\ A.
+induction on 1. intros. case H1. search. search.
+	apply wfj_tyvar_exvar to H2 _ _.
+	apply IH to H4 _ _. apply IH to H5 _ _. search.
+	apply IH to H4 _ _. search.
+
+Theorem wft_strenthen_exvar : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
+	wft (FxE x) T -> wft E A -> wft (FE A) T.
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	assert append (tyvar n2 :: F n1) (exvar n1 :: E) (tyvar n2 :: FxE n1).
+		apply IH to _ H6 H5 _ with FE = x\ tyvar n2 :: FE x. search.
+
+Theorem tex_of_total : forall E Jo A,
+	tex E Jo -> wfj E -> wfta E A ->
+		exists Ao, nabla x, tex (of x A :: E) (of x Ao :: Jo).
+induction on 1. intros. case H1 (keep).
+	apply exFree_of to H4 with A = A. search.
+	W: apply wfj_remove_exvar_mono to H4 H5 _ _.
+		W: apply wfta_strenthen_exvar_mono to H5 H4 _ H3 _.
+		apply IH to H6 _ _. search.
+
+
+Theorem tex_wft_L : forall E Jo A B a b, wft Jo A ->
+	tex (j (subty A B) :: E) (j (subty a b) :: Jo) -> A = a.
+induction on 2. intros. case H2. search.
+	apply wft_prune to _. case H3. case H4.
+	apply IH to _ H5. search.
+
+Theorem tex_wft_R : forall E Jo A B a b, wft Jo B ->
+	tex (j (subty A B) :: E) (j (subty a b) :: Jo) -> B = b.
+induction on 2. intros. case H2. search.
+	apply wft_prune to _. case H3. case H4.
+	apply IH to _ H5. search.
+
+Theorem tex_add_subty_wft_thm : forall F E FE Jo a b,
+	tex E Jo -> wfj E -> append F E FE -> wfj FE -> wft FE a -> wft FE b ->
+		tex (j (subty a b) :: E) (j (subty a b) :: Jo).
+induction on 1. intros. case H1 (keep).
+	unfold. backchain exFree_j.
+	A: apply append_assoc_inv to H7 _.
+		M: apply append_mem to A1 _. apply wft_no_ex to H5 _ _. apply wft_no_ex to H6 _ _.
+		W: apply wfj_remove_exvar_mono to H7 H8 _ _.
+		W: apply mono_wft to H11. A: apply append_total_E to A1 with B = E1.
+			W: apply wft_strenthen_exvar to A2 A1 H5 W1.
+			W: apply wft_strenthen_exvar to A2 A1 H6 W1.
+		A: apply append_assoc to A A2. apply append_det to H8 *A3.
+		A: apply append_subst to A4 with A = m.
+		W: apply wfj_remove_exvar_mono to A1 A2 _ _.
+		T: apply IH to H9 _ _ _ W2 W3. search.
+
+Theorem tex_add_subty_wft : forall E Jo a b,
+	tex E Jo -> wfj E -> wft E a -> wft E b ->
+		tex (j (subty a b) :: E) (j (subty a b) :: Jo).
+intros. apply tex_add_subty_wft_thm to H1 H2 _ H2 H3 H4. search.
+
+
+Theorem tex_mem_tyvar : forall E Jo, nabla x,
+	tex (E x) (Jo x) -> wfj (E x) -> member (tyvar x) (E x) -> member (tyvar x) (Jo x).
+induction on 1. intros. case H1. search.
+	assert member (tyvar n1) (FE n1 n2).
+		apply append_mem_inv to _ H3. case H9. backchain append_mem.
+			case H10. backchain append_mem.
+		apply append_subst to H5 with x = n2, A = m n1.
+		backchain IH. apply wfj_remove_exvar to H4 _ _ H10. backchain mono_wfta. search.
+		apply member_tyvar_nabla_subst to H9 with A = x\ y\ m x. search.
+	apply append_mem to H4 _. apply wfj_tyvar_exvar to _ H3 H9.
+
+Theorem tex_prune : forall E Jo, nabla (x : ty), tex E (Jo x) -> exists Jr, Jo = x\ Jr.
+induction on 1. intros. case H1. search.
+	apply append_prune to H2. apply append_prune_AB to H3. apply mono_prune to H6.
+		apply IH to H4. search.
+	search.
+
+Theorem tex_add_check_unit_i : forall E Jo,
+	tex E Jo -> wfj E -> tex (j (check unit i) :: E) (j (check unit i) :: Jo).
+induction on 1. intros. case H1.
+	unfold. backchain exFree_j.
+	apply wfj_remove_exvar_mono to H3 H4 _ _.
+		apply IH to H5 _. search.
+
+Theorem tex_freej_subst : forall ji jo E Jo A, nabla x,
+	tex (j (ji x) :: E) (j (jo x) :: Jo) -> wfj E -> wft E A ->
+		tex (j (ji A) :: E) (j (jo A) :: Jo).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H4. unfold. backchain exFree_j.
+	case H4. case H5. apply append_prune to H9. apply append_prune_AB to H10.
+		apply mono_prune to H8.
+		W: apply wfj_remove_exvar_mono to H9 H10 _ _.
+		apply wft_no_ex to H3 _ _. backchain append_mem.
+		W: apply mono_wft to H8. W: apply wft_strenthen_exvar to H10 H9 H3 W1.
+		T: apply IH to H6 _ _. search.
+	case H4. apply append_prune to H9.
+
+Theorem tex_add_subty_AB : forall E Jo A B,
+	tex E Jo -> wfj E -> exists a b, tex (j (subty A B) :: E) (j (subty a b) :: Jo).
+induction on 1. intros. case H1.
+	exists A, B. unfold. backchain exFree_j.
+	apply wfj_remove_exvar_mono to H3 H4 _ _.
+		apply IH to H5 _ with A = A n1, B = B n1.
+		A: apply append_subst to H4 with A = m.
+		M: apply mono_weaken_f to A _. W: apply mono_wft to M.
+		apply tex_freej_subst to H9 _ W with x = n1.
+		search.
+
+Theorem wfj_subst_tyvar : forall E J m, nabla x,
+	wfj (j (J x) :: tyvar x :: E) -> wfta E m -> wfj (j (J m) :: E).
+intros. apply wfj_remove_tyvar_nabla to _ _ H1 H2 with F = x\ j (J x) :: nil. search.
+
+Theorem wfj_subst_exvar : forall E J m, nabla x,
+	wfj (j (J x) :: exvar x :: E) -> wfta E m -> wfj (j (J m) :: E).
+intros. apply wfj_remove_exvar_nabla to _ _ H1 H2 with F = x\ j (J x) :: nil. search.
+
+Theorem tex_uncons_shape : forall E Jo ji,
+	tex (j ji :: E) Jo -> exists jo Jr, Jo = j jo :: Jr.
+induction on 1. intros. case H1. search.
+	case H2. case H3. apply IH to H4. search.
+
+Theorem mem_subst : forall M (E : ty -> olist) A, nabla (x:ty),
+	member (M x) (E x) -> member (M A) (E A).
+induction on 1. intros. case H1. search. unfold. apply IH to H2 with A = A. search.
+
+
+Theorem wfj_append_nil : forall E, wfj E -> append E nil E.
+induction on 1. intros. case H1. search.
+	unfold. backchain IH.
+	unfold. backchain IH.
+	unfold. backchain IH.
+	unfold. backchain IH.
+	unfold. backchain IH.
+	apply IH to H3. case H4. case H5. search.
+	apply IH to H4. case H5. case H6. search.
+
+Theorem wfta_nil : forall E A, wfta nil A -> wfj E -> wfta E A.
+intros. apply wfj_append_nil to H2. backchain wfta_weaken_f.
+
+Theorem tex_infX_sync : forall E Jo W A, nabla x,
+	wfj (E x) -> member (of x A) (E x) -> tex (j (W x A) :: E x) (Jo x) ->
+		exists jo Jr Ao, nabla x,
+			tex (j (inferC x (W x)) :: E x) (j (inferC x (y\ jo x y)) :: Jr x) /\
+			Jo = x\ j (jo x Ao) :: Jr x /\ member (of x Ao) (Jo x).
+induction on 3. intros. case H3.
+	apply exFree_weaken to H4. apply exFree_j to H5 with J = inferC n1 (W n1). search.
+	case H4. case H5. apply mono_prune_tm to H8.
+		apply member_of_subst to H2 with A = x\ y\ m1.
+		apply append_subst to H9 with A = m1. apply append_subst to H10 with A = m1.
+		assert member (of n1 (A m1)) (L4 m1 n1).
+			apply append_mem_inv to H12 _. case H14. backchain append_mem.
+			case H15. backchain append_mem.
+		W: apply wfj_remove_exvar_mono to H9 H10 _ _.
+		apply IH to _ _ H6 with W = x\ A\ W m1 x A.
+		search.
+
+Theorem tex_infSub_sync : forall E Jo X B,
+	wfj E -> tex (j (inferC X (r\ subty r B)) :: E) Jo -> notAll_ B -> notLam_ X ->
+		exists x b Jr, tex (j (check X B) :: E) (j (check x b) :: Jr) /\
+		Jo = j (inferC x (r\ subty r b)) :: Jr /\ notAll_ b /\ notLam_ x.
+induction on 2. intros. case H2.
+	apply exFree_weaken to H5. apply exFree_j to H6 with J = check X B. search.
+	case H5. case H6.
+		apply wfj_remove_exvar_mono to H10 H11 _ _.
+		apply IH to _ H7 _ _.
+			unfold. intros Eq. case Eq. F: case H4. apply F to _.
+			unfold. intros Eq. case Eq. F: case H3. apply F to _. case H9.
+		search.
+
+Theorem tex_infAnno_sync : forall E Jo W X A,
+	wfj E -> tex (j (check X A) :: j (W A) :: E) Jo -> wfta E A ->
+		exists x a w Jr,
+			tex (j (inferC (anno X A) W) :: E) (j (inferC (anno x a) w) :: Jr) /\
+			Jo = j (check x a) :: j (w a) :: Jr /\ wft Jr a.
+induction on 2. intros. case H2.
+	apply exFree_weaken to H4. apply exFree_weaken to H5.
+		apply exFree_j to H6 with J = inferC (anno X A) W.
+		apply exFree_wfta_wft to _ H3. search.
+	case H4. case H5. case H9. case H10.
+		apply wfj_remove_exvar_mono to H11 H12 _ _.
+		apply wfta_strenthen_exvar_mono to H12 H11 _ H3 _.
+		apply IH to _ H6 _ with W = A\ W m A. search.
+
+Theorem tex_infUnit_sync : forall E Jo W a,
+	wfj E -> tex (j (W a) :: E) Jo -> a = i ->
+		exists w Jr, tex (j (inferC unit W) :: E) (j (inferC unit w) :: Jr) /\
+		Jo = j (w i) :: Jr.
+induction on 2. intros. case H2.
+	apply exFree_weaken to H4. apply exFree_j to H5 with J = inferC unit W.
+		case H3. search.
+	case H4. case H5. case H3.
+		apply wfj_remove_exvar_mono to H9 H10 _ _.
+		apply IH to _ H6 _ with W = W m. search.
+
+Theorem tex_infLam_sync : forall E Jo X W A B,
+	wfj E -> tex (j (inferC (anno (lam X) (arrow A B)) W) :: E) Jo -> mono E (arrow A B) ->
+		exists x w Jr a b, tex (j (inferC (lam X) W) :: E) (j (inferC (lam x) w) :: Jr) /\
+		Jo = j (inferC (anno (lam x) (arrow a b)) w) :: Jr /\ mono Jr (arrow a b).
+induction on 2. intros. case H2.
+	apply exFree_weaken to H4. apply exFree_j to H5 with J = inferC (lam X) W. search.
+	case H4. case H5. apply wfj_remove_exvar_mono to H9 H10 _ _.
+		M: apply append_mem to H9 _. apply mono_prune_exvar to _ _ H3.
+		apply mono_wfta to H8. apply mono_strenthen_exvar to H10 H9 _ H12.
+		apply IH to _ H6 _. search.
+
+Theorem tex_infLam_sync_xy : forall E Jo X W, nabla x y,
+	wfj (j (inferC (anno (lam X) (arrow x y)) W) :: exvar x :: exvar y :: E) ->
+	tex (j (inferC (anno (lam X) (arrow x y)) W) :: exvar x :: exvar y :: E) Jo ->
+		exists xo w Jr a b,
+			tex (j (inferC (lam X) W) :: E) (j (inferC (lam xo) w) :: Jr) /\
+			Jo = j (inferC (anno (lam xo) (arrow a b)) w) :: Jr /\
+			mono Jr (arrow a b).
+intros. T: apply tex_extract_two to _ _ H2 with F = m\ nil.
+	case T. case H1 (keep). apply wfj_weaken2 to H1. case H5.
+	apply tex_infLam_sync to _ T3 _. search.
+
+/*Theorem tex_chkLam_sync : forall E Jo X W A B,
+	tex (j (check (lam X) (arrow A B)) :: j (W (arrow A B)) :: E) Jo ->
+		wfj E -> mono E (arrow A B) ->
+		exists x w Jr a b, tex (j (inferC (lam X) W) :: E) (j (inferC (lam x) w) :: Jr) /\
+		Jo = j (check (lam x) (arrow a b)) :: j (w (arrow a b)) :: Jr /\ mono Jr (arrow a b).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H4. apply exFree_weaken to H5.
+		apply exFree_j to H6 with J = inferC (lam X) W. search.
+	case H4. case H5. case H10. case H12.
+		assert forall (F : ty -> judgement) W (A : ty -> ty), nabla x,
+			F x = W x (A x) -> F = x\ W x (A x).
+		assert forall (F : ty -> judgement) W (A : ty -> ty) m, nabla x,
+			F x = W x (A x) -> F m = W m (A m).
+		apply H14 to H13 with A1 = x\ arrow (A x) (B x), W = W.
+		assert forall (L A : ty) L1, nabla (x : ty), L = L1 A x -> exists L0, L1 = a\ x\ L0 a.
+			intros. exists x\ L2 x A1. case H17.
+		assert FxE3 m = W m (arrow (A m) (B m)). case H15.
+		apply wfj_remove_exvar_mono to H12 H13 _ _.
+		M: apply append_mem to H12 _. apply mono_prune_exvar to _ _ H4.
+		W: apply mono_wfta to H9. M: apply mono_strenthen_exvar to H13 H12 _ W.
+		Aux: assert forall (F W : ty -> judgement), nabla x, F x = W x -> F = W.
+		apply Aux to H2.
+		apply IH to H7 _ _ _ with W = W m, Arr = Arr m. search.*/
+
+Theorem tex_chkLam_sync_ex : forall E Jo X m,
+	tex (j (check (lam X) m) :: E) Jo -> wfj E -> mono E m ->
+		exists x Jr, Jo = j (check (lam x) m) :: Jr.
+induction on 1. intros. case H1.
+	search.
+	case H4. case H5.
+		apply wfj_remove_exvar_mono to H9 H10 _ _.
+		M: apply append_mem to H9 _. apply mono_prune_exvar to _ _ H3.
+		W: apply mono_wfta to H8. M: apply mono_strenthen_exvar to H10 H9 _ W.
+		apply IH to H6 _ _. search.
+
+Theorem tex_chkLam_sync_arr : forall E Jo X A B,
+	tex (j (check (lam X) (arrow A B)) :: E) Jo -> wfj E -> mono E (arrow A B) ->
+		exists x Jr, nabla t, Jo = j (check (lam x) (arrow A B)) :: Jr /\
+			tex (j (check (X t) B) :: of t A :: j (subty (arrow A B) (arrow A B)) :: E)
+				(j (check (x t) B) :: of t A :: j (subty (arrow A B) (arrow A B)) :: Jr).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H4. apply exFree_j to H5 with J = subty (arrow A B) (arrow A B).
+		apply exFree_of to H6 with A = A. apply exFree_j to H7 with J = check (X n1) B.
+		search.
+	case H4. case H5.
+		apply wfj_remove_exvar_mono to H9 H10 _ _.
+		M: apply append_mem to H9 _. apply mono_prune_exvar to _ _ H3.
+		W: apply mono_wfta to H8. M: apply mono_strenthen_exvar to H10 H9 _ W.
+		apply IH to H6 _ _. search.
+
+Theorem tex_chkLam_sync : forall E Jo X W A B Arr,
+	tex (j (check (lam X) (arrow A B)) :: j (W Arr) :: E) Jo -> Arr = arrow A B ->
+		wfj E -> mono E (arrow A B) ->
+		exists x w Jr a b, tex (j (inferC (lam X) W) :: E) (j (inferC (lam x) w) :: Jr) /\
+		Jo = j (check (lam x) (arrow a b)) :: j (w (arrow a b)) :: Jr /\ mono Jr (arrow a b).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H5. apply exFree_weaken to H6.
+		apply exFree_j to H7 with J = inferC (lam X) W. case H2. search.
+	case H5. case H6. case H10. case H11.
+		apply wfj_remove_exvar_mono to H12 H13 _ _.
+		M: apply append_mem to H12 _. apply mono_prune_exvar to _ _ H4.
+		W: apply mono_wfta to H9. M: apply mono_strenthen_exvar to H13 H12 _ W.
+		case H2. apply IH to H7 _ _ _ with W = W m, Arr = Arr m. search.
+
+Theorem tex_chkLam_sync_of : forall E Jo X W A B Arr, nabla t,
+	tex (j (check (X t) B) :: of t A :: j (W Arr) :: E) (Jo t) -> Arr = arrow A B ->
+		wfj E -> mono E (arrow A B) ->
+		exists x w Jr a b,
+			tex (j (inferC (lam X) W) :: E) (j (inferC (lam x) w) :: Jr) /\
+			Jo = t\ j (check (x t) b) :: of t a :: j (w (arrow a b)) :: Jr /\
+			mono Jr (arrow a b).
+induction on 1. intros. case H1.
+	Ex: apply exFree_weaken to H5. Ex: apply exFree_weaken to *Ex.
+		Ex: apply exFree_weaken to *Ex.
+		apply exFree_j to Ex with J = inferC (lam X) W. case H2. search.
+	A: case H5. A: case H6. case A. case A1. case H10. case H11.
+		apply append_prune_tm to H12. apply append_prune_AB_tm to H13.
+		apply mono_prune_tm to H9.
+		apply wfj_remove_exvar_mono to H12 H13 _ _.
+		M: apply append_mem to H12 _. apply mono_prune_exvar to _ _ H4.
+		W: apply mono_wfta to H9. M: apply mono_strenthen_exvar to H13 H12 _ W.
+		case H2. apply IH to H7 _ _ _ with W = W m1. search.
+
+Theorem wfj_remove_exvar_intro : forall F E FxE A, nabla x,
+	append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) -> wfta E A ->
+	exists FE, nabla x, append (F x) E (FE x) /\ append (F A) E (FE A) /\ wfj (FE A).
+intros. apply append_total_E to H1 with B = E.
+	apply wfj_remove_exvar_nabla to H1 H4 H2 H3.
+	apply append_subst to H4 with A = A. exists C. search.
+
+Theorem tex_chkLam_sync_xy : forall E Jo X W, nabla t x y,
+	wfj (j (check (X t) y) :: of t x :: j (W (arrow x y)) :: exvar y :: exvar x :: E) ->
+	tex (j (check (X t) y) :: of t x :: j (W (arrow x y)) ::
+			exvar y :: exvar x :: E) (Jo t) ->
+		exists x w Jr a b,
+			tex (j (inferC (lam X) W) :: E) (j (inferC (lam x) w) :: Jr) /\
+			Jo = t\ j (check (x t) b) :: of t a :: j (w (arrow a b)) :: Jr /\
+			mono Jr (arrow a b).
+intros.
+	T: apply tex_extract to _ _ H1 H2 with E = E, F = x\ j (check (X n1) n3) ::
+		of n1 x :: j (W (arrow x n3)) :: exvar n3 :: nil.
+	apply mono_prune to T1. apply mono_prune_tm to T1.
+	W: apply wfj_remove_exvar_mono to _ _ H1 _ with F = x\ j (check (X n1) n3) ::
+		of n1 x :: j (W (arrow x n3)) :: exvar n3 :: nil.
+	T: apply tex_extract to _ _ W T with E = E, F = x\ j (check (X n1) x) ::
+		of n1 m2 :: j (W (arrow m2 x)) :: nil.
+	apply mono_prune_tm to T3.
+	T: apply wfj_remove_exvar_mono to _ _ W T3 with F = x\ j (check (X n1) x) ::
+		of n1 m2 :: j (W (arrow m2 x)) :: nil.
+	W: apply wfj_weaken2 to T4. W: apply wfj_weaken1 to W1.
+	apply tex_chkLam_sync_of to T2 _ _ _ with W = W, t = n1. search.
+
+Theorem tex_infApp_sync : forall E Jo X1 X2 W,
+	wfj E -> tex (j (inferC X1 (a\ inferAppC a X2 W)) :: E) Jo ->
+		exists x1 x2 w Jr,
+			tex (j (inferC (app X1 X2) W) :: E) (j (inferC (app x1 x2) w) :: Jr) /\
+			Jo = j (inferC x1 (a\ inferAppC a x2 w)) :: Jr.
+induction on 2. intros. case H2.
+	apply exFree_weaken to H3. apply exFree_j to H4 with J = inferC (app X1 X2) W. search.
+	case H3. case H4. apply wfj_remove_exvar_mono to H8 H9 _ _.
+		apply IH to _ H5. search.
+
+Theorem tex_infAppForall_sync : forall E Jo A m X W,
+	wfj E -> tex (j (inferAppC (A m) X W) :: E) Jo -> mono E m ->
+		exists a m x w Jr,
+			tex (j (inferAppC (all A) X W) :: E) (j (inferAppC (all a) x w) :: Jr) /\
+			Jo = j (inferAppC (a m) x w) :: Jr /\ mono Jr m.
+induction on 2. intros. case H2.
+	apply exFree_weaken to H4. apply exFree_j to H5 with J = inferAppC (all A) X W. search.
+	case H4. case H5. apply append_mem to H9 _.
+		apply mono_prune_exvar to _ _ H3.
+		apply wfj_remove_exvar_mono to H9 H10 _ _.
+		apply mono_wfta to H8. apply mono_strenthen_exvar to H10 H9 H3 H13.
+		apply IH to _ H6 _ with A = A m1. search.
+
+Theorem tex_infAppArrow_sync : forall E Jo X A W C,
+	wfj E -> tex (j (check X A) :: j (W C) :: E) Jo -> wfta E (arrow A C) ->
+		exists x a w c Jr,
+			tex (j (inferAppC (arrow A C) X W) :: E) (j (inferAppC (arrow a c) x w) :: Jr) /\
+			Jo = j (check x a) :: j (w c) :: Jr /\ wft Jr a /\ wft Jr c.
+induction on 2. intros. case H2.
+	apply exFree_weaken to H4. apply exFree_weaken to H5.
+		apply exFree_j to H6 with J = inferAppC (arrow A C) X W.
+		apply exFree_wfta_wft to _ H3. case H8. search.
+	case H4. case H5. case H9. case H10.
+		apply wfj_remove_exvar_mono to H11 H12 _ _.
+		apply wfta_strenthen_exvar_mono to H12 H11 _ _ _.
+		apply IH to _ H6 _ with W = W m. search.
+
+Theorem tex_infAppEx_sync : forall E Jo X W A B,
+	wfj E -> tex (j (inferC (anno (lam X) (arrow A B)) W) :: E) Jo ->
+	mono E (arrow A B) ->
+		exists x w Jr a b, tex (j (inferC (lam X) W) :: E) (j (inferC (lam x) w) :: Jr) /\
+		Jo = j (inferC (anno (lam x) (arrow a b)) w) :: Jr /\ mono Jr (arrow a b).
+induction on 2. intros. case H2.
+	apply exFree_weaken to H4. apply exFree_j to H5 with J = inferC (lam X) W. search.
+	case H4. case H5. apply append_mem to H9 _.
+		apply mono_prune_exvar to _ _ H3. apply mono_wfta to H8.
+		apply wfj_remove_exvar_mono to H9 H10 _ _.
+		apply mono_strenthen_exvar to H10 H9 _ _.
+		apply IH to _ H6 _. search.
+
+/*case H4. case H8. case H9.
+		apply append_prune to H10. apply append_prune to H10.
+		apply append_prune_AB to H11. apply append_prune_AB to H11.
+		apply mono_prune to H7. apply mono_prune to H7.
+		apply append_subst to H11 with A = m2.
+		apply wfj_remove_exvar to H10 _ _ H12. backchain mono_wfta.
+		apply IH to _ H5. search.
+	case H3. case H4. case H8. case H9. apply mono_prune to H7.
+		case H5.
+	case H3. */
+
+/* Wrong lemma
+Theorem pop_subst : forall E Ep, nabla (x y : ty),
+	pop (E x y) (Ep x y) -> wfj (E x y) -> pop (E y y) (Ep y y).
+induction on 1. intros. case H1 (keep). search.
+	case H2. apply IH to H3 _. search.
+	case H2. apply IH to H3 _. permute (n2 n3) H5. unfold. search.
+	case H2. apply IH to H3 _. search.
+	case H2. apply IH to H3 _. search.
+	case H2. apply IH to H3 _. search.*/
+
+Theorem wfta_insert_exvar : forall F E FxE FxyE A, nabla x y,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F (arrow x y)) (exvar y :: exvar x :: E) (FxyE x y) ->
+	wfj (FxE x) -> wfta (FxE x) (A x) -> wfta (FxyE x y) (A (arrow x y)).
+induction on 4. intros. case H4. search.
+	permute (n2 n3) H5. apply append_mem_inv to H1 _. case H6.
+		apply member_tyvar_nabla_subst to H7 with A = x\ y\ arrow y n2.
+		apply append_mem to H2 _. search. apply append_mem to H2 _ with X = tyvar n3. search.
+	apply wfj_tyvar_exvar to H3 _ _. backchain append_mem.
+	permute (n2 n3) H5. apply append_mem_inv to H1 _. case H6.
+		apply member_exvar_nabla_subst to H7 with A = x\ y\ arrow y n2.
+		apply append_mem to H2 _. search. apply append_mem to H2 _ with X = exvar n3. search.
+	apply append_mem to H2 _. apply append_mem to H2 _ with X = exvar n1. search.
+	apply IH to _ _ _ H5 with F = F. apply IH to _ _ _ H6 with F = F. search.
+	apply IH to _ _ _ H5 with F = x\ tyvar n2 :: F x. search.
+
+Theorem wftm_insert_exvar : forall F E FxE FxyE X, nabla x y,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F (arrow x y)) (exvar y :: exvar x :: E) (FxyE x y) ->
+	wfj (FxE x) -> wftm (FxE x) (X x) -> wftm (FxyE x y) (X (arrow x y)).
+induction on 4. intros. case H4. search.
+	permute (n2 n3) H5. apply append_mem_inv to H1 _. case H6.
+		apply member_of_subst to H7 with A = x\ y\ arrow y n2.
+		apply append_mem to H2 _. search.
+		apply append_mem to H2 _ with X = of n3 (A n1). search.
+	apply IH to _ _ _ H6 with F = x\ of n2 (A x) :: F x.
+		W: apply wfta_insert_exvar to H1 H2 _ H5. search.
+	apply IH to _ _ _ H5 with F = F. apply IH to _ _ _ H6 with F = F. search.
+	apply IH to _ _ _ H5 with F = F.
+		apply wftm_prune_var to H5 _. apply wft_prune to H6. search.
+
+Theorem wfj_insert_exvar : forall F E FxE FxyE, nabla x y,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F (arrow x y)) (exvar y :: exvar x :: E) (FxyE x y) ->
+	wfj (FxE x) -> wfj (FxyE x y).
+induction on 3. intros.
+	case H3. case H1.
+		case H1. apply append_prune to H5. case H2.
+			apply append_prune_AB to H6. apply IH to H5 H6 H4. search.
+		case H1. apply append_prune to H5.
+		case H1. apply append_prune to H5. case H2.
+			apply append_prune_AB to H6. apply IH to H5 H6 H4. search.
+		case H1. case H2. search. apply append_prune to H5.
+		case H1. apply append_prune_tm to H6. case H2.
+			apply append_prune_AB_tm to H7. apply IH to H6 H7 H4.
+			apply wfta_insert_exvar to H6 H7 _ H5. search.
+		case H1. case H2.
+			apply wfta_insert_exvar to H7 H8 _ H4.
+			apply wfta_insert_exvar to H7 H8 _ H5.
+			apply IH to H7 H8 H6. search.
+		case H1. case H2.
+			apply wftm_insert_exvar to H7 H8 _ H4.
+			apply wfta_insert_exvar to H7 H8 _ H5.
+			apply IH to H7 H8 H6. search.
+		case H1. case H2. W: apply wfj_weaken2 to H5.
+			apply wftm_insert_exvar to H6 H7 _ H4.
+			apply IH to _ _ H5 with F = x\ j (J x n2) :: tyvar n2 :: L1 x. search.
+		case H1. case H2. W: apply wfj_weaken2 to H6.
+			apply wfta_insert_exvar to H7 H8 _ H4.
+			apply wftm_insert_exvar to H7 H8 _ H5.
+			apply IH to _ _ H6 with F = x\ j (J x n2) :: tyvar n2 :: L1 x. search.
+
+Theorem wfj_insert_exvar_intro : forall F E FxE, nabla x,
+	append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
+	exists FxyE, nabla x y,
+		append (F (arrow x y)) (exvar y :: exvar x :: E) (FxyE x y) /\ wfj (FxyE x y).
+intros. A: apply append_total_E to H1 with B = E.
+	A: apply append_subst_x to A with A = x\ arrow x n2.
+	A: apply append_total_E to A1 with B = exvar n2 :: exvar n1 :: E.
+	apply wfj_insert_exvar to H1 A2 _. exists C1. search.
+
+Theorem wfj_insert_exvar_raw : forall F E FE FxE, nabla x,
+	append F E FE -> append F (exvar x :: E) (FxE x) -> wfj FE -> wfj (FxE x).
+induction on 3. intros. case H3.
+	case H1. case H2. search.
+	case H1. case H2. search.
+		case H2. apply append_prune to H5. apply append_prune_AB to H6.
+		apply IH to H5 H6 H4. search.
+	case H1. case H2. search.
+		case H2. apply append_prune to H5. apply append_prune_AB to H6.
+		apply IH to H5 H6 H4. search.
+	case H1. case H2. search.
+		case H2. apply append_prune_tm to H6. apply append_prune_AB_tm to H7.
+		apply IH to H6 H7 H4. apply wfta_weaken_exvar_fresh to H6 H7 _ H5. search.
+	case H1. case H2. search.
+		case H2. apply IH to H7 H8 H6.
+		apply wfta_weaken_exvar_fresh to H7 H8 _ H4.
+		apply wfta_weaken_exvar_fresh to H7 H8 _ H5.
+		search.
+	case H1. case H2. search.
+		case H2. apply IH to H7 H8 H6.
+		apply wftm_weaken_exvar_fresh to H7 H8 _ H4.
+		apply wfta_weaken_exvar_fresh to H7 H8 _ H5.
+		search.
+	case H1. case H2. search.
+		case H2. assert append (j (J n1) :: tyvar n1 :: L1) E (j (J n1) :: tyvar n1 :: E1).
+		apply IH to H8 _ H5. apply wfj_weaken2 to H9.
+		apply wftm_weaken_exvar_fresh to H6 H7 _ H4. search.
+	case H1. case H2. search.
+		case H2. assert append (j (J n1) :: tyvar n1 :: L1) E (j (J n1) :: tyvar n1 :: E1).
+		apply IH to H9 _ H6. apply wfj_weaken2 to H10.
+		apply wftm_weaken_exvar_fresh to H7 H8 _ H5.
+		apply wfta_weaken_exvar_fresh to H7 H8 _ H4. search.
+
+Theorem wfj_insert_tyvar_raw : forall F E FE FxE, nabla x,
+	append F E FE -> append F (tyvar x :: E) (FxE x) -> wfj FE -> wfj (FxE x).
+induction on 3. intros. case H3.
+	case H1. case H2. search.
+	case H1. case H2. search.
+		case H2. apply append_prune to H5. apply append_prune_AB to H6.
+		apply IH to H5 H6 H4. search.
+	case H1. case H2. search.
+		case H2. apply append_prune to H5. apply append_prune_AB to H6.
+		apply IH to H5 H6 H4. search.
+	case H1. case H2. search.
+		case H2. apply append_prune_tm to H6. apply append_prune_AB_tm to H7.
+		apply IH to H6 H7 H4. apply wfta_weaken_tyvar_fresh to H6 H7 _ H5. search.
+	case H1. case H2. search.
+		case H2. apply IH to H7 H8 H6.
+		apply wfta_weaken_tyvar_fresh to H7 H8 _ H4.
+		apply wfta_weaken_tyvar_fresh to H7 H8 _ H5.
+		search.
+	case H1. case H2. search.
+		case H2. apply IH to H7 H8 H6.
+		apply wftm_weaken_tyvar_fresh to H7 H8 _ H4.
+		apply wfta_weaken_tyvar_fresh to H7 H8 _ H5.
+		search.
+	case H1. case H2. search.
+		case H2. assert append (j (J n1) :: tyvar n1 :: L1) E (j (J n1) :: tyvar n1 :: E1).
+		apply IH to H8 _ H5. apply wfj_weaken2 to H9.
+		apply wftm_weaken_tyvar_fresh to H6 H7 _ H4. search.
+	case H1. case H2. search.
+		case H2. assert append (j (J n1) :: tyvar n1 :: L1) E (j (J n1) :: tyvar n1 :: E1).
+		apply IH to H9 _ H6. apply wfj_weaken2 to H10.
+		apply wftm_weaken_tyvar_fresh to H7 H8 _ H5.
+		apply wfta_weaken_tyvar_fresh to H7 H8 _ H4. search.
+
+Theorem wfj_insert_exvar_ex : forall F E FxE FxyE, nabla x y,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F x) (exvar y :: exvar x :: E) (FxyE x y) ->
+	wfj (FxE x) -> wfj (FxyE x y).
+induction on 3. intros.
+	case H3. case H1.
+		case H1. apply append_prune to H5. case H2.
+			apply append_prune_AB to H6. apply IH to H5 H6 H4. search.
+		case H1. apply append_prune to H5.
+		case H1. apply append_prune to H5. case H2.
+			apply append_prune_AB to H6. apply IH to H5 H6 H4. search.
+		case H1. case H2. search. apply append_prune to H5.
+		case H1. apply append_prune_tm to H6. case H2.
+			apply append_prune_AB_tm to H7. apply IH to H6 H7 H4.
+			apply wfta_weaken_exvar_fresh to H6 H7 _ H5. search.
+		case H1. case H2.
+			apply IH to _ _ H6.
+			apply wfta_weaken_exvar_fresh to H7 H8 _ H4.
+			apply wfta_weaken_exvar_fresh to H7 H8 _ H5.
+			search.
+		case H1. case H2.
+			apply IH to _ _ H6.
+			apply wfta_weaken_exvar_fresh to H7 H8 _ H5.
+			apply split3_alt to _ H8 with C = exvar n1 :: E.
+			apply wftm_weaken to H7 H11 H4.
+			search.
+		case H1. case H2.
+			apply IH to _ _ H5 with F = x\ j (J x n2) :: tyvar n2 :: L1 x.
+			apply split3_alt to _ H7 with C = exvar n1 :: E.
+			apply wfj_weaken2 to H8.
+			apply wftm_weaken to H6 H9 H4.
+			search.
+		case H1. case H2.
+			apply IH to _ _ H6 with F = x\ j (J x n2) :: tyvar n2 :: L1 x.
+			apply split3_alt to _ H8 with C = exvar n1 :: E.
+			apply wfj_weaken2 to H9.
+			apply wfta_weaken to H7 H10 H4.
+			apply wftm_weaken to H7 H10 H5.
+			search.
+
+/* May not be needed anymore
+Theorem wfj_insert_two : forall F E FxE FxyzE, nabla x y z,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F x) (exvar x :: exvar y :: exvar z :: E) (FxyzE x y z) ->
+	wfj (FxE x) -> wfj (FxyzE x y z).
+intros. 
+
+Theorem wfj_insert_two : forall F E FxE FxyzE A, nabla x y z,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F x) (exvar x :: exvar y :: exvar z :: E) (FxyzE x y z) ->
+	wfj (FxE x) -> wfj (FxE x) (A x) -> wfj (FxyzE x y z) (A x).
+intros. apply append_assoc_inv to _ H1 with C = E.
+	apply append_assoc_inv to _ H2 with C = exvar n2 :: exvar n3 :: E.
+	apply append_det to H5 *H7.
+	apply split3_alt to _ H8 with C = E.
+	apply wfj_insert_two to H1 H2 H3.
+	apply wfj_weaken to H6 H9 H4 _. search.
+
+Theorem wfj_insert_exvar : forall F E FxE FxyE Js, nabla x y,
+	append (F x) (exvar x :: E) (FxE x) ->
+	append (F (arrow x y)) (exvar y :: exvar x :: E) (FxyE x y) ->
+	wfj (FxE x) -> wfj (FxE x) (Js x) -> wfj (FxyE x y) (Js (arrow x y)).
+intros. E: apply wfj_insert_exvar to H1 H2 H3.
+	A: apply append_total_E to H1 with B = exvar n1 :: exvar n2 :: exvar n3 :: E.
+	E: apply wfj_insert_two to H1 A _.
+	A: apply append_total_E to H1 with B = exvar n2 :: exvar n3 :: E.
+	W: apply wfj_insert_two to H1 A _ H4.
+	W: apply wfj_strenthen_exvar_notfresh to A1 A _ W _ with A = arrow n3 n2.
+	A: apply append_subst to A1 with A = arrow n3 n2.
+	permute (n1 n3) A2. apply append_det to H2 A2.
+	permute (n1 n3) W1. assert forall E F A, E = F -> wfj F A -> wfj E A. backchain H6.
+*/
+
+Theorem wfj_solveEx : forall E E2 E3 E4 F, nabla x y,
+	split3 (E4 x y) (exvar y :: E3 x) (exvar x :: E2) (E x y) ->
+	split3 (E4 x y) (E3 x) (exvar x :: E2) (F x y) -> wfj (E x y) ->
+	wfj (F x x) /\ member (exvar x) (F x x).
+intros. A: apply split3_alt_inv to H1. A: apply split3_alt_inv to H2.
+	A: case A. apply append_det to A *A2.
+	apply append_prune_AB to A.
+	M: apply append_mem to A _.
+	E: apply wfj_remove_exvar_nabla to A1 A3 _ _ with A = n1.
+	A: apply append_subst to A3 with A = n1.
+	apply append_mem to A2 _. search.
+
+Theorem tex_insert_two : forall E E2 E3 E4 F Jo m1 m2, nabla x y,
+	split3 (E4 x y) (exvar y :: E3 x) (exvar x :: E2) (E x y) ->
+	split3 (E4 x y) (E3 x) E2 (F x y) -> wfj (E x y) ->
+	tex (F m1 m2) Jo -> mono E2 m1 -> mono E2 m2 -> tex (E x y) Jo.
+intros. A: case H2 (keep). A: apply append_total_E to A1 with B = exvar n1 :: E2.
+	A: apply append_subst to A1 with x = n2, A = m2.
+	A: apply append_subst to A2 with x = n2, A = m2.
+	A: apply append_assoc to A A2. A: apply split3_alt_inv to H1. A: case A7.
+	apply append_det to *A7 A5. apply append_prune_AB to A5.
+	M: assert mono (FAB n1) m2.
+		A: apply append_assoc_inv to _ A5 with C = E2.
+		E: apply wfj_weaken to A8 _. E: case E.
+		backchain mono_weaken_f. backchain mono_weaken_ex.
+	E: apply wfj_remove_exvar_nabla to A8 A6 _ _ with A = m2. backchain mono_wfta.
+	apply tex_insert to A4 A3 _ H4 _.
+	apply tex_insert to A8 A6 _ H7 _.
+	search.
+
+Theorem mono_solveExTy : forall E E2 E3 E4 m, nabla x y,
+	split3 (E4 x y) (exvar y :: E3 x) (exvar x :: E2) (E x y) -> wfj (E x y) ->
+	mono E2 m -> mono (E x y) m.
+intros. case H1. apply append_assoc_inv to _ H5 with C = E2.
+	apply mono_weaken_f to H7 _. search.
+
+Theorem tex_subty_arrow_sync : forall E A1 A2 B1 B2 Jo,
+	tex (j (subty B1 A1) :: j (subty A2 B2) :: E) Jo ->
+	exists a1 a2 b1 b2 Jr, Jo = j (subty b1 a1) :: j (subty a2 b2) :: Jr /\
+		tex (j (subty (arrow A1 A2) (arrow B1 B2)) :: E)
+			(j (subty (arrow a1 a2) (arrow b1 b2)) :: Jr).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H2. apply exFree_weaken to H3.
+		apply exFree_j to H4 with J = subty (arrow A1 A2) (arrow B1 B2). search.
+	case H2. case H3. case H7. case H8. apply IH to H4. search.
+
+Theorem tex_allL_shape : forall E Jo A B m,
+	tex (j (subty (A m) B) :: E) Jo -> mono Jo m ->
+	exists q m1 b Jr, mono Jr m1 /\ Jo = j (subty (q m1) b) :: Jr /\
+		tex (j (subty (all A) B) :: E) (j (subty (all q) b) :: Jr).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H3. apply exFree_j to H4 with J = subty (all A) B.
+		apply mono_remove_j to H2. exists A, m, B. search.
+	apply mono_prune to H2. case H3. case H4. apply IH to H5 H2 with A = A m1.
+		exists q, m3. search.
+
+Theorem tex_allR_shape : forall E Jo A B, nabla (x : ty),
+	tex (j (subty A (B x)) :: tyvar x :: E) (Jo x) ->
+	exists a b Jr, Jo = x\ j (subty a (b x)) :: tyvar x :: Jr /\
+		tex (j (subty A (all B)) :: E) (j (subty a (all b)) :: Jr).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H2. apply exFree_weaken to H3.
+		apply exFree_j to H4 with J = subty A (all B). search.
+	case H2. case H3. case H7. case H8.
+		apply append_prune to H9. apply append_prune_AB to H10.
+		apply mono_prune to H6. apply IH to H4. search.
+	case H2. case H7. apply append_prune to H8.
+
+Theorem tex_chk_allR_shape : forall E Jo X B, nabla (x : ty),
+	tex (j (check X (B x)) :: tyvar x :: E) (Jo x) ->
+	exists Xo b Jr, Jo = x\ j (check Xo (b x)) :: tyvar x :: Jr /\
+		tex (j (check X (all B)) :: E) (j (check Xo (all b)) :: Jr).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H2. apply exFree_weaken to H3.
+		apply exFree_j to H4 with J = check X (all B). search.
+	case H2. case H3. case H7. case H8.
+		apply append_prune to H9. apply append_prune_AB to H10.
+		apply mono_prune to H6. apply IH to H4. search.
+	case H2. case H7. apply append_prune to H8.
+
+Theorem tex_chk_lam_shape : forall E Jo X A B, nabla x,
+	tex (j (check (X x) B) :: of x A :: E) (Jo x) -> wfj E -> wfta E A ->
+	exists Xo a b Jr, Jo = x\ j (check (Xo x) b) :: of x a :: Jr /\ wft Jr a /\
+		tex (j (check (lam X) (arrow A B)) :: E) (j (check (lam Xo) (arrow a b)) :: Jr).
+induction on 1. intros. case H1.
+	apply exFree_weaken to H4. apply exFree_weaken to H5.
+		apply exFree_j to H6 with J = check (lam X) (arrow A B).
+		apply exFree_wfta_wft to _ H3. search.
+	case H4. case H5. case H9. case H10.
+		apply append_prune_tm to H11. apply append_prune_AB_tm to H12.
+		apply mono_prune_tm to H8.
+		apply wfta_strenthen_exvar_mono to H12 H11 _ H3 _.
+		apply wfj_remove_exvar_mono to H11 H12 _ _.
+		apply IH to H6 _ _. search.
+
+Theorem soundness : forall E, wfj E -> judge E -> exists Jo, tex E Jo /\ dc Jo.
+induction on 2. intros W I. J: case I (keep).
+	% Base case: nil
+	apply tex_nil. search.
+	% a
+	W: case W. T: apply IH to _ J. T: apply tex_tyvar to T _. search.
+	% ^a
+	W: case W. T: apply IH to _ J. T: apply tex_exvar to T _. search.
+	% x : A
+	W: case W. T: apply IH to _ J. T: apply tex_of_total to T _ W1. search.
+	% i <: i
+	W: case W. T: apply IH to _ J.
+		T: apply tex_add_subty_wft to T W2 _ _. search.
+	% a <: a
+	W: case W. T: apply IH to _ J1.
+		M: apply tex_mem_tyvar to T _ _.
+		T: apply tex_add_subty_wft to T _ _ _ with a = n1, b = n1. search.
+	% ^a <: ^a
+	W: case W. T: apply IH to _ J1.
+		T: apply tex_add_subty_AB to T _ with A = n1, B = n1.
+		T: apply tex_extract_intro to T2 _ _.
+		A: case T3. A: case T4. A: apply append_subst to A1 with A = m.
+		W: apply wfj_remove_exvar_mono to A A1 _ _.
+		M: apply mono_weaken_f to A2 _. W: apply mono_wfta to M.
+		T: apply tex_uncons to T6. M: apply tex_mono to T3 _ _. W: apply mono_wft to M1.
+		apply tex_wft_L to _ T6. apply tex_wft_R to _ T6.
+		apply sub_refl to W5. search.
+	% A1 -> A2 <: B1 -> B2
+	W: case W. W: case W. W: case W1.
+		W: assert wfj (j (subty A2 B2) :: E1).
+		W: apply wfta_weaken_j to W with J = subty A2 B2.
+		W: apply wfta_weaken_j to W1 with J = subty A2 B2.
+		T: apply IH to _ J.
+		T: apply tex_subty_arrow_sync to T.
+		D: case T1. D: case D1. D: apply sub_remove_j to D. search.
+	% \forall x. A <: B
+	W: case W. W: apply wfta_open_exvar to _ W. W: apply wfta_weaken_ex to W1.
+		T: apply IH to _ J1. apply tex_prune_ex to _ _ T.
+		T: apply tex_extract to _ _ _ T with F = x\ j (subty (A x) B) :: nil.
+		T: apply tex_uncons_shape to T2. T: apply tex_uncons to T2.
+		M: apply tex_mono to T4 _ T3. M: apply mono_add_j to M with J = jo.
+		T: apply tex_allL_shape to T2 _ with A = A.
+		D: case T1. search.
+	% A <: \forall x. B
+	W: case W. W: case W1. W: apply wfta_weaken_ty to W.
+		T: apply IH to _ J. T: apply tex_allR_shape to T.
+		D: case T1. D: case D1. search.
+	% ^a <: A -> B
+	A: case J. permute (n2 n1 n3) A1. W: case W.
+		W: apply wfj_insert_exvar to A A1 _. W: apply wfta_insert_exvar to A A1 _ W1.
+		M: apply append_mem to A1 _. M: apply append_mem to A1 _ with X = exvar n1.
+		T: apply IH to _ J1.
+		T: apply tex_uncons_shape to T. T: apply tex_uncons to T.
+		T: apply tex_extract_two to A1 _ T with F = E2.
+		A: assert append (j (subty n1 (arrow A B)) :: E2 n1) (exvar n1 :: E3)
+			(j (subty n1 (arrow A B)) :: E1 n1).
+		T: apply tex_insert to A2 _ _ T6 _ with FE = m\ j (subty m (arrow A B)) :: FE m.
+		search.
+	% A -> B <: ^a
+	A: case J. permute (n2 n1 n3) A1. W: case W.
+		W: apply wfj_insert_exvar to A A1 _. W: apply wfta_insert_exvar to A A1 _ W.
+		M: apply append_mem to A1 _. M: apply append_mem to A1 _ with X = exvar n1.
+		T: apply IH to _ J1.
+		T: apply tex_uncons_shape to T. T: apply tex_uncons to T.
+		T: apply tex_extract_two to A1 _ T with F = E2.
+		A: assert append (j (subty (arrow A B) n1) :: E2 n1) (exvar n1 :: E3)
+			(j (subty (arrow A B) n1) :: E1 n1).
+		T: apply tex_insert to A2 _ _ T6 _ with FE = m\ j (subty (arrow A B) m) :: FE m.
+		search.
+	% ^a <: ^b
+	S: case J. W: case W. W: apply wfj_solveEx to S S1 _.
+		T: apply IH to _ J1.
+		T: apply tex_add_subty_AB to T _ with A = n1, B = n1.
+		apply tex_prune_ex to _ _ T2.
+		A: case S1 (keep). A: apply append_total_E to A1 with B = E2.
+		A: apply append_subst to A1 with A = n1. A: apply append_subst to A2 with A = n1.
+		T: apply tex_extract to _ _ _ T2 with F = x\ j (subty x x) :: AB x x.
+		S: apply split3_cons to S with X = j (subty n1 n2).
+		T: apply tex_insert_two to S2 _ _ T3 T4 T4
+			with F = m1\ m2\ j (subty m1 m2) :: C m2 m1.
+		M: apply mono_solveExTy to S _ T4.
+		T: apply tex_uncons to T5. M: apply tex_mono to T6 _ _.
+		W: apply mono_wft to M1. apply tex_wft_L to _ T3. apply tex_wft_R to _ T3.
+		S: apply sub_refl to W5. search.
+	% ^b <: ^a
+	S: case J. W: case W. W: apply wfj_solveEx to S S1 _.
+		T: apply IH to _ J1.
+		T: apply tex_add_subty_AB to T _ with A = n1, B = n1.
+		apply tex_prune_ex to _ _ T2.
+		A: case S1 (keep). A: apply append_total_E to A1 with B = E2.
+		A: apply append_subst to A1 with A = n1. A: apply append_subst to A2 with A = n1.
+		T: apply tex_extract to _ _ _ T2 with F = x\ j (subty x x) :: AB x x.
+		S: apply split3_cons to S with X = j (subty n2 n1).
+		T: apply tex_insert_two to S2 _ _ T3 T4 T4
+			with F = m1\ m2\ j (subty m2 m1) :: C m2 m1.
+		M: apply mono_solveExTy to S _ T4.
+		T: apply tex_uncons to T5. M: apply tex_mono to T6 _ _.
+		W: apply mono_wft to M1. apply tex_wft_L to _ T3. apply tex_wft_R to _ T3.
+		S: apply sub_refl to W5. search.
+	% a <: ^b
+	S: case J. A: apply split3_alt_inv to S. A: apply split3_alt_inv to S1.
+		A: case A. apply append_det to *A2 A. apply append_prune_AB to A.
+		M: apply append_mem to A _.
+		W: case W. W: apply wfj_remove_exvar_nabla to A1 A3 _ _ with A = n1.
+		T: apply IH to _ J1.
+		A: apply append_subst to A3 with A = n1. M: apply append_mem to A2 _.
+		T: apply tex_add_subty_wft to T _ _ _ with a = n1, b = n1.
+		T: apply tex_insert to _ _ _ T2 _ with
+			FxE = x\ j (subty n1 x) :: E1 n1 x, FE = x\ j (subty n1 x) :: F n1 x.
+		M: apply tex_mem_tyvar to T _ _. search.
+	% ^b <: a
+	S: case J. A: apply split3_alt_inv to S. A: apply split3_alt_inv to S1.
+		A: case A. apply append_det to *A2 A. apply append_prune_AB to A.
+		M: apply append_mem to A _.
+		W: case W. W: apply wfj_remove_exvar_nabla to A1 A3 _ _ with A = n1.
+		T: apply IH to _ J1.
+		A: apply append_subst to A3 with A = n1. M: apply append_mem to A2 _.
+		T: apply tex_add_subty_wft to T _ _ _ with a = n1, b = n1.
+		T: apply tex_insert to _ _ _ T2 _ with
+			FxE = x\ j (subty x n1) :: E1 n1 x, FE = x\ j (subty x n1) :: F n1 x.
+		M: apply tex_mem_tyvar to T _ _. search.
+	% ^a <: 1
+	A: case J. W: case W.
+		W: apply wfj_remove_exvar_nabla to A A1 _ _.
+		T: apply IH to _ J1.
+		T: apply tex_add_subty_wft to T _ _ _.
+		T: apply tex_insert to _ _ _ T2 _ with
+			FE = x\ j (subty x i) :: F x, FxE = x\ j (subty x i) :: E1 x.
+		search.
+	% 1 <: ^a
+	A: case J. W: case W.
+		W: apply wfj_remove_exvar_nabla to A A1 _ _.
+		T: apply IH to _ J1.
+		T: apply tex_add_subty_wft to T _ _ _.
+		T: apply tex_insert to _ _ _ T2 _ with
+			FE = x\ j (subty i x) :: F x, FxE = x\ j (subty i x) :: E1 x.
+		search.
+	% () <= i
+	% W: case W. T: apply IH to _ J.
+	% 	T: apply tex_add_check_unit_i to T W2. search.
+	% e <= \forall x. A
+	W: case W. W: case W1. W: apply wftm_weaken_ty to W.
+		T: apply IH to _ J. T: apply tex_chk_allR_shape to T.
+		D: case T1. D: case D1. search.
+	% \lambda x. X <= A -> B
+	W: case W. W: apply wftm_anyA to W with A = A. W: case W1.
+		W: apply wfta_weaken_of to W4 with A = A.
+		T: apply IH to _ J. T: apply tex_chk_lam_shape to *T _ _.
+		D: case T1. D: case D1. search.
+	% \lambda x. X <= ^a
+	A: case J.
+		W: case W. W: apply wfj_insert_exvar to A _ _.
+		W: apply wftm_insert_exvar to A _ _ W. W: apply wftm_anyA to W4 with A = n1.
+		M: apply append_mem to A1 _. M: apply append_mem to A1 _ with X = exvar n2.
+		T: apply IH to _ J1.
+		T: apply tex_chk_lam_shape to T _ _.
+		T: apply tex_extract_two to A1 _ T3 with F = E2.
+		D: case T1. D: case D1.
+		A: assert append (j (check (lam (X n1)) n1) :: E2 n1) E3
+			(j (check (lam (X n1)) n1) :: FE n1).
+		A: assert append (j (check (lam (X n1)) n1) :: E2 n1) (exvar n1 :: E3)
+			(j (check (lam (X n1)) n1) :: E1 n1).
+		T: apply tex_insert to A3 A2 _ T7 _. search.
+	% e <= B    by    e => A  A <: B
+	W: case W. W: apply wfta_weaken_ty to W1.
+		T: apply IH to _ J2.
+		T: apply tex_infSub_sync to _ T _ _.
+		D: case T1. D: case D1. search.
+	% x => A    (x:A) \in E
+	W: case W (keep). W: apply wfj_weaken1 to W.
+		W: apply wfj_of_wfta to _ J. WJ: apply wfj_subst_tyvar to _ W4.
+		T: apply IH to _ J1.
+		T: apply tex_infX_sync to _ J T with W = W.
+		M: case T3. search.
+	% (e:A) => A
+	W: apply wfj_weaken1 to W. W: case W. W: case W.
+		W: apply wft_wfta to W3. W: apply wfta_nil to W4 W1.
+		W: apply wfj_subst_tyvar to W2 _.
+		W: apply wfta_weaken_j to W5 with J = W A.
+		W: apply wftm_weaken_j to W with J = W A.
+		T: apply IH to _ J.
+		T: apply tex_infAnno_sync to _ T _ with W = W.
+		D: case T1. D: apply chk_remove_j to D. search.
+	% () => 1
+	W: case W. W: apply wfj_subst_tyvar to W1 _.
+		T: apply IH to _ J. W: apply wfj_weaken1 to W2.
+		T: apply tex_infUnit_sync to _ T _ with W = W.
+		search.
+	% \x. e => ^a -> ^b
+	W: apply wfj_weaken1 to W. W: case W.
+		W: apply wftm_weaken_ex to W. W: apply wftm_weaken_ex to *W3.
+		W: apply wfj_insert_exvar_raw to _ _ W2 with F = j (W n1) :: tyvar n1 :: nil.
+		W: apply wfj_insert_exvar_raw to _ _ W4 with
+			F = j (W n1) :: tyvar n1 :: exvar n2 :: nil.
+		W: apply wfj_subst_tyvar to W5 _ with m = arrow n3 n2.
+		W: apply wftm_weaken_j to W3 with J = W (arrow n1 n2).
+		W: apply wftm_anyA to *W7 with A = n1.
+		W: assert 10 wfj (j (check (X n3) n2) :: of n3 n1 :: j (W (arrow n1 n2)) ::
+				exvar n2 :: exvar n1 :: E1).
+		T: apply IH to _ J.
+		apply tex_prune_ex to _ _ T. apply tex_prune_ex to _ _ T with x = n3.
+		T: apply tex_chkLam_sync_xy to _ T with W = W.
+		% Decl. rules
+		D: case T1. D: case D1.
+		W: apply tex_wfj to T2 _. W: case W9. W: apply mono_wfta to T3.
+		W: apply wfj_subst_tyvar to W10 W11.
+		M: apply mono_weaken_f to _ _ with EF = j (w (arrow a b)) :: Jr2.
+		D: assert inf (j (w (arrow a b)) :: Jr2) (lam x1) (arrow a b).
+		D: apply inf_remove_j to D2. search.
+	% X Y => C (X => A -> C, A -> C ` Y => C)
+	W: apply wfj_weaken1 to W. W: case W. W: case W.
+		W: apply wftm_weaken_ty to W3.
+		W: apply wfj_insert_tyvar_raw to _ _ W2 with
+			F = j (W n1) :: tyvar n1 :: nil.
+		T: apply IH to _ J.
+		T: apply tex_infApp_sync to _ T.
+		D: case T1. D: case D1. search.
+	% \forall a. A ` A =>> ?
+	W: apply wfj_weaken1 to W. W: case W.
+		W: apply wfta_open_exvar to _ W. W: apply wftm_weaken_ex to W2.
+		W: apply wfj_insert_exvar_raw to _ _ W3 with F = j (W n1) :: tyvar n1 :: nil.
+		T: apply IH to _ J.
+		apply tex_prune_ex to _ _ T.
+		T: apply tex_extract to _ _ _ T with F = x\ j (inferAppC (A x) X W) :: nil.
+		T: apply tex_infAppForall_sync to _ T2 _ with A = A.
+		D: case T1. search.
+	% A -> C ` X =>> C
+	W: apply wfj_weaken1 to W. W: case W. W: case W.
+		W: apply wfj_subst_tyvar to W3 W4.
+		W: apply wftm_weaken_j to W2 with J = W C.
+		W: apply wfta_weaken_j to W with J = W C.
+		T: apply IH to _ J.
+		T: apply tex_infAppArrow_sync to _ T _ with W = W.
+		D: case T1. D: apply chk_remove_j to D. search.
+	% ^a ` X =>> C
+	A: case J.
+		A: assert append (j (inferAppC n1 (X n1) (W n1)) :: E2 n1) (exvar n1 :: E3)
+			(j (inferAppC n1 (X n1) (W n1)) :: E1 n1).
+		W: apply wfj_insert_exvar to A2 _ W.
+		T: apply IH to _ J1.
+		permute (n2 n1 n3) A1.
+		T: apply tex_extract_two to A1 _ T with F = E2.
+		A: assert append (j (inferAppC n1 (X n1) (W n1)) :: E2 n1) E3
+			(j (inferAppC n1 (X n1) (W n1)) :: FE n1).
+		T: apply tex_insert to _ A3 _ T5 _.
+		search.
+	% equality case
+	case W.
+
+Theorem tex_J_of_env : forall E ji jo Jo A, nabla x,
+	tex (j (ji x) :: E) (j (jo x) :: Jo) -> env E ->
+		tex (j (ji x) :: of x A :: E) (j (jo x) :: of x A :: Jo).
+induction on 1. intros. case H1.
+	unfold. apply exFree_weaken to H3. backchain exFree_j. backchain exFree_of.
+	case H3. apply append_mem to H8 _. apply env_no_ex to H2 _.
+
+Theorem env_tex : forall E J, env E -> tex (j J :: E) (j J :: E).
+induction on 1. intros. case H1.
+	unfold. backchain exFree_j. backchain exFree_nil.
+	apply IH to H2 with J = J n1. backchain tex_J_ty. backchain env_wfj.
+	apply IH to H2 with J = J n1. backchain tex_J_of_env.
+
+Theorem env_tex_inv : forall E J Eo Jo,
+	env E -> tex (j J :: E) (j Jo :: Eo) -> J = Jo /\ E = Eo.
+intros. case H2. search.
+	case H3. apply append_mem to H8 _. apply env_no_ex to H1 _.
+
+Theorem tex_wft_L_E : forall E A B Jo Ao Bo,
+	wft E A -> tex (j (subty A B) :: E) (j (subty Ao Bo) :: Jo) -> wfj E -> A = Ao.
+induction on 2. intros. case H2. search.
+	case H4. case H5.
+		M: apply append_mem to H9 _. apply wft_no_ex to H1 _ _.
+		W: apply mono_wft to H8.
+		W: apply wft_strenthen_exvar to H10 H9 _ W.
+		W: apply wfj_remove_exvar_mono to H9 H10 _ _.
+		Eq: apply IH to _ H6 _. search.
+
+Theorem tex_wft_R_E : forall E A B Jo Ao Bo,
+	wft E B -> tex (j (subty A B) :: E) (j (subty Ao Bo) :: Jo) -> wfj E -> B = Bo.
+induction on 2. intros. case H2. search.
+	case H4. case H5.
+		M: apply append_mem to H9 _. apply wft_no_ex to H1 _ _.
+		W: apply mono_wft to H8.
+		W: apply wft_strenthen_exvar to H10 H9 _ W.
+		W: apply wfj_remove_exvar_mono to H9 H10 _ _.
+		Eq: apply IH to _ H6 _. search.
+
+
+%%%%%%%%%%%%%%%%%%%%%% Corollaries of soundness %%%%%%%%%%%%%%%%%%%%%%
+Theorem soundness_sub : forall E A B,
+	wfj (j (subty A B) :: E) -> judge (j (subty A B) :: E) ->
+	exists Jo Ao Bo, tex (j (subty A B) :: E) (j (subty Ao Bo) :: Jo) /\ sub Jo Ao Bo.
+intros.
+	D: apply soundness to _ H2.
+	W: case H1.
+	W: apply tex_wfta_sub to D _ _ _.
+	D: case D1.
+	T: apply tex_uncons to D. search.
+
+
+Theorem tex_match_subty : forall E jo Jo A B,
+	tex (j (subty A B) :: E) (jo :: Jo) -> exists a1 b1, jo = j (subty a1 b1).
+induction on 1. intros. case H1. search. case H2. case H3. apply IH to H4. search.
+
+Theorem tex_match_check : forall E jo Jo X A,
+	tex (j (check X A) :: E) (jo :: Jo) -> wfj (j (check X A) :: E) -> exists a, jo = j (check X a).
+induction on 1. intros. case H1. search.
+	case H3. case H4.
+		W: case H2. apply wftm_prune_var to W _.
+		W: apply wfj_remove_exvar_mono to H8 H9 _ _.
+		W: apply wfta_strenthen_exvar_mono to H9 H8 _ _ _.
+		M: apply mono_wfta to H7.
+		W: apply wftm_strenthen_exvar to H9 H8 _ M _.
+		apply IH to H5 _. search.
+
+Theorem tex_match_inferC : forall E jo Jo X J,
+	tex (j (inferC X J) :: E) (jo :: Jo) -> wfj (j (inferC X J) :: E) ->
+	exists jn, jo = j (inferC X jn).
+induction on 1. intros. case H1. search.
+	case H3. case H4.
+		W: case H2 (keep). W: apply wfj_weaken2 to W1. apply wftm_prune_var to W _.
+		W: apply wfj_remove_exvar_mono to _ _ H2 _ with F = x\ j (inferC Xr (J x)) :: L1 x.
+		apply IH to H5 _. search.
+
+Theorem tex_match_inferAppC : forall E jo Jo A X J,
+	tex (j (inferAppC A X J) :: E) (jo :: Jo) -> wfj (j (inferAppC A X J) :: E) ->
+	exists a jn, jo = j (inferAppC a X jn).
+induction on 1. intros. case H1. search.
+	case H3. case H4.
+		W: case H2 (keep). W: apply wfj_weaken2 to W2. apply wftm_prune_var to W1 _.
+		W: apply wfj_remove_exvar_mono to _ _ H2 _ with F = x\ j (inferAppC (A x) Xr (J x)) :: L1 x.
+		apply IH to H5 _. search.
+
+Theorem soundness_chk : forall E X A,
+	wfj (j (check X A) :: E) -> judge (j (check X A) :: E) ->
+	exists Jo X Ao, tex (j (check X A) :: E) (j (check X Ao) :: Jo) /\ chk Jo X Ao.
+intros.
+	D: apply soundness to _ H2.
+	W: case H1.
+	apply tex_uncons_shape to D. apply tex_match_check to D _.
+	D: case D1. search.
+
+Theorem soundness_inf : forall E X W,
+	wfj (j (inferC X W) :: E) -> judge (j (inferC X W) :: E) ->
+	exists Jo Wo A, tex (j (inferC X W) :: E) (j (inferC X Wo) :: Jo) /\ inf Jo X A.
+intros.
+	D: apply soundness to _ H2.
+	W: case H1.
+	apply tex_uncons_shape to D. apply tex_match_inferC to D _.
+	D: case D1. search.
+
+Theorem soundness_infApp : forall E A X W,
+	wfj (j (inferAppC A X W) :: E) -> judge (j (inferAppC A X W) :: E) ->
+	exists Jo Ao Wo C, tex (j (inferAppC A X W) :: E) (j (inferAppC Ao X Wo) :: Jo) /\
+		infApp Jo Ao X C.
+intros.
+	D: apply soundness to _ H2.
+	W: case H1.
+	apply tex_uncons_shape to D. apply tex_match_inferAppC to D _.
+	D: case D1. search.
+

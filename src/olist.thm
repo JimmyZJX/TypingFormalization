@@ -1,0 +1,187 @@
+% Definitions and Theorems about olist
+
+Define append : olist -> olist -> olist -> prop by
+	append nil L L ;
+	append (N :: L1) L2 (N :: L3) := append L1 L2 L3.
+Define reverse : olist -> olist -> prop by
+	reverse nil nil ;
+	reverse (N :: L1) L2 :=
+		exists L3 , reverse L1 L3
+		/\ append L3 (N :: nil) L2.
+
+Theorem append_det : forall I1 I2 O1 O2 ,
+	append I1 I2 O1 -> append I1 I2 O2 -> O1 = O2.
+induction on 1. intros. case H1.
+case H2. search.
+case H2. apply IH to H3 H4. search.
+
+Theorem append_assoc : forall A B C AB ABC ,
+	append A B AB -> append AB C ABC ->
+	exists BC , append B C BC /\ append A BC ABC.
+induction on 1. intros. case H1.
+search.
+case H2. apply IH to H3 H4. search.
+
+Theorem append_assoc_inv : forall A B C BC ABC ,
+	append B C BC -> append A BC ABC ->
+	exists AB , append A B AB /\ append AB C ABC.
+induction on 2. intros. case H2.
+	exists B. search.
+	apply IH to H1 H3. search.
+
+Theorem append_mem : forall AB A B X,
+	append A B AB -> (member X A \/ member X B) -> member X AB.
+induction on 1. intros. case H2.
+	case H1. case H3. case H3. search. apply IH to H4 _. search.
+	case H1. search. apply IH to H4 _. search.
+
+Theorem append_mem_inv : forall AB A B X,
+	append A B AB -> member X AB -> member X A \/ member X B.
+induction on 1. intros. case H1.
+	search.
+	case H2. search. apply IH to H3 _. case H5. search. search.
+
+Define is_olist : olist -> prop by
+	is_olist nil;
+	is_olist (N :: L) := is_olist L.
+
+Theorem append_nil_E : forall E F EF, append E F EF -> append E nil E.
+induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem append_nil : forall E, is_olist E -> append E nil E.
+induction on 1. intros. case H1. search. apply IH to H2. search.
+
+Theorem append_nil_inv : forall E, append nil E nil -> E = nil.
+induction on 1. intros. case H1. search.
+Theorem append_equal : forall E F, append E nil F -> E = F.
+induction on 1. intros. case H1. search. apply IH to H2. search.
+
+Theorem append_total_E : forall A B D AD,
+	append A D AD -> exists C, append A B C.
+induction on 1. intros. case H1.
+search.
+apply IH to H2 with B = B. search.
+Theorem append_total : forall A B,
+	is_olist A -> exists C, append A B C.
+induction on 1. intros. case H1.
+search.
+apply IH to H2 with B = B. search.
+
+Define split3 : olist -> olist -> olist -> olist -> prop by
+	split3 A B C ABC := exists AB, append A B AB /\ append AB C ABC.
+
+Theorem single_split3 : forall AXB X,
+	member X AXB -> exists A B, split3 A (X :: nil) B AXB.
+induction on 1. intros. case H1.
+	exists nil. exists L. search.
+	apply IH to H2. exists (B :: A). exists B1. unfold. case H3. exists (B :: AB). search.
+
+Theorem split3_single: forall A B AXB X,
+	split3 A (X :: nil) B AXB -> member X AXB.
+intros. case H1. assert (member X AB). apply append_mem to H2 _. search.
+	apply append_mem to H3 _. search.
+
+Theorem split3_cons : forall A B C ABC X,
+	split3 A B C ABC -> split3 (X :: A) B C (X :: ABC).
+intros. case H1. unfold. exists (X :: AB). search.
+
+Theorem split3_uncons : forall A B C ABC X,
+	split3 (X :: A) B C (X :: ABC) -> split3 A B C ABC.
+intros. case H1. unfold. case H2. exists L3. split. search. case H3. search.
+
+Theorem split3_alt : forall ABC A B C BC,
+	append B C BC -> append A BC ABC -> split3 A B C ABC.
+induction on 2. intros. case H2.
+	search. apply IH to H1 H3. backchain split3_cons.
+Theorem split3_alt_inv : forall ABC A B C,
+	split3 A B C ABC -> exists BC, append B C BC /\ append A BC ABC.
+intros. case H1. apply append_assoc to H2 H3. search.
+
+Theorem single_append : forall AXB X, member X AXB -> exists A B, append A (X :: B) AXB.
+intros. apply single_split3 to H1. apply split3_alt_inv to H2. case H3. case H5. search.
+Theorem append_single: forall A B AXB X, append A (X :: B) AXB -> member X AXB.
+intros. apply split3_alt to _ H1 with B = X :: nil. backchain split3_single.
+
+Theorem split3_ex_cons : forall A B C ABC X,
+	split3 A B C (X :: ABC) -> A = nil \/ exists A1, A = X :: A1 /\ split3 A1 B C ABC.
+intros. apply split3_alt_inv to H1. case H3.
+	search.
+	right. apply split3_uncons to H1. search.
+
+Theorem split3_mem : forall ABC A B C X,
+	split3 A B C ABC -> member X A \/ member X B \/ member X C -> member X ABC.
+intros. case H1. case H2.
+	apply append_mem to H3 _. backchain append_mem.
+	apply append_mem to H3 _. backchain append_mem.
+	apply append_mem to H4 _. backchain append_mem.
+
+Theorem split3_mem_inv : forall ABC A B C X,
+	split3 A B C ABC -> member X ABC -> member X A \/ member X B \/ member X C.
+intros. case H1. apply append_mem_inv to _ H2. case H5.
+	apply append_mem_inv to _ H6. search. search.
+
+Define split5 : olist -> olist -> olist -> olist -> olist -> olist -> prop by
+	split5 A B C D E ABCDE := exists ABC, split3 A B C ABC /\ split3 ABC D E ABCDE.
+
+Theorem single_split5 : forall ABC X Y,
+	member X ABC -> member Y ABC -> (X = Y -> false) ->
+		exists A B C, split5 A (X :: nil) B (Y :: nil) C ABC \/
+		              split5 A (Y :: nil) B (X :: nil) C ABC.
+induction on 1. intros. case H1.
+	exists nil. apply single_split3 to _ with X = Y, AXB = L.
+		case H2. assert X = X. apply H3 to H4. search.
+		exists A. exists B. left. unfold. exists (X :: A). split. search.
+			backchain split3_cons.
+	case H2.
+		apply single_split3 to H4. exists nil. exists A. exists B1. right.
+			unfold. exists (B :: A). split. search. backchain split3_cons.
+		apply IH to H4 H5 _. case H6.
+			exists (B :: A), B1, C. left. unfold. case H7. exists (B :: ABC1). split.
+				backchain split3_cons. backchain split3_cons.
+			exists (B :: A), B1, C. right. unfold. case H7. exists (B :: ABC1). split.
+				backchain split3_cons. backchain split3_cons.
+
+Theorem two_split3 : forall ABC X Y, member X ABC -> member Y ABC -> (X = Y -> false) ->
+	exists A B C, split3 A (X :: B) (Y :: C) ABC \/ split3 A (Y :: B) (X :: C) ABC.
+intros. apply single_split5 to H1 H2 H3. case H4.
+	exists A, B, C. left. case H5. apply split3_alt_inv to H6. case H8. case H10.
+		apply split3_alt_inv to H7. case H11. case H13. search.
+	exists A, B, C. right. case H5. apply split3_alt_inv to H6. case H8. case H10.
+		apply split3_alt_inv to H7. case H11. case H13. search.
+
+Theorem mem_weaken : forall E F G EG EFG X, append E G EG -> split3 E F G EFG ->
+	member X EG -> member X EFG.
+intros. apply append_mem_inv to _ H3. backchain split3_mem. case H4. search. search.
+
+Theorem split3_XY_weaken : forall E F G EG EFG E1 E2 E3 X Y, append E G EG ->
+	split3 E F G EFG -> split3 E1 (X :: E2) (Y :: E3) EG -> member X EFG /\ member Y EFG.
+intros. split.
+	backchain mem_weaken. apply split3_alt_inv to H3. case H4.
+		clear H1. backchain append_mem.
+	backchain mem_weaken. case H3. clear H1. backchain append_mem.
+
+Theorem insert_mid_append : forall E F EF X A B EXF,
+	append E F EF -> append E (X :: F) EXF -> append A B EF ->
+		(exists A1 A2, append A1 A2 A /\ split3 A1 (X :: A2) B EXF) \/
+		(exists B1 B2, append B1 B2 B /\ split3 A B1 (X :: B2) EXF).
+induction on 1. intros. case H1.
+	case H2. left. search.
+	case H2. case H3. apply IH to H4 _ _. search.
+		apply IH to H4 H5 H6. case H7.
+			left. exists N :: A1, A2. split. search. backchain split3_cons.
+			right. exists B1, B2. split. search. backchain split3_cons.
+
+Theorem insert_mid_split3 : forall E F EF X A B C EXF,
+	append E F EF -> append E (X :: F) EXF -> split3 A B C EF ->
+		(exists A1 A2 AX, append A1 A2 A /\ append A1 (X :: A2) AX /\
+			split3 AX B C EXF) \/ 
+		(exists B1 B2 BX, append B1 B2 B /\ append B1 (X :: B2) BX /\
+			split3 A BX C EXF) \/ 
+		(exists C1 C2 CX, append C1 C2 C /\ append C1 (X :: C2) CX /\
+			split3 A B CX EXF).
+intros. case H3. apply insert_mid_append to H1 H2 H5. case H6.
+	case H8. apply insert_mid_append to H7 H9 H4. case H11.
+		left. left. case H13. search.
+		left. right. apply split3_alt_inv to H13. search.
+	apply split3_alt_inv to H8. search.
+
+

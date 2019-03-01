@@ -1,0 +1,944 @@
+Import "trans".
+
+Theorem mono_strenthen_tyvar : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	mono (FxE x) T -> mono E A -> mono (FE A) T.
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+
+Theorem wft_strenthen_tyvar_fresh : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	wft (FxE x) T -> wft E A -> wft (FE A) T.
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	apply IH to _ _ H5 _. search.
+
+Theorem wft_strenthen_tyvar_notfresh : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	wft (FxE x) (T x) -> wft E A -> wft (FE A) (T A).
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	W: apply wft_wfta to H4.
+		A: apply append_subst to H1 with A = A.
+		W: apply wft_weaken_f to A _. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	apply IH to _ _ H5 _. search.
+
+Theorem mono_strenthen_tyvar_notfresh : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	mono (FxE x) (T x) -> mono E A -> mono (FE A) (T A).
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	W: apply mono_wfta to H4.
+		A: apply append_subst to H1 with A = A.
+		W: apply mono_weaken_f to A _. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+
+Theorem sub_substM : forall F E FxE FE A B m, nabla x,
+	append (F x) (tyvar x :: E) (FxE x) -> append (F x) E (FE x) ->
+	mono E m -> sub (FxE x) (A x) (B x) -> sub (FE m) (A m) (B m).
+induction on 4. intros. S: case H4.
+	search.
+	M: apply append_mem_inv to H1 _. M: case M.
+		M: apply append_mem to H2 _.
+			M: apply mem_tyvar_subst to M1 with A = m. search.
+		M: case M. M: apply append_mem to H2 _.
+			M: apply mem_tyvar_subst to M1 with A = m. search.
+	A: apply append_subst to H2 with A = m.
+		backchain sub_refl. backchain mono_wft.
+		backchain mono_weaken_f.
+	S: apply IH to H1 H2 _ S.
+		S: apply IH to H1 H2 _ S1. search.
+	S: apply IH to H1 H2 _ S.
+		A: apply append_assoc_inv to _ H1 with C = E.
+		M: apply mono_weaken_f to A1 H3.
+		M: apply mono_subst to S1 M.
+		M: apply mono_strenthen_tyvar to H2 H1 M1 _. search.
+	S: apply IH to _ _ _ S with F = x\ tyvar n2 :: F x. search.
+
+Theorem wft_open_free : forall E (A : ty -> ty -> ty) m Ar, nabla x,
+	wft (E x) (A x (m x)) -> mono (E x) (m x) ->
+		A x (m x) = Ar -> exists A', A = x\ m\ A' m.
+induction on 1. intros. Aux: assert forall (A : ty) B, A = B -> B = A. case H1.
+	case H4. search. search.
+	case H4. search. search.
+	case H4. case H3. search.
+	case H4. Eq: case H3.
+		Eq: apply Aux to Eq. Eq: apply Aux to Eq1.
+			apply IH to H5 _ _ with A = A2.
+			apply IH to H6 _ _ with A = A3.
+			search.
+		search.
+	case H4. Eq: case H3.
+		Eq: apply Aux to Eq.
+			Aux: assert forall (A : ty -> ty) B, nabla x, A = B -> A x = B x.
+			Eq: apply Aux1 to Eq1.
+			apply IH to H5 _ Eq2 with A = x\ m\ A2 x m n2, x = n1.
+				backchain mono_weaken_ty. search.
+		search.
+
+Theorem sub_mono_free :
+	(forall E m A, nabla (x : ty),
+		sub (E x) m (A x) -> mono (E x) m -> exists Ar, A = x\ Ar) /\
+	(forall E m A, nabla (x : ty),
+		sub (E x) (A x) m -> mono (E x) m -> exists Ar, A = x\ Ar).
+induction on 1 1. split.
+	intros. S: case H1.
+		search. search.
+		M: case H2. apply IH1 to S _. apply IH to S1 _. search.
+		case H2.
+		apply IH to S _. backchain mono_weaken_ty. search.
+	intros. S: case H1 (keep).
+		search. search.
+		M: case H2. apply IH to S _. apply IH1 to S1 _. search.
+		apply IH1 to S _.
+			W: apply sub_wft to S.
+			Aux: assert forall (A : ty -> ty) B, x\ A x = x\ B x -> nabla x, A x = B x.
+			Eq: apply Aux to H3.
+			apply wft_open_free to W _ _ with A = A1, Ar = Ar. search.
+		case H2.
+
+Theorem typeSubst :
+	(forall F E FE FxE m X C, nabla x,
+		append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+		mono E m -> chk (FxE x) (X x) (C x) -> chk (FE m) (X m) (C m)) /\
+	(forall F E FE FxE m X C, nabla x,
+		append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+		mono E m -> inf (FxE x) (X x) (C x) -> inf (FE m) (X m) (C m)) /\
+	(forall F E FE FxE m X B C, nabla x,
+		append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+		mono E m -> infApp (FxE x) (B x) (X x) (C x) -> infApp (FE m) (B m) (X m) (C m)).
+induction on 4 4 4. split.
+	intros. D: case H4. search.
+		A: assert append (tyvar n2 :: F n1) E (tyvar n2 :: FE n1).
+			D: apply IH to A _ _ D with x = n1. search.
+		A: assert append (of n2 (A n1) :: F n1) E (of n2 (A n1) :: FE n1).
+			W: apply wft_wfta to D.
+			D: apply IH to A _ _ D1 with x = n1.
+			W: apply mono_wft to H3.
+			W: apply wft_strenthen_tyvar_notfresh to H1 H2 D _. search.
+		D: apply IH1 to _ _ _ D.
+			S: apply sub_substM to _ _ _ D1. search.
+	intros. D: case H4.
+		apply mono_prune_tm to H3.
+			M: apply member_of_subst to D with A = x\ y\ m x.
+			A: apply append_subst to H1 with A = m1.
+			M: assert member (of n2 (A1 m1)) (FE n2 m1).
+				A: apply append_subst to H2 with A = m1.
+				M: apply append_mem_inv to A1 _. M: case M1.
+				backchain append_mem. M: case M1. backchain append_mem.
+			search.
+		D: apply IH to _ _ _ D. search.
+		search.
+		W: apply mono_wfta to D. W: case W.
+			D: apply IH to _ _ _ D1.
+			M: apply mono_strenthen_tyvar_notfresh to _ _ D H3. search.
+		D: apply IH1 to _ _ _ D.
+			D: apply IH2 to _ _ _ D1. search.
+	intros. D: case H4.
+		D: apply IH2 to _ _ _ D.
+			M: apply mono_strenthen_tyvar_notfresh to _ _ D1 H3. search.
+		D: apply IH to _ _ _ D.
+			W: apply mono_wft to H3.
+			W: apply wft_strenthen_tyvar_notfresh to _ _ D1 W. search.
+
+Split typeSubst as typeSubst_chk, typeSubst_inf, typeSubst_infApp.
+
+
+% ex_free + wfj -> wfta -> wft
+Define esub : olist -> olist -> prop by
+	esub nil nil;
+	esub (j J :: E) (j J :: F) := esub E F;
+	nabla x, esub (tyvar x :: E) (tyvar x :: F) := esub E F;
+	nabla t, esub (of t A0 :: E) (of t A :: F) := sub F A0 A /\ esub E F.
+
+Theorem wfj_exFree_wfta_wft : forall E A, wfj E -> exFree E -> wfta E A -> wft E A.
+induction on 3. intros. case H3.
+	search. search.
+	apply exFree_false to _ H2.
+	apply IH to _ _ H4. apply IH to _ _ H5. search.
+	apply IH to _ _ H4. backchain exFree_tyvar. search.
+
+Theorem esub_eq : forall E, wfj E -> exFree E -> esub E E.
+induction on 1. intros. W: case H1. search.
+	F: apply exFree_weaken to H2. J: apply IH to W _. search.
+	apply exFree_false to _ H2.
+	F: apply exFree_weaken to H2. W: apply wfj_exFree_wfta_wft to _ _ W1.
+		D: apply sub_refl to _. J: apply IH to W _. search.
+	F: apply exFree_weaken to H2. J: apply IH to W2 _. search.
+	F: apply exFree_weaken to H2. J: apply IH to W2 _. search.
+	F: apply exFree_weaken to H2. J: apply IH to W1 _.
+		backchain exFree_j. backchain exFree_tyvar. J: case J. J: case J. search.
+	F: apply exFree_weaken to H2. J: apply IH to W2 _.
+		backchain exFree_j. backchain exFree_tyvar. J: case J. J: case J. search.
+
+Theorem esub_tyvar : forall E F, nabla x,
+	esub (E x) (F x) -> member (tyvar x) (E x) -> member (tyvar x) (F x).
+induction on 1. intros. case H1. search.
+	case H2. apply IH to H3 _. search.
+	case H2. apply IH to H3 _. search.
+	search.
+	case H2. apply IH to H4 _. search.
+
+Theorem esub_mono : forall E F m, esub E F -> mono E m -> mono F m.
+induction on 2. intros. case H2. search.
+	apply esub_tyvar to H1 _. search.
+	apply IH to _ H3. apply IH to _ H4. search.
+
+Theorem esub_wft : forall E F m, esub E F -> wft E m -> wft F m.
+induction on 2. intros. case H2. search.
+	apply esub_tyvar to H1 _. search.
+	apply IH to _ H3. apply IH to _ H4. search.
+	apply IH to _ H3. search.
+
+Theorem esub_sub : forall E F A B, esub E F -> sub E A B -> sub F A B.
+induction on 2. intros. case H2. search.
+	apply esub_tyvar to H1 _. search.
+	apply IH to _ H3. apply IH to _ H4. search.
+	apply IH to _ H3. apply esub_mono to H1 _. search.
+	apply IH to _ H3. search.
+
+Theorem esub_tyvar_inv : forall E F, nabla x,
+	esub (F x) (E x) -> member (tyvar x) (E x) -> member (tyvar x) (F x).
+induction on 1. intros. case H1. search.
+	case H2. apply IH to H3 _. search.
+	case H2. apply IH to H3 _. search.
+	search.
+	case H2. apply IH to H4 _. search.
+
+Theorem esub_mono_inv : forall E F m, esub F E -> mono E m -> mono F m.
+induction on 2. intros. case H2. search.
+	apply esub_tyvar_inv to H1 _. search.
+	apply IH to _ H3. apply IH to _ H4. search.
+
+Theorem esub_wft_inv : forall E F m, esub F E -> wft E m -> wft F m.
+induction on 2. intros. case H2. search.
+	apply esub_tyvar_inv to H1 _. search.
+	apply IH to _ H3. apply IH to _ H4. search.
+	apply IH to _ H3. search.
+
+Theorem esub_sub_inv : forall E F A B, esub F E -> sub E A B -> sub F A B.
+induction on 2. intros. case H2. search.
+	apply esub_tyvar_inv to H1 _. search.
+	apply IH to _ H3. apply IH to _ H4. search.
+	apply IH to _ H3. apply esub_mono_inv to H1 _. search.
+	apply IH to _ H3. search.
+
+Theorem esub_of : forall E F A, nabla t,
+	esub (E t) (F t) -> member (of t A) (E t) ->
+	exists A0, nabla t, member (of t A0) (F t) /\ sub (F t) A A0.
+induction on 1. intros. case H1.
+	case H2.
+	case H2. apply IH to H3 H4.
+		apply env_member_prune to H4. apply env_member_prune to H5.
+		D: apply sub_weaken_f to _ H6 with EF = j (J n1) :: F1 n1. search.
+	case H2. apply IH to H3 H4.
+		apply env_member_prune to H4. apply env_member_prune to H5.
+		D: apply sub_weaken_ty to H6. search.
+	case H2. apply IH to H4 _.
+		apply member_prune_tm to H5. apply member_prune_tm to H6.
+		W: apply sub_wft to H3. W: apply esub_wft_inv to H4 _.
+		D: apply sub_weaken_of to H7 with T = A1 n1. search.
+	case H2.
+		W: apply sub_wft to H3. D: apply sub_weaken_of to H3 with T = A1. search.
+		apply member_prune_tm to H5.
+
+Theorem esub_of_inv : forall E F A, nabla t,
+	esub (F t) (E t) -> member (of t A) (E t) ->
+	exists A0, nabla t, member (of t A0) (F t) /\ sub (F t) A0 A.
+induction on 1. intros. case H1.
+	case H2.
+	case H2. apply IH to H3 H4.
+		apply env_member_prune to H4. apply env_member_prune to H5.
+		D: apply sub_weaken_f to _ H6 with EF = j (J n1) :: E1 n1. search.
+	case H2. apply IH to H3 H4.
+		apply env_member_prune to H4. apply env_member_prune to H5.
+		D: apply sub_weaken_ty to H6. search.
+	case H2. apply IH to H4 _.
+		apply member_prune_tm to H5. apply member_prune_tm to H6.
+		W: apply sub_wft to H3. W: apply esub_wft_inv to H4 _.
+		D: apply sub_weaken_of to H7 with T = A0 n1. search.
+	case H2.
+		W: apply sub_wft to H3. D: apply sub_weaken_of to H3 with T = A1.
+		D: apply esub_sub_inv to _ D. search.
+		apply member_prune_tm to H5.
+
+Define tyExt : olist -> olist -> olist -> olist -> prop by
+	tyExt E E F F;
+	nabla x, tyExt E (tyvar x :: Ex) F (tyvar x :: Fx) := tyExt E Ex F Fx.
+
+Theorem tyExt_esub : forall E F Ex Fx, tyExt E Ex F Fx -> esub E F -> esub Ex Fx.
+induction on 1. intros. case H1. search.
+	apply IH to H3 _. search.
+
+Theorem tyExt_env : forall E F Ex Fx, tyExt E Ex F Fx -> env E -> env F -> env Ex /\ env Fx.
+induction on 1. intros. case H1. search.
+	apply IH to H4 _ _. search.
+
+
+Define tmSize : tm -> nat -> prop by
+	tmSize unit (s z);
+	nabla x, tmSize x (s z);
+	tmSize (lam X) (s N) := nabla x, tmSize (X x) N;
+	tmSize (app X Y) (s K) := exists M N, tmSize X M /\ tmSize Y N /\ add M N K;
+	tmSize (anno X A) (s N) := tmSize X N.
+
+Theorem tmSize_prune : forall X N, nabla (x : ty),
+	tmSize (X x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. search.
+	apply IH to H2. apply IH to H3. apply add_prune_k[ty] to H4. search.
+	apply IH to H2. search.
+
+Theorem tmSize_prune_tm : forall X N, nabla (x : tm),
+	tmSize (X x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search. search. search.
+	apply IH to H2 with x = n1. search.
+	apply IH to H2. apply IH to H3. apply add_prune_k[tm] to H4. search.
+	apply IH to H2. search.
+
+Theorem tmSize_subst : forall X A N, nabla (x : ty), tmSize (X x) N -> tmSize (X A) N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2 with A = A. search.
+	apply tmSize_prune to H2. apply IH to H2 with A = A.
+		apply tmSize_prune to H3. apply IH to H3 with A = A. search.
+	apply IH to H2 with A = A. search.
+
+Theorem tmSize_det : forall X N1 N2, tmSize X N1 -> tmSize X N2 -> N1 = N2.
+induction on 1. intros. case H1.
+	case H2. search. case H2. search.
+	case H2. apply IH to H3 H4. search.
+	case H2. apply IH to H3 H6. apply IH to H4 H7. apply add_det to H5 H8. search.
+	case H2. apply IH to H3 H4. search.
+
+Theorem tmSize_is_nat : forall X N, tmSize X N -> is_nat N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. search.
+	apply IH to H3. apply add_is_nat_k to H5 H4. search.
+	apply IH to H2. search.
+
+Theorem tmSize_total : forall E X, wftm E X -> exists N, tmSize X N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H3. apply tmSize_prune_tm to H4. search.
+	apply IH to H2. apply IH to H3. apply tmSize_is_nat to H4.
+		apply add_total to H6 with n = N1. search.
+	apply IH to H2. search.
+
+Theorem lt_sm : forall m n, lt (s m) n -> exists N, n = s N /\ lt m N.
+induction on 1. intros. case H1. search.
+	apply IH to H2. search.
+
+Theorem tmSize_s : forall X N, tmSize X N -> exists n, N = s n.
+intros. case H1. search. search. search. search. search.
+
+Theorem order_total_wft_thm : forall E A, wft E A -> exists N, order A N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. apply order_is_nat to H4.
+		apply add_total to H6 with n = N1. search.
+	apply IH to H2. apply order_prune to H3. search.
+
+Theorem order_total_wft : forall E A, wft E A -> exists N, order A N /\ is_nat N.
+intros. apply order_total_wft_thm to H1. apply order_is_nat to H2. search.
+
+%%%%%%%%%%%%%%%%%%%% Typing Properties %%%%%%%%%%%%%%%%%%%%
+Theorem chkInfApp_weaken :
+	(forall E F G EG EFG X A, 
+		append E G EG -> split3 E F G EFG -> chk EG X A -> chk EFG X A) /\
+	(forall E F G EG EFG X A,
+		append E G EG -> split3 E F G EFG -> inf EG X A -> inf EFG X A) /\
+	(forall E F G EG EFG X A C,
+		append E G EG -> split3 E F G EFG -> infApp EG A X C -> infApp EFG A X C).
+induction on 3 3 3. split.
+	intros. case H3. search.
+		S: apply split3_cons to H2 with X = tyvar n1.
+			D: apply IH to _ S H4. search.
+		S: apply split3_cons to H2 with X = of n1 A1.
+			W: apply wft_weaken to H1 H2 H4.
+			D: apply IH to _ S H5. search.
+		S: apply IH1 to _ _ H4.
+			D: apply sub_weaken to H1 H2 H5. search.
+	intros. case H3.
+		M: assert member (of n1 A1) (EFG n1).
+			M: apply append_mem_inv to _ H4. M: case M.
+			backchain split3_mem. backchain split3_mem.
+			search.
+		apply IH to _ _ H4. search.
+		search.
+		S: apply split3_cons to H2 with X = of n1 M1.
+			M: apply mono_weaken to H1 H2 _.
+			W: apply mono_wft to M. W: case W.
+			D: apply IH to _ S H5. search.
+		D: apply IH1 to _ _ H4.
+			D: apply IH2 to _ _ H5. search.
+	intros. case H3.
+		M: apply mono_weaken to H1 H2 _.
+			D: apply IH2 to _ _ H4. search.
+		W: apply wft_weaken to H1 H2 H5.
+			D: apply IH to _ _ H4. search.
+
+Theorem chk_weaken_f : forall F E FE X A,
+	chk E X A -> append F E FE -> chk FE X A.
+intros. T: apply chkInfApp_weaken. apply T to _ _ H1. search.
+Theorem chk_weaken_ex : forall E X A, nabla x,
+	chk E X A -> chk (exvar x :: E) X A.
+intros. backchain chk_weaken_f with F = exvar n1 :: nil.
+Theorem chk_weaken_ty : forall E X A, nabla x,
+	chk E X A -> chk (tyvar x :: E) X A.
+intros. backchain chk_weaken_f with F = tyvar n1 :: nil.
+Theorem chk_weaken_of : forall E X A T, nabla x,
+	chk E X A -> chk (of x T :: E) X A.
+intros. backchain chk_weaken_f with F = of n1 T :: nil.
+
+Theorem inf_weaken_f : forall F E FE X A,
+	inf E X A -> append F E FE -> inf FE X A.
+intros. T: apply chkInfApp_weaken. apply T1 to _ _ H1. search.
+Theorem inf_weaken_ex : forall E X A, nabla x,
+	inf E X A -> inf (exvar x :: E) X A.
+intros. backchain inf_weaken_f with F = exvar n1 :: nil.
+Theorem inf_weaken_ty : forall E X A, nabla x,
+	inf E X A -> inf (tyvar x :: E) X A.
+intros. backchain inf_weaken_f with F = tyvar n1 :: nil.
+Theorem inf_weaken_of : forall E X A T, nabla x,
+	inf E X A -> inf (of x T :: E) X A.
+intros. backchain inf_weaken_f with F = of n1 T :: nil.
+
+Theorem infApp_weaken_f : forall F E FE A X C,
+	infApp E A X C -> append F E FE -> infApp FE A X C.
+intros. T: apply chkInfApp_weaken. apply T2 to _ _ H1. search.
+Theorem infApp_weaken_ex : forall E A X C, nabla x,
+	infApp E A X C -> infApp (exvar x :: E) A X C.
+intros. backchain infApp_weaken_f with F = exvar n1 :: nil.
+Theorem infApp_weaken_ty : forall E A X C, nabla x,
+	infApp E A X C -> infApp (tyvar x :: E) A X C.
+intros. backchain infApp_weaken_f with F = tyvar n1 :: nil.
+Theorem infApp_weaken_of : forall E A X C T, nabla x,
+	infApp E A X C -> infApp (of x T :: E) A X C.
+intros. backchain infApp_weaken_f with F = of n1 T :: nil.
+
+
+Theorem wft_strenthen_of : forall F E FE FxE A T, nabla x,
+	append F E FE -> append F (of x T :: E) (FxE x) ->
+	wft (FxE x) A -> wft FE A.
+induction on 3. intros. W: case H3. search.
+	M: apply append_mem_inv to _ W. M: case M.
+		apply append_mem to H1 _. search. M: case M. apply append_mem to H1 _. search.
+	W: apply IH to H1 H2 W. W: apply IH to H1 H2 W1. search.
+	W: apply IH to _ _ W with F = tyvar n2 :: F, FE = tyvar n2 :: FE. search.
+
+Theorem wft_remove_of : forall E A T, nabla x,
+	wft (of x T :: E) A -> wft E A.
+intros. apply wft_strenthen_of to _ _ H1 with FE = E. search.
+
+
+Theorem wfj_of_wfta : forall E A, nabla x,
+	wfj (E x) -> member (of x A) (E x) -> wfta (E x) A.
+induction on 2. intros. case H2.
+	case H1. backchain wfta_weaken_of.
+	assert append (B n1 :: nil) (L n1) (B n1 :: L n1).
+		apply wfj_rev to H1. apply IH to _ H3.
+		backchain wfta_weaken_f.
+
+Theorem exFree_of_wft : forall E A, nabla x,
+	wfj (E x) -> exFree (E x) -> member (of x A) (E x) -> wft (E x) A.
+intros. apply wfj_of_wfta to H1 H3.
+	backchain wfj_exFree_wfta_wft.
+
+Theorem wfj_of_det : forall E A A1, nabla x,
+	wfj (E x) -> member (of x A) (E x) -> member (of x A1) (E x) -> A = A1.
+induction on 1. intros. case H1. case H2.
+	case H2. case H3. apply IH to H4 H5 H6. search.
+	case H2. case H3. apply IH to H4 H5 H6. search.
+	case H2. case H3. apply IH to H4 H7 H6. search.
+	case H2. case H3. search. apply member_prune_tm to H6. apply member_prune_tm to H6.
+	case H2. case H3. apply IH to H6 H7 H8. search.
+	case H2. case H3. apply IH to H6 H7 H8. search.
+	case H2. case H3. apply IH to H5 _ _ with A1 = A1. search.
+	case H2. case H3. apply IH to H6 _ _ with A1 = A1. search.
+
+
+Theorem chkInfApp_wft :
+	(forall E X A, chk E X A -> wfj E -> exFree E -> wft E A) /\
+	(forall E X A, inf E X A -> wfj E -> exFree E -> wft E A) /\
+	(forall E X A C, infApp E A X C -> wfj E -> exFree E -> wft E A /\ wft E C).
+induction on 1 1 1. split.
+	intros. case H1. search.
+		apply IH to H4 _ _. backchain exFree_tyvar. search.
+		W: apply wft_wfta to H4. apply IH to H5 _ _. backchain exFree_of.
+			W: apply wft_remove_of to H6. search.
+		apply sub_wft to H5. search.
+	intros. case H1.
+		backchain exFree_of_wft.
+		apply IH to H4 _ _. search.
+		search.
+		W: apply mono_wft to H4. search.
+		apply IH2 to H5 _ _. search.
+	intros. case H1.
+		apply IH2 to H4 _ _.
+			W: apply wft_weaken_f to _ H6 with EF = tyvar n1 :: E.
+			W: apply wft_subst to W _ with T = A1, m = n1. search.
+		apply IH to H4 _ _. search.
+
+
+Define subSize : olist -> ty -> ty -> nat -> prop by
+	subSize E i i z;
+	nabla x, subSize (E x) x x z := nabla x, member (tyvar x) (E x);
+	subSize E (arrow A1 A2) (arrow B1 B2) (s K) := exists M N,
+		subSize E B1 A1 M /\ subSize E A2 B2 N /\ add M N K;
+	subSize E (all A) B (s N) := exists m, subSize E (A m) B N /\ mono E m;
+	subSize E A (all B) (s N) := nabla x, subSize (tyvar x :: E) A (B x) N.
+
+Theorem subSize_sub : forall E A B N, subSize E A B N -> sub E A B.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+
+Theorem subSize_is_nat : forall E A B N, subSize E A B N -> is_nat N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H3. apply add_is_nat_k to _ H4. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+
+Theorem subSize_weaken : forall E F G T1 T2 EG EFG N,
+	append E G EG -> split3 E F G EFG ->
+	subSize EG T1 T2 N ->
+	subSize EFG T1 T2 N.
+induction on 3. intros. case H3.
+	search.
+	assert (member (tyvar n1) (EFG n1)). backchain split3_mem.
+		apply append_mem_inv to _ H4. case H5. search. search.
+		search.
+	apply IH to _ _ H4. apply IH to _ _ H5. search.
+	apply IH to _ _ H4. apply mono_weaken to _ _ _. search.
+	apply IH to _ _ H4 with E = (tyvar n1 :: E), F = F, EFG = (tyvar n1 :: EFG).
+		backchain split3_cons. search.
+Theorem subSize_weaken_f : forall E F EF T1 T2 N,
+	append E F EF -> subSize F T1 T2 N -> subSize EF T1 T2 N.
+intros. backchain subSize_weaken with E = nil, F = E, G = F.
+
+Theorem subSize_prune : forall E A B N, nabla (x : ty),
+	subSize (E x) (A x) (B x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1. search. search. search.
+	apply IH to H2. apply IH to H3. apply add_prune_k to H4. search.
+	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
+
+Theorem subSize_total : forall E A B, sub E A B -> exists N, subSize E A B N.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3.
+		N: apply subSize_is_nat to H4. apply add_total to N with n = N1. search.
+	apply IH to H2. search.
+	apply IH to H2. apply subSize_prune to H3. search.
+
+Theorem sub_trans_thm : forall E A B C n N S1 S2 ns Ns,
+	order B n -> lt n N -> is_nat N ->
+	subSize E A B S1 -> subSize E B C S2 ->
+	add S1 S2 ns -> lt ns Ns -> is_nat Ns ->
+	sub E A C.
+induction on 3. induction on 8. intros.
+	D: apply subSize_sub to H5.
+	D: case H4 (keep). search. search.
+		% A1 -> A2 <: B1 -> B2
+		clear D. N: apply subSize_is_nat to H5. D: case H5.
+			% A1 -> A2 <: B1 -> B2 <: B3 -> B4
+			P: case H6. P: apply add_s_inv to *P.
+				P: apply add_assoc4 to D3 D5 _.
+				L: apply lt_sm to *H7. L: apply lt_sm to *L.
+				IS: case H8. IS: case IS.
+				N: case N. N: apply add_is_nat_k to _ P.
+				L: apply add_le to _ P3.
+				L: apply le_trans to _ L1 _. L: apply le_trans to _ L2 _.
+				N: apply order_is_nat to H1. O: case H1. L: apply add_le to _ O2.
+				L: apply le_trans to _ L5 _. L: apply le_trans to _ L6 _.
+				D: apply IH1 to _ L7 H3 _ _ P1 _ IS.
+				D: apply IH1 to _ L8 H3 _ _ P2 _ IS.
+				search.
+			% A1 -> A2 <: B1 -> B2 <: \forall a. B3
+			D: apply subSize_weaken_f to _ H4 with EF = tyvar n1 :: E.
+				P: apply add_s_inv to *H6.
+				L: apply lt_sm to H7. IS: case H8.
+				D: apply IH1 to _ H2 H3 D4 D P _ IS. search.
+	% \forall x. A <: B
+	P: case H6. L: apply lt_sm to *H7.
+		IS: case H8.
+		D: apply IH1 to _ _ H3 _ _ P _ IS. search.
+	% A <: \forall x. B
+	D: case H5.
+		% A <: \forall x. B <: C
+		D: apply subSize_sub to D1.
+			D: apply sub_substM to _ _ D3 D4.
+			D: apply subSize_total to D5.
+			N: apply subSize_is_nat to D6. P: apply add_total to N with n = N2.
+			N: apply add_is_nat_k to _ P. backchain subSize_is_nat.
+			O: case H1. O: apply order_subst to _ D3 O with A = B1.
+			L: apply lt_sm to *H2. IO: case H3.
+			D: apply IH to _ _ IO D6 D2 P _ _ with Ns = s k. search.
+		% A <: \forall x. B <: \forall x. C
+		D: apply subSize_weaken_f to _ H4 with EF = tyvar n1 :: E.
+			P: apply add_s_inv to *H6.
+			L: apply lt_sm to H7. IS: case H8.
+			D: apply IH1 to _ H2 H3 D3 D2 P _ IS. search.
+
+Theorem sub_trans : forall E A B C,
+	sub E A B -> sub E B C -> sub E A C.
+intros. D: apply subSize_total to H1. D: apply subSize_total to H2.
+	W: apply sub_wft to H1.
+	O: apply order_total_wft to W1.
+	N: apply subSize_is_nat to D. N: apply subSize_is_nat to D1.
+	P: apply add_total to N with n = N1. N: apply add_is_nat_k to _ P.
+	D: apply sub_trans_thm to O _ _ D D1 _ _ _ with N = s N2, Ns = s k.
+	search.
+
+Theorem sub_allR_inv : forall E A B, nabla x,
+	sub E A (all B) -> sub (tyvar x :: E) A (B x).
+induction on 1. intros. case H1.
+	apply IH to H2. M: apply mono_weaken_ty to H3. search.
+	search.
+
+Theorem subsumption_thm :
+	(forall E' E X Nx NX NO A A',
+			tmSize X Nx -> is_nat NX -> lt Nx NX ->
+			is_nat (s z) ->
+			order (arrow A A') NO -> is_nat NO ->
+		esub E' E -> chk E X A ->
+		sub E A A' -> wfj E -> exFree E ->
+		chk E' X A') /\
+	(forall E' E X Nx NX A,
+			tmSize X Nx -> is_nat NX -> lt Nx NX ->
+			is_nat z ->
+		esub E' E -> inf E X A -> wfj E -> exFree E ->
+		exists A', sub E A' A /\ inf E' X A') /\
+	(forall E' E X Nx NX NO A C C',
+			tmSize X Nx -> is_nat NX -> lt Nx NX ->
+			is_nat (s (s z)) ->
+			order (arrow C C') NO -> is_nat NO ->
+		esub E' E -> infApp E C X A ->
+		sub E C' C -> wfj E -> exFree E ->
+		exists A', sub E A' A /\ infApp E' C' X A').
+induction on 2 2 2. IJ: induction on 4 4 4. clear IJ2. split.
+	IO: induction on 6. intros. case H8.
+		% () <= i
+		D: apply esub_sub_inv to _ H9. search.
+		% e <= \forall a. A1
+		D: case H9.
+			% (A1 m) <: A'
+			D: apply typeSubst_chk to _ _ _ _.
+				O: case H5. O: case O. O: apply order_subst to _ _ O with A = A1. P: case O2.
+				IO: case H6. D: apply IO to _ H2 _ H4 _ IO1 _ _ _ _ _. search.
+			% \forall a. A1 <: \forall b. B
+			D: assert chk E X (all A1). D: apply chk_weaken_ty to D1.
+				O: case H5. O: case O1. P: apply add_s_inv to O2.
+				IO: case H6. D: apply IO to _ H2 _ H4 _ IO1 _ D2 _ _ _.
+					backchain exFree_tyvar. search.
+		% \x. e <= A1 -> B
+		D: case H9.
+			% A1 -> B <: B1 -> B2
+			T: case H1. L: apply lt_sm to *H3. IT: case H2.
+				D: apply sub_weaken_of to D1 with T = A1.
+				O: apply order_total to D2. N: apply order_is_nat to O.
+				D: apply IH to _ IT _ _ O _ _ H13 D2 _ _.
+					backchain exFree_of. W: apply wft_wfta to H12. search.
+				D: apply esub_sub_inv to _ D. W: apply sub_wft to D4. search.
+			% A1 -> B <: \forall b. B1
+			D: assert chk E X (arrow A1 B). D: apply chk_weaken_ty to D1.
+				O: case H5. O: case O1. P: apply add_s_inv to O2.
+				IO: case H6. D: apply IO to _ H2 _ H4 _ IO1 _ D2 _ _ _.
+					backchain exFree_tyvar. search.
+		% e <= A
+		J: case H4. W: apply sub_wft to H13.
+			D: apply IJ1 to _ H2 _ J _ H12 _ _.
+			D: assert sub E A'1 A'. backchain sub_trans. backchain sub_trans.
+			D: apply esub_sub_inv to _ D2. search.
+	intros. Ts: apply chkInfApp_wft. D: case H6.
+		D: apply esub_of_inv to _ D. D: apply esub_sub to _ D2. search.
+		W: apply Ts to D _ _. D: apply sub_refl to W.
+			T: case H1. L: apply lt_sm to *H3. IT: case H2.
+			O: apply order_total to D1. N: apply order_is_nat to O.
+			D: apply IH to _ IT _ _ O _ _ _ _ _ _. search.
+		search.
+		W: apply mono_wft to D. W: case W (keep).
+			D: apply sub_refl to W1. D: apply sub_refl to W.
+			W: case W. D: apply sub_refl to W2.
+			D: apply esub_sub_inv to _ D3.
+			D: apply sub_weaken_of to D4 with T = M1.
+			T: case H1. L: apply lt_sm to *H3. IT: case H2.
+			O: apply order_total to D4. N: apply order_is_nat to O.
+			D: apply IH to _ IT _ _ O _ _ D1 _ _ _.
+				backchain exFree_of. W: apply wft_wfta to W1. search.
+			M: apply esub_mono_inv to _ D. search.
+		N: apply tmSize_is_nat to H1. T: case H1. L: apply lt_sm to *H3. IT: case H2.
+			N: case N. L: apply add_le to _ T2.
+			L: apply le_trans to _ L1 _. L: apply le_trans to _ L2 _.
+			D: apply IH1 to T IT _ _ _ D _ _.
+			O: apply order_total to D2. N: apply order_is_nat to O.
+			O: case O. P: apply add_comm to _ O2. backchain order_is_nat.
+			D: apply IH2 to T1 IT _ _ _ N1 _ D1 _ _ _. search.
+	IO: induction on 6. intros. D: case H8.
+		D: apply sub_allR_inv to *H9.
+			D: apply sub_substM to _ _ D1 D2.
+			O: case H5. O: case O. O: apply order_subst to _ _ O with A = A1. P: case O2.
+			IO: case H6. D: apply IO to _ H2 _ H4 _ IO1 _ D _ _ _. search.
+		D: case H9.
+			J: case H4.
+			O: apply order_total to D2. N: apply order_is_nat to O.
+				D: apply IJ to _ H2 _ J O _ _ _ _ _ _.
+				W: apply sub_wft to D3. W: apply esub_wft_inv to _ W. search.
+			O: case H5. O: case O1.
+				O: apply order_subst to _ _ O1 with A = A2. P: apply add_s_inv to O2.
+				IO: case H6. D: apply IO to _ H2 _ H4 _ IO1 _ _ _ _ _.
+				M: apply esub_mono_inv to _ D3. search.
+
+Theorem chk_subsumption : forall E' E X A A' F,
+	esub E' E -> chk E X A -> sub E A A' -> wftm F X -> wfj E -> exFree E -> chk E' X A'.
+intros.
+	S: apply subsumption_thm. clear S1. clear S2.
+	T: apply tmSize_total to H4. N: apply tmSize_is_nat to T.
+	O: apply order_total to H3. N: apply order_is_nat to O.
+	D: apply S to _ _ _ _ O _ H1 H2 H3 _ _. search.
+
+Theorem chkLam_inversion : forall E X A B, nabla t,
+	chk E (lam X) (arrow A B) -> wfj E -> exFree E -> wftm E (lam X) ->
+		chk (of t A :: E) (X t) B.
+intros. D: case H1. search.
+	D: case D. W: apply sub_wft to D1.
+		D: case D1.
+		E: apply esub_eq to H2 _.
+		E: assert esub (of n1 A :: E) (of n1 M1 :: E).
+		W: case W. W: case H4.
+		D: apply sub_weaken_of to D3 with T = M1.
+		D: apply chk_subsumption to E1 D2 D4 _ _ _.
+			backchain exFree_of. W: apply wft_wfta to W. search.
+		search.
+
+Theorem chkAll_inversion : forall E X A, nabla x,
+	chk E X (all A) -> wfj E -> exFree E -> wftm E X -> chk (tyvar x :: E) X (A x).
+intros. case H1 (keep). search.
+	W: case H4 (keep).
+		D: case H5. case H6. search.
+		D: case H5. apply wfj_of_det to _ *W D.
+			apply sub_allR_inv to H6. search.
+		D: case H5 (keep). D: case H6.
+			T: apply sub_mono_free. apply T to D2 _.
+			backchain mono_weaken_ty.
+			D: apply sub_strenthen_tyvar_f to D2.
+			D: case D2.
+				W: apply sub_wft to D2.
+					W: apply mono_wft to D. W: case W4.
+					D: assert chk E (lam X1) (arrow M1 M2).
+					E: apply esub_eq to _ _.
+					D: apply chk_subsumption to E D5 _ _ _ _.
+					backchain chk_weaken_ty.
+				backchain chk_weaken_ty.
+		D: case H5. D: apply sub_allR_inv to H6.
+			D: apply inf_weaken_ty to D.
+			D: apply infApp_weaken_ty to D1. search.
+		D: case H5. D: apply sub_allR_inv to H6.
+			D: apply chk_weaken_ty to D. search.
+
+
+%%%%%%%%%%%% Equivalent non-overlapping declarative system %%%%%%%%%%%%
+Define sub' : olist -> ty -> ty -> prop by
+	sub' E i i;
+	nabla x, sub' (E x) x x := nabla x, member (tyvar x) (E x);
+	sub' E (arrow A1 A2) (arrow B1 B2) := sub' E B1 A1 /\ sub' E A2 B2;
+	sub' E (all A) B := notAll_ B /\ exists m, sub' E (A m) B /\ mono E m;
+	sub' E A (all B) := nabla x, sub' (tyvar x :: E) A (B x).
+
+Theorem sub'_complete_thm : forall E A B n N,
+	wfj E -> sub E A B ->
+	order (arrow A B) n -> lt n N -> is_nat N ->
+	exFree E -> sub' E A B.
+induction on 5. induction on 2. intros. case H2 (keep).
+	search. search.
+	N: apply order_is_nat to H3.
+		O: case H3. O: case O. O: case O1. P: apply add_assoc4 to _ _ O2.
+		L: apply add_le to _ P2. L: apply le_trans to _ L _. L: apply le_trans to _ L1 _.
+		D: apply IH1 to _ H7 _ L2 H5 _. D: apply IH1 to _ H8 _ L3 H5 _. search.
+	O: case H3. O: case O. O: apply order_subst to _ H8 O with A = A1.
+		P: case O2 (keep). L: apply lt_sm to *H4. OI: case H5.
+		D: apply IH to _ H7 _ _ OI _.
+		W: apply sub_wft to H2. W: case W1. search. search. search.
+			O: case O1. P: apply add_s_inv to O2.
+			D: apply sub_allR_inv to H2.
+			D: apply IH to _ D1 _ _ OI _. backchain exFree_tyvar. search.
+	O: case H3. O: case O1. P: apply add_s_inv to *O2.
+		L: apply lt_sm to *H4. OI: case H5.
+		D: apply IH to _ H7 _ _ OI _. backchain exFree_tyvar. search.
+
+Theorem sub'_complete : forall E A B, sub E A B -> wfj E -> exFree E -> sub' E A B.
+intros. apply order_total to H1. apply order_is_nat to H4.
+	apply sub'_complete_thm to _ _ _ _ _ _ with N = s m. search.
+
+Theorem sub'_sound : forall E A B, sub' E A B -> sub E A B.
+induction on 1. intros. case H1.
+	search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H2. search.
+
+Define chk' : olist -> tm -> ty -> prop,
+       inf' : olist -> tm -> ty -> prop,
+       infApp' : olist -> ty -> tm -> ty -> prop by
+	nabla x, inf' (E x) x A := nabla x, member (of x A) (E x);
+	inf' E (anno X A) A := chk' E X A;
+	chk' E unit i;
+	inf' E unit i;
+	chk' E X (all A) := nabla x, chk' (tyvar x :: E) X (A x);
+	chk' E (lam X) (arrow A B) := nabla x, wft E A /\ chk' (of x A :: E) (X x) B;
+	inf' E (lam X) (arrow M1 M2) := nabla x,
+		mono E (arrow M1 M2) /\ chk' (of x M1 :: E) (X x) M2;
+	inf' E (app X1 X2) C := exists A, inf' E X1 A /\ infApp' E A X2 C;
+	chk' E X B := notAll_ B /\ notLam_ X /\ exists A, inf' E X A /\ sub' E A B;
+	infApp' E (all A) X C := exists m, infApp' E (A m) X C /\ mono E m;
+	infApp' E (arrow A C) X C := chk' E X A /\ wft E C.
+
+Theorem chkInfApp'_complete_thm :
+	(forall E X Nx NX NO A,
+			tmSize X Nx -> is_nat NX -> lt Nx NX ->
+			is_nat (s z) ->
+			order A NO -> is_nat NO ->
+		wfj E -> exFree E -> wftm E X -> chk E X A -> chk' E X A) /\
+	(forall E X Nx NX A,
+			tmSize X Nx -> is_nat NX -> lt Nx NX ->
+			is_nat z ->
+		wfj E -> exFree E -> wftm E X -> inf E X A -> inf' E X A) /\
+	(forall E X Nx NX NO A C,
+			tmSize X Nx -> is_nat NX -> lt Nx NX ->
+			is_nat (s (s z)) ->
+			order C NO -> is_nat NO ->
+		wfj E -> exFree E -> wftm E X -> infApp E C X A -> infApp' E C X A).
+induction on 2 2 2. IJ: induction on 4 4 4. clear IJ2. split.
+	IO: induction on 5. intros. D: case H10 (keep).
+		search.
+		O: case H5. N: apply order_is_nat to O.
+			D: apply IO to _ H2 _ H4 O _ _ _ _ D.
+				backchain wftm_weaken_ty. backchain exFree_tyvar. search.
+		T: case H1. L: apply lt_sm to *H3.
+			IT: case H2.
+			O: case H5. N: apply order_is_nat to O1.
+			D: apply IH to _ IT _ _ _ _ _ _ _ D1 with NO = N2.
+				backchain wftm_anyA. backchain exFree_of.
+				W: apply wft_wfta to D. search.
+			search.
+		J: case H4 (keep). D: apply IJ1 to _ H2 _ J _ _ _ D.
+			L: assert forall a, A = all a -> chk' E X A.
+				intros Eq. case Eq.
+				D: apply chkAll_inversion to H10 _ _ _.
+				O: case H5. N: apply order_is_nat to O.
+				D: apply IO to _ H2 _ H4 O _ _ _ _ D3.
+					backchain wftm_weaken_ty. backchain exFree_tyvar.
+				search.
+			L: assert forall x a b, X = lam x -> A = arrow a b -> chk' E X A.
+				intros Eqx Eqa. case Eqa. case Eqx.
+				D: apply chkLam_inversion to H10 _ _ _.
+				T: case H1. L: apply lt_sm to *H3. T: case H2.
+				O: case H5. N: apply order_is_nat to O1.
+				W: apply sub_wft to D1. W: case W1.
+				D: apply IH to T T1 _ _ _ _ _ _ _ D3 with NO = N2.
+					backchain wftm_anyA. backchain exFree_of.
+					W: apply wft_wfta to W1. search.
+				search.
+			D: apply sub'_complete to D1 _ _. W: apply sub_wft to D1. W: case W1.
+				T: case H1.
+					search. search.
+					D: case D1. D: case D2. D: case D2.
+					search. search.
+				T: case H1.
+					search. search.
+					D: case D1. D: case D2. D: case D2.
+					search. search.
+				T: case H1.
+					search. search.
+					backchain L1.
+					search. search.
+				backchain L.
+	intros. D: case H8 (keep).
+		search.
+		T: case H1. L: apply lt_sm to *H3.
+			IT: case H2.
+			W: case H7. O: apply order_total_wft to W1.
+			D: apply IH to _ IT _ _ _ _ _ _ _ D with NO = N2. search.
+		search.
+		T: case H1. L: apply lt_sm to *H3.
+			IT: case H2.
+			W: case H7. W: apply wfj_exFree_wfta_wft to _ _ W.
+			W: apply mono_wft to D. W: case W3. O: apply order_total_wft to W4.
+			D: apply IH to _ IT _ _ _ _ _ _ _ D1 with NO = N2.
+				backchain wftm_anyA. backchain exFree_of.
+				W: apply wft_wfta to W3. search.
+			search.
+		N: apply tmSize_is_nat to H1. T: case H1. L: apply lt_sm to *H3.
+			N: case N. L: apply add_le to _ T2.
+			N: case H2.
+			L: apply le_trans to _ L1 _. L: apply le_trans to _ L2 _.
+			W: case H7.
+			D: apply IH1 to T N1 _ _ _ _ _ D.
+			Ts: apply chkInfApp_wft. W: apply Ts2 to D1 _ _.
+			O: apply order_total_wft to W2.
+			D: apply IH2 to T1 N1 _ _ _ _ _ _ _ D1 with NO = N2.
+			search.
+	IO: induction on 6. intros. D: case H10 (keep).
+		O: case H5. IO: case H6. O: apply order_subst to _ D1 O with A = A1.
+			D: apply IO to _ H2 _ H4 _ IO1 _ _ _ D. search.
+		J: case H4.
+			O: case H5. O: apply order_is_nat to O.
+			D: apply IJ to H1 H2 _ J _ _ _ _ _ D with NO = M.
+			search.
+
+Theorem chk'_complete : forall E X A,
+	wfj E -> exFree E -> wftm E X -> chk E X A -> chk' E X A.
+intros. Ts: apply chkInfApp'_complete_thm.
+	T: apply tmSize_total to H3. N: apply tmSize_is_nat to T.
+	Ts: apply chkInfApp_wft. apply Ts3 to H4 _ _.
+	O: apply order_total_wft to H5. backchain Ts with NX = s N.
+
+Theorem inf'_complete : forall E X A,
+	wfj E -> exFree E -> wftm E X -> inf E X A -> inf' E X A.
+intros. Ts: apply chkInfApp'_complete_thm.
+	T: apply tmSize_total to H3. N: apply tmSize_is_nat to T.
+	backchain Ts1 with NX = s N.
+
+Theorem infApp'_complete : forall E X A C,
+	wfj E -> exFree E -> wftm E X -> infApp E A X C -> infApp' E A X C.
+intros. Ts: apply chkInfApp'_complete_thm.
+	T: apply tmSize_total to H3. N: apply tmSize_is_nat to T.
+	Ts: apply chkInfApp_wft. apply Ts5 to H4 _ _.
+	O: apply order_total_wft to H5. backchain Ts2 with NX = s N.
+
+Theorem chkInfApp'_sound :
+	(forall E X A, wftm E X -> chk' E X A -> chk E X A) /\
+	(forall E X A, wftm E X -> inf' E X A -> inf E X A) /\
+	(forall E X A C, wftm E X -> infApp' E C X A -> infApp E C X A).
+induction on 2 2 2. split.
+	intros. case H2. search.
+		apply IH to _ H3. backchain wftm_weaken_ty. search.
+		apply IH to _ H4. backchain wftm_anyA. search.
+		apply IH1 to _ H5. apply sub'_sound to H6. search.
+	intros. case H2. search.
+		W: case H1. apply IH to _ H3. search.
+		search.
+		W: apply mono_wft to H3. W: case W.
+			apply IH to _ H4. backchain wftm_anyA. search.
+		W: case H1. apply IH1 to _ H3. apply IH2 to _ H4. search.
+	intros. case H2.
+		apply IH2 to _ H3. search.
+		apply IH to _ H3. search.
+

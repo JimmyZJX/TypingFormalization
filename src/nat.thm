@@ -1,0 +1,122 @@
+Import "olist".
+
+Kind nat type.
+Type z nat.
+Type s nat -> nat.
+
+Define add : nat -> nat -> nat -> prop by
+	add z N N;
+	add (s M) N (s K) := add M N K.
+
+Define is_nat : nat -> prop by
+	is_nat z;
+	is_nat (s N) := is_nat N.
+
+Theorem add_zero : forall n, is_nat n -> add n z n.
+	induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem add_s : forall m n k, add m n k -> add m (s n) (s k).
+	induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem add_s_inv : forall m n sk, add m (s n) sk -> exists k, sk = s k /\ add m n k.
+	induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem add_is_nat : forall m n k, add m n k -> is_nat m.
+	induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem add_is_nat_k : forall m n k, is_nat n -> add m n k -> is_nat k.
+	induction on 2. intros. case H2. search. apply IH to _ H3. search.
+Theorem add_is_nat_n : forall m n k, is_nat k -> add m n k -> is_nat n.
+	induction on 2. intros. case H2. search. case H1. apply IH to _ H3. search.
+
+Theorem add_comm : forall m n k, is_nat n -> add m n k -> add n m k.
+induction on 2. intros. case H2. backchain add_zero.
+	apply IH to _ H3. backchain add_s.
+
+Theorem add_det : forall m n k k1, add m n k -> add m n k1 -> k = k1.
+induction on 1. intros. case H1. case H2. search.
+	case H2. apply IH to H3 H4. search.
+
+Theorem add_total : forall m n, is_nat m -> exists k, add m n k.
+induction on 1. intros. case H1. search. apply IH to H2 with n = n. search.
+
+Theorem add_assoc : forall a b c ab abc, add a b ab -> add ab c abc ->
+	exists bc, add b c bc /\ add a bc abc.
+induction on 1. intros. case H1. search. case H2. apply IH to H3 H4. search.
+Theorem add_assoc_inv : forall a b c bc abc, add b c bc -> add a bc abc ->
+	exists ab, add a b ab /\ add ab c abc.
+induction on 2. intros. case H2. exists b. search. apply IH to H1 H3. search.
+
+Theorem add_assoc4 : forall a b c d ab cd abcd, add a b ab -> add c d cd ->
+	add ab cd abcd -> exists ca bd, add c a ca /\ add b d bd /\ add ca bd abcd.
+intros. apply add_is_nat to H3. apply add_is_nat_n to H4 H1.
+	apply add_is_nat to H1. apply add_is_nat to H2.
+	apply add_total to H5 with n = d.
+	apply add_total to H6 with n = c. apply add_comm to _ H9.
+	exists k1, k. split. search. search.
+	apply add_total to H7 with n = ab. apply add_assoc_inv to H1 H11.
+	apply add_det to *H12 H10. apply add_comm to _ H11.
+	apply add_assoc_inv to H2 H3. apply add_det to *H15 H14.
+	apply add_assoc to H13 H16. apply add_det to *H17 H8. search.
+
+Define lt : nat -> nat -> prop by
+	lt K (s K);
+	lt M (s N) := lt M N.
+
+Theorem add_ltm : forall ltm m n k ltk, lt ltm m -> add m n k ->
+	add ltm n ltk -> lt ltk k.
+induction on 1. intros. case H1. case H2. apply add_det to H3 H4. search.
+	case H2. apply IH to H4 _ _. search.
+Theorem add_ltn : forall m ltn n k ltk, lt ltn n -> add m n k ->
+	add m ltn ltk -> lt ltk k.
+induction on 1. intros. case H1.
+	apply add_s_inv to H2. apply add_det to H3 *H4. search.
+	apply add_s_inv to H2. apply IH to H4 _ _. search.
+
+Theorem lt_z_sn : forall n, is_nat n -> lt z (s n).
+induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem lt_sm_sn : forall m n, lt m n -> lt (s m) (s n).
+induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem lt_sm_sn_inv : forall m n, is_nat n -> lt (s m) (s n) -> lt m n.
+induction on 2. intros. case H2. search. case H1. case H3. apply IH to _ H3. search.
+Theorem add_le : forall m n k, is_nat k -> add m n k -> lt m (s k) /\ lt n (s k).
+induction on 2. intros. case H2. split. backchain lt_z_sn. search.
+	case H1. apply IH to _ H3. split. backchain lt_sm_sn. search.
+
+Theorem le_is_nat : forall m n, is_nat n -> lt m n -> is_nat m.
+induction on 2. intros. case H2. case H1. search.
+	case H1. apply IH to _ H3. search.
+Theorem lt_false : forall n, lt n z -> false. intros. case H1.
+
+Theorem lt_trans : forall a b c, is_nat c -> lt a b -> lt b (s c) -> lt a c.
+induction on 2. intros. case H2. backchain lt_sm_sn_inv.
+	apply le_is_nat to _ H3. case H5. apply lt_sm_sn_inv to _ H3.
+		case H3. backchain IH. backchain IH.
+
+Theorem le_trans : forall a b c, is_nat c -> lt a (s b) -> lt b c -> lt a c.
+induction on 2. intros. case H2. search.
+	apply le_is_nat to _ H3. case H5. apply lt_false to H4.
+		case H1. apply lt_false to _. apply lt_sm_sn_inv to _ _. apply IH to _ H4 _. search.
+
+/*
+Theorem le_trans : forall a b c, is_nat c -> lt a (s b) -> lt b (s c) -> lt a (s c).
+induction on 2. intros. case H2. search.
+	apply le_is_nat to _ H3. case H5. apply lt_false to H4.
+		backchain IH. apply lt_sm_sn_inv to _ H3. search.*/
+
+Theorem lt_self_false : forall a, is_nat a -> lt a a -> false.
+induction on 1. intros. case H1. case H2. backchain IH. backchain lt_sm_sn_inv.
+Theorem lt_ge_false : forall a b, is_nat a -> lt a b -> lt b (s a) -> false.
+induction on 2. intros. case H2. backchain lt_self_false with a = s a.
+	backchain IH. unfold. backchain lt_sm_sn_inv.
+
+Theorem add_le_n : forall m n k N, is_nat N -> lt k (s N) -> add m n k ->
+	lt m (s N) /\ lt n (s N).
+induction on 3. intros. case H3. split. backchain lt_z_sn. search.
+	apply le_is_nat to _ H2. case H5. apply IH to _ _ H4.
+	split. backchain lt_sm_sn. backchain lt_trans. backchain lt_trans.
+
+
+Theorem add_prune[A] : forall m n k, nabla (x : A), add (m x) (n x) k ->
+	exists mr nr, m = x\ mr /\ n = x\ nr.
+induction on 1. intros. case H1. search. apply IH to H2. search.
+Theorem add_prune_k[A] : forall m n k, nabla (x : A), add m n (k x) ->
+	exists kr, k = x\ kr.
+induction on 1. intros. case H1. search. apply IH to H2. search.
+
