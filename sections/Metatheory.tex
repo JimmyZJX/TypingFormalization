@@ -146,7 +146,7 @@ $$
 $$
 \end{enumerate}
 The resulting declarative system has no overlapping rules
-and more closely resembles the aglorithmic system, which contains
+and more closely resembles the algorithmic system, which contains
 the same shape constraints.
 
 We have proven soundness and completeness of the non-overlapping declarative
@@ -199,9 +199,9 @@ $$\begin{aligned}
 \begin{lemma}[Subsumption]\label{lem:subsumption}
 Given $\Psi' \le \Psi$:
 \begin{enumerate}
-    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A$;
+    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A'$;
     \item If $\Psi \vdash e \To A$ then there exists
-        $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash e \To A$;
+        $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash e \To A'$;
     \item If $\Psi \vdash \appInf{C}{e}{A}$ and $\Psi \vdash C' \le C$,
         then there exists $A'$ s.t. $\Psi \vdash A' \le A$ and $\Psi' \vdash \appInf{C'}{e}{A'}$.
 \end{enumerate}
@@ -210,16 +210,15 @@ This lemma expresses that any derivation in a context $\Psi$ has a corresponding
 $\Psi'$ that it subsumes.
 
 We have tried to follow DK's manual proof of this lemma,
-but we discovered several problems in their reasoning that we have been able to address.
+but we discovered several problems in their reasoning that we have been unable to address.
 Fortunately we have found a different way to prove the lemma.
 The details of this issue can be found in Appendix~\ref{appendix:subsumption}.
 
 \paragraph{Three-Way Soundness and Completeness Theorems}
 We now have three systems that can be related: DK's overlapping declarative system,
 our non-overlapping declarative system, and our algorithmic system.
-We have already establishes the first relation, that the two declarative
+We have already established the first relation, that the two declarative
 systems are equivalent.
-
 In what follows, we will establish the soundness of our algorithm directly
 against the original overlapping declarative system. However, we have found
 that showing completeness of the algorithm is easier against the
@@ -236,8 +235,8 @@ there is a valid instantiation $\Om$ that transfers all judgements successfully 
 If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
 \end{theorem}
 
-The proof proceeds by induction on derivation of $\Gm\redto\nil$.
-Interesting cases are the those involving existential variable instantiations,
+The proof proceeds by induction on the derivation of $\Gm\redto\nil$.
+Interesting cases are those involving existential variable instantiations,
 including Rules 10, 11, 21 and 29.
 Applications of Lemmas \ref{lem:insert} and \ref{lem:extract}
 help analyse the full instantiation of those existential variables.
@@ -255,7 +254,7 @@ Given \emph{wf }$\Gm$:
         then there exist $A', B', \Om$ s.t.
         $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$ and $\|\Om\| \vdash A' \le B'$;
     \item If $\Gm \Vdash e \Lto A \redto \nil$\\
-        then there exist $e', A', \Om$ s.t.
+        then there exist $ A', \Om$ s.t.
         $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$ and $\|\Om\| \vdash e \Lto A'$;
     \item If $\Gm \Vdash e \To_a \jg \redto \nil$ for any $\jg$\\
         then there exists $\Om, \jg', A$ s.t.
@@ -266,11 +265,12 @@ Given \emph{wf }$\Gm$:
             and $\|\Om\| \vdash \appInf{A'}{e}{C}$.
 \end{enumerate}
 \end{corollary}
+\bruno{if possible double-check against the corresponding Abella ones.}
 
 %-------------------------------------------------------------------------------
 \subsection{Completeness}
 
-Completeness of our algorithm means that any derivation in the
+The completeness of our algorithm means that any derivation in the
 declarative system has an algorithmic counterpart.
 
 \begin{theorem}[Completeness]
@@ -283,7 +283,6 @@ and use the non-overlapping declarative system.
 Since the declarative worklist is reduced judgment by judgment
 (shown in Figure~\ref{fig:decl:worklist}),
 the induction always analyses the first judgment until it is satisfied.
-
 As the algorithmic system introduces existential variables,
 a declarative rule may correspond to multiple algorithmic rules,
 and thus we analyse each of the possible cases.
@@ -329,6 +328,9 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
         then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
 \end{corollary}
+\bruno{We discussed the form of the lemmas on slack. Please have the first premise
+  be a declarative judgement.
+  If possible also double-check against Abella.}
 
 %-------------------------------------------------------------------------------
 \subsection{Termination and Decidability}
@@ -482,21 +484,20 @@ Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 % ---------------------------------------------
 \subsection{Abella and Proof Statistics}
 We have chosen the Abella (v2.0.7-dev) proof assistant~\cite{AbellaDesc} to develop our formalization.
-Abella is designed to help such formalizations for programming languages,
-due to its built-in support for variable bindings and
+Abella is designed to help with such formalizations of programming languages,
+due to its built-in support for variable binding and
 the $\lambda$-tree syntax~\cite{miller2000abstract}, i.e. a form of HOAS.
 Nominal variables, or $\nabla$-quantified variables, are used as an unlimited name supply,
 which supports explicit freshness control and substitutions.
-
 Although Abella lacks packages, tactics and support on modules,
-we enjoy its higher-order system and the ease of formalizing substitution-intensive relations,
-which are widely used in our algorithm.
+its higher-order unification and the ease of formalizing substitution-intensive relations
+are very helpful for our formalization.
 
 \paragraph{Statistics of the Proof}
 The proof script consists of 7683 lines of code with a total of
 51 definitions and 567 theorems.
 Figure~\ref{fig:proof_statistics} briefly summarizes the contents in each file.
-The files are linealy dependent due to the limitation of Abella.
+The files are linearly dependent due to the limitation of Abella.
 
 \begin{figure}[ht]
 \centering\begin{tabular}{|c|c|c|l|}\hline
