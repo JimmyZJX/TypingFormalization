@@ -35,7 +35,7 @@ In those type systems
 type annotations are required for polymorphic arguments of functions,
 but other type annotations can be omitted. A canonical example (here written in Haskell) is:
 \begin{verbatim}
-    hpoly = (\f :: forall a. a -> a) -> (f 1, f 'c')
+    hpoly = \(f :: forall a. a -> a) -> (f 1, f 'c')
 \end{verbatim}
 The function \verb|hpoly| cannot be
 type-checked in Hindley-Milner.  The type of \verb|hpoly| is the rank-2 type:
