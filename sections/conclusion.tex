@@ -3,53 +3,56 @@
 In this paper we have provided the first mechanized formalization of type
 inference for higher-ranked polymorphism. This contribution is made possible by
 a new type inference algorithm for DK's declarative type sytsem that
-incorporates several novel mechanisation-friendly ideas. Firstly, we merge the
+incorporates two novel mechanisation-friendly ideas. Firstly, we merge the
 traditional type context with the recently proposed concept of judgment chains,
 to accurately track variable scopes and to easily propagate substitutions.
 Secondly, we use continuation-passing style to return types from the
-bidirectional synthesis mode to further tasks.
+bidirectional synthesis mode to further tasks. 
 
+We leave extending our algorithm with elaboration to future work, as well as
+investigating whether the problems we have found in DK's manual proofs for
+their algorithm can be addressed.
 
-% \jimmy{Discuss the efficient algorithm and its equivalence}
-% The algorithm is already efficient
-
-Outline:
-\begin{itemize}
-    \item difficulties following DK's formalization
-    \item a blend of ideas from various, including sources DK's ordered contexts
-    \item list of judgements + some novel ideas
-    \item lessons learned: problems identified in proofs and scoping
-    \item Future work
-\end{itemize}
-
-Our judgment form, the worklist, is shown to be an elegant way to
-formalize higher-order type infernce algorithms.
-By mixing judgment chains with variable declarations in a single sort,
-variable scopings are easily controlled by the ordered context in a natural way.
-
-The formal proof in Abella convinces us of the correctness of our algorithm,
-which further indicates that DK's algorithm, sharing a similar solving procedure as ours,
-should be a correct one.
-
-\paragraph{Future work}
-\begin{itemize}
-    \item Scoped type variables?
-    \item Go beyond predicative instantiations
-    \item More complicated features, such as dependent type
-\end{itemize}
-
-We have not yet explore lexically-scoped type variables~\cite{jones2003lexically}
-as a practical extension to our system.
-Formalization of a different variable scoping scheme is also
-a challenging task for formal proofs via proof assistants.
-
-Moreover, the garbage collection process for type variables and
-existential variables do worth further attention:
-the inference of $\lam x$ leaves an unsolved $\al$ in the context,
-which we simply remove the variable after it is no longer refered to.
-Is it possible that we infer better types by making better use of that piece of information?
-How do we deal with, at least some ``trivial'' impredicative instantiations?
-
-Last but not least, a further expectation is that our system would
-adapt to various complicated type inference algorithms,
-such as ones for dependent types.
+% % \jimmy{Discuss the efficient algorithm and its equivalence}
+% % The algorithm is already efficient
+% 
+% Outline:
+% \begin{itemize}
+%     \item difficulties following DK's formalization
+%     \item a blend of ideas from various, including sources DK's ordered contexts
+%     \item list of judgements + some novel ideas
+%     \item lessons learned: problems identified in proofs and scoping
+%     \item Future work
+% \end{itemize}
+% 
+% Our judgment form, the worklist, is shown to be an elegant way to
+% formalize higher-order type infernce algorithms.
+% By mixing judgment chains with variable declarations in a single sort,
+% variable scopings are easily controlled by the ordered context in a natural way.
+% 
+% The formal proof in Abella convinces us of the correctness of our algorithm,
+% which further indicates that DK's algorithm, sharing a similar solving procedure as ours,
+% should be a correct one.
+% 
+% \paragraph{Future work}
+% \begin{itemize}
+%     \item Scoped type variables?
+%     \item Go beyond predicative instantiations
+%     \item More complicated features, such as dependent type
+% \end{itemize}
+% 
+% We have not yet explore lexically-scoped type variables~\cite{jones2003lexically}
+% as a practical extension to our system.
+% Formalization of a different variable scoping scheme is also
+% a challenging task for formal proofs via proof assistants.
+% 
+% Moreover, the garbage collection process for type variables and
+% existential variables do worth further attention:
+% the inference of $\lam x$ leaves an unsolved $\al$ in the context,
+% which we simply remove the variable after it is no longer refered to.
+% Is it possible that we infer better types by making better use of that piece of information?
+% How do we deal with, at least some ``trivial'' impredicative instantiations?
+% 
+% Last but not least, a further expectation is that our system would
+% adapt to various complicated type inference algorithms,
+% such as ones for dependent types.
