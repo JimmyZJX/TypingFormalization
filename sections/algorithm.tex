@@ -116,7 +116,8 @@ type of $e$.
 We combine traditional contexts and judgment(s) into a single sort, the \emph{worklist} $\Gm$.
 The worklist is an \emph{ordered} collection of both variable bindings and judgments. The order captures the scope:
 only the objects that come after a variable's binding in the worklist can refer to it.
-For example, $[a,x:a,x \Lto a]$ is a valid worklist, but $[\underline{x} \Lto a, x:\underline{a},a]$ is not
+For example, $[\nil, a, x:a \Vdash x \Lto a]$ is a valid worklist,
+but $[\nil \Vdash \underline{x} \Lto \underline{a}, x:\underline{a}, a]$ is not
 (the underlined symbols refer to out-of-scope variables).
 
 \paragraph{Hole Notation}
@@ -207,7 +208,7 @@ can discern 6 groups of rules.
 We have six subtyping rules (Rules 4-9) that are similar to their
 declarative counterparts. For instance, Rule 7 consumes a subtyping
 judgment and pushes two back to the worklist.  Rule 8 differs from
-declarative Rule ${\le}{\forall}L$ by introducing an existential
+declarative Rule $\mathtt{{\le}{\forall}L}$ by introducing an existential
 variable $\al$ instead of guessing the monotype $\tau$
 instantiation. Each existential variable is later solved to a
 monotype $\tau$ with the same context, so the final solution $\tau$ of
@@ -217,12 +218,12 @@ $\al$ should be well-formed under $\Gm$.
 Rules 8 and 9 involve variable declarations and demonstrate how our
 worklist treats variable scopes. Rule 8 introduces an existential
 variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
-Reduction continues until all the subtyping judgments after $\al$
+Reduction continues until all the subtyping judgments in front of $\al$
 are satisfied.  Finally we can safely remove $\al$ since no occurrence
 of $\al$ could have leaked into the left part of the worklist.  Moreover,
 the algorithm garbage-collects the $\al$
 variable at the perfect time: it leaves the environment immediately
-after being unreferenced.
+after being unreferenced completely for sure.
 
 \paragraph{Example} The derivation of the subtyping judgment
 $(1\to 1)\to 1 \le (\all 1\to 1) \to 1$ proceeds as follows:
@@ -247,10 +248,11 @@ variable $a$).
 In the following 3 steps we satisfy the judgment $1 \to 1 \le 1 \to 1$ by Rules 7, 4 and 4.
 
 Now the existential variable $\al$, introduced before but still unsolved,
-is at the top of the worklist and Rule 2 garbage collects it.
+is at the top of the worklist and Rule 2 garbage-collects it.
 The process is carefully designed within the algorithmic rules:
-when $\al$ is introduced,
-we foresee the recycling of $\al$ after all the judgments requiring $\al$ have been processed.
+when $\al$ is introduced earlier by Rule 8,
+we foresee the recycling of $\al$ after all the judgments (potentially)
+requiring $\al$ have been processed.
 Finally Rule 4 reduces one of the base cases and finishes the subtyping derivation.
 
 \paragraph{\bf 2. Existential decomposition.}
@@ -284,7 +286,7 @@ Rules 19 and 20 adapt their declarative counterparts to the worklist style.
 Rule 21 is a special case of $\mathtt{Decl\to I}$,
 dealing with the case when the input type is an existential variable,
 representing a monotype \emph{function} as in the declarative system
-(it must be a function type, since the expression is a function).
+(it must be a function type, since the expression $\lam e$ is a function).
 % \bruno{Rule 21
 %   deserves some more explanation. What is the motivation for this
 %   rule? You may want to give some concrete example to motivate it.}
@@ -305,7 +307,13 @@ and yield $\Gm \Vdash \lam e \To_a a \le \al$, which would be further processed
 by Rule 25 to $\Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$.
 As a subtyping constraint between two monotypes only succeeds when the types are equal, $\bt[1] \to \bt[2] \le \al$
 must end up equating $\bt[1] \to \bt[2]$ with $\al$ and thus have the same effect as Rule 21, but in a more roundabout
-fashion. DK's original algorithm also avoids this detour and contains a rule similar to our Rule 21.
+fashion.
+
+In comparison,
+DK's original algorithmic subsumption rule have no restriction on the expression $e$,
+and they do not have a rule that explicitly handles the case $\lam e \Lto \al$.
+Therefore their only way to check a lambda function against an existential variable
+is by combining the inferenced type of the lambda function with the subsumption rule.
 % A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
 % may result in a similar effect to Rule 21.
 % Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.

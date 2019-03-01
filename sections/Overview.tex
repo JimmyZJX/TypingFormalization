@@ -202,7 +202,8 @@ The synthesized type of function $e_1$ can also be polymorphic, of the form $\al
 In that case, we instantiate $A$ to $[\tau/a]A$ with a monotype $\tau$ % (which is also guessed)
 using according to Rule $\mathtt{Decl{\to}I{\To}}$.
 If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
-if $[\tau/a]A$ has another universal quantifier, Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
+if $[\tau/a]A$ is another universal quantified type,
+Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
 
 \paragraph{Overlapping Rules}
 Some of the declarative rules overlaps with each other.
@@ -213,10 +214,10 @@ since we introduce the type variable $a$ to the context earlier,
 which gives more flexibility on the choice of $\tau$.
 Declarative typing rule $\mathtt{DeclSub}$ overlaps with
 both $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$.
-However, we could argue that more specific rules are always the best choices,
+However, we argue that more specific rules are always the best choices,
 i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$ should have
 higher priority to $\mathtt{DeclSub}$. We will come back to this
-topic in Section~\ref{sec:metatheory}.
+topic in Section~\ref{sec:metatheory:non-overlapping}.
 \begin{comment}
 For example, $\Psi\vdash \lam x \Lto \all a\to a$ succeeds if derived from
 Rule $\mathtt{Decl\forall I}$, but fails when applied to $\mathtt{DeclSub}$:
@@ -271,7 +272,7 @@ DK's algorithm version revolves around their notion of \emph{algorithmic context
 \[
 \begin{array}{l@{\qquad}lcl}
 \text{Algorithmic Contexts}\qquad&\Gamma,\Delta,\Theta &::=&\quad \nil \mid
-\Gamma, a \mid \Gamma, \al \mid \Gamma, \al = \tau \mid
+\Gamma, a \mid \Gamma, x:A \mid \Gamma, \al \mid \Gamma, \al = \tau \mid
 \Gamma, \blacktriangleright_{\al}
 \end{array}
 \]
@@ -280,9 +281,10 @@ algorithmic context also contains \emph{existential} type variables
 $\al$. These are placeholders for monotypes $\tau$ that are still to
 be determined by the inference algorithm. When the existential variable is
 ``solved'', its entry in the context is replaced by the assignment
-$\al = \tau$. With the notation $[\Gamma]$ an algorithmic context
-$\Gamma$ denotes the substitution that replaces all its solved existential type
-variables with their solution.
+$\al = \tau$.
+A context applications on a type, denoted by $[\Gamma]A$,
+substitutes all solved existential type variables in $\Gamma$
+with their solutions on the type $A$.
 
 All algorithmic judgments thread an algorithmic context. They have the form
 $\Gamma \vdash \ldots \dashv \Delta$, where $\Gamma$ is the input context and
@@ -296,7 +298,7 @@ Solutions are incrementally propagated by applying the algorithmic output
 context of a previous task as substitution to the next task. This can be seen
 in the subsumption rule:
 \[
-\inferrule*
+\inferrule*[right=$\mathtt{DK\_Sub}$]
   {\Gamma \vdash e \Rightarrow A \dashv \Theta \\ 
    \Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta
   }
@@ -313,7 +315,7 @@ existential variables. For this reason the DK algorithm uses scope markers
 $\blacktriangleright_{\al}$ in a few places. An example is given in the following
 rule:
 \[
-\inferrule*
+\inferrule*[right=$\mathtt{DK\_{\le}\forall L}$]
   {\Gamma,\blacktriangleright_{\al}, \al \vdash [\al/a]A \le B \dashv \Delta,\blacktriangleright_{\al},\Theta}
   {\Gamma \vdash \forall a. A \le B \dashv \Delta}
 \]
@@ -333,12 +335,8 @@ $$
 $$
 \end{comment}
 
-Due to the complication of its scoping control method,
-it is hard to argue the preciseness of scoping for each variable when designing algorithms.
-Actually we found a scoping issue related to the subsumption rule,
-which might cause existential variables to leak across judgments.
-A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
-
+%Due to the complication of its scoping control method,
+%it is hard to argue the preciseness of scoping for each variable when designing algorithms.
 
 At first sight, the DK algorithm would seem a good basis for mechanisation. After
 all it comes with a careful description and extensive manual proofs.
@@ -408,7 +406,12 @@ judgment in turn, rather than immediately to all remaining judgments at once.
 Also, as we have mentioned above, the stack discipline of the ordered contexts
 does not mesh well with the use of output contexts; explicit marker entries are
 needed in two places to demarcate the end of an existential variable's scope.
-These are compelling reasons to look for a simpler algorithm that is easier to
+Actually we found a scoping issue related to the subsumption rule $\mathtt{DK\_Sub}$,
+which might cause existential variables to leak across judgments.
+A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
+
+The complications of scoping and propagation are compelling reasons
+to look for a simpler algorithm that is easier to
 reason about in a mechanised setting.
 
 
