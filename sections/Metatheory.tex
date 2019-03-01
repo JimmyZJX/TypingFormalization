@@ -99,9 +99,12 @@ which transfers all judgements in the declarative worklists to the
 declarative type system. This relation checks that every judgement entry in the worklist
 holds using a corresponding conventional declarative judgement. 
 The typing contexts of declarative judgements are recovered using an
-auxiliary erasure function $\|\Om\|$. The erasure function
-simply drops all judgment entries from the worklist, keeping only variable
-and type variable declarations.
+auxiliary erasure function $\|\Om\|$
+\footnote{In the proof script we do not use the erasure function,
+for the declarative system and well-formedness judgments automatically fits
+the non-erased declarative worklist just as declarative contexts.}.
+The erasure function simply drops all judgment entries from the worklist,
+keeping only variable and type variable declarations.
 
 %-------------------------------------------------------------------------------
 \subsection{Non-Overlapping Declarative System}
@@ -265,7 +268,6 @@ Given \emph{wf }$\Gm$:
             and $\|\Om\| \vdash \appInf{A'}{e}{C}$.
 \end{enumerate}
 \end{corollary}
-\bruno{if possible double-check against the corresponding Abella ones.}
 
 %-------------------------------------------------------------------------------
 \subsection{Completeness}
@@ -317,20 +319,16 @@ The following corollary is derived immediately from Theorem~\ref{thm:completenes
 Given \emph{wf }$\Gm$ containing no judgment chains:
 \begin{enumerate}
     \item If $\Om \vdash A' \le B'$ and $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$
-        then $\Gm \Vdash A \le B \redto \nil$;
+        \\then $\Gm \Vdash A \le B \redto \nil$;
     \item If $\Om \vdash e \Lto A'$ and $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$
-        then $\Gm \Vdash e \Lto A \redto \nil$;
-    \item If $\Om \vdash e \To A$ and $\Gm \sto \Om$
-        then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
+        \\then $\Gm \Vdash e \Lto A \redto \nil$;
+    \item If $\Om \vdash e \To A$ and $\Gm \Vdash e \To_a 1 \le 1 \sto \Om \Vdash e \To_a 1 \le 1$
+        \\then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
     \item If $\Om \vdash \appInf{A'}{e}{C}$ and
         $\Gm \Vdash \appInfAlg{A}{e}[a][1 \to 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \to 1]$
-        \\
-        then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
+        \\then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
 \end{corollary}
-\bruno{We discussed the form of the lemmas on slack. Please have the first premise
-  be a declarative judgement.
-  If possible also double-check against Abella.}
 
 %-------------------------------------------------------------------------------
 \subsection{Termination and Decidability}
@@ -515,14 +513,14 @@ The files are linearly dependent due to the limitation of Abella.
                             Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
     declTyping.thm      &  944 & 72  & \makecell[l]{Non-overlapping declarative system \\
                             Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll}, \ref{lem:inv_chkLam}}\\\hline
-    soundness.thm       & 1069 & 70  & Soundness theorem; aux. lemmas on transfer\\\hline
+    soundness.thm       & 1086 & 70  & Soundness theorem; aux. lemmas on transfer\\\hline
     depth.thm           &  206 & 14  & The $|\cdot|_\to$ measure; Lemma~\ref{lem:prune_inst}\\\hline
     dcl.thm             &  383 & 12  & Non-overlapping declarative worklist \\\hline
     completeness.thm    & 1075 & 61  &
                             Completeness theorem; aux. lemmas and relations\\\hline
     inst\_decidable.thm &  830 & 42  & Other measures; Lemma~\ref{lemma:inst:decidable}\\\hline
     decidability.thm    &  885 & 50  & Decidability theorem\\\hline
-    Total               & 7683 & 567 & (51 definitions in total)\\\hline
+    Total               & 7700 & 567 & (51 definitions in total)\\\hline
 \end{tabular}
 \caption{Statistics for the proof scripts}
 \label{fig:proof_statistics}
