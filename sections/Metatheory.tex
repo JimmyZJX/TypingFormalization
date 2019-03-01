@@ -60,12 +60,12 @@ generalize Rule $\mathtt{{\sto}\al}$ from substituting the first existential var
 to substituting any existential variable.
 
 \begin{lemma}[Insert]\label{lem:insert}
-If $\Gm_L\vdash \tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$
+If $\Gm_L, [\tau/\al]\Gm_R \sto \Om$ and $\Gm_L\vdash \tau$
 , then $\Gm_L, \al, \Gm_R \sto \Om$.
 \end{lemma}
 \begin{lemma}[Extract]\label{lem:extract}
 If $\Gm_L, \al, \Gm_R \sto \Om$
-, then $\exists \tau$ s.t. $\Gm_L\vdash\tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$.
+, then there exists $\tau$ s.t. $\Gm_L\vdash\tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$.
 \end{lemma}
 
 \begin{figure}[t]
@@ -101,7 +101,7 @@ holds using a corresponding conventional declarative judgement.
 The typing contexts of declarative judgements are recovered using an
 auxiliary erasure function $\|\Om\|$
 \footnote{In the proof script we do not use the erasure function,
-for the declarative system and well-formedness judgments automatically fits
+for the declarative system and well-formedness judgments automatically fit
 the non-erased declarative worklist just as declarative contexts.}.
 The erasure function simply drops all judgment entries from the worklist,
 keeping only variable and type variable declarations.
@@ -149,8 +149,8 @@ $$
 $$
 \end{enumerate}
 The resulting declarative system has no overlapping rules
-and more closely resembles the algorithmic system, which contains
-the same shape constraints.
+and more closely resembles the algorithmic system,
+which contains constraints of the same shape.
 
 We have proven soundness and completeness of the non-overlapping declarative
 system with respect to the overlapping one to establish their equivalence.
@@ -235,7 +235,8 @@ Our algorithm is sound with respect to DK's declarative system.
 For any worklist $\Gm$ that reduces successfully,
 there is a valid instantiation $\Om$ that transfers all judgements successfully to the declarative system.
 \begin{theorem}[Soundness]
-If \emph{wf }$\Gm$ and $\Gm \redto \nil$, then $\exists \Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
+If \emph{wf }$\Gm$ and $\Gm \redto \nil$,
+then there exists $\Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
 \end{theorem}
 
 The proof proceeds by induction on the derivation of $\Gm\redto\nil$.
@@ -284,7 +285,7 @@ We prove completeness by induction on the derivation of $\Om\redto\nil$
 and use the non-overlapping declarative system.
 Since the declarative worklist is reduced judgment by judgment
 (shown in Figure~\ref{fig:decl:worklist}),
-the induction always analyses the first judgment until it is satisfied.
+the induction always analyses the first judgment by a small step.
 As the algorithmic system introduces existential variables,
 a declarative rule may correspond to multiple algorithmic rules,
 and thus we analyse each of the possible cases.
@@ -294,7 +295,8 @@ and thus we analyse each of the possible cases.
 Most cases are relatively easy to prove.
 The Insert and Extract lemmas are applied when the algorithm uses existential variables,
 but transferred to a monotype for the declarative system,
-such as Rules 6, 10, 11, 12-17, 21 and 29.
+such as Rules 6, 8, 10, 11, 12-17, 21, 25, 27 and 29.
+
 Algorithmic Rules 10 and 11 require special treatment.
 When the induction reaches the $\mathtt{{\le}{\to}}$ case,
 the first judgment is of shape $A_1 \to A_2 \le B_1 \to B_2$.
@@ -343,9 +345,10 @@ on the worklist $\Gm$. The definitions of these measures can be found in Figure~
 $|\cdot|_e$ and $|\cdot|_\Leftrightarrow$, measure the total size of terms
 and the total difficulty of judgments, respectively. In the latter, check judgements
 count for 2, inference judgments for 1 and function inference judgments for 3.
-The next two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
+Other two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
 universal quantifiers and function types, respectively. Finally,
-$|\cdot|_{\al}$ counts the number of existential variables in the worklist.
+$|\cdot|_{\al}$ counts the number of existential variables in the worklist,
+and $|\cdot|$ is simply the length of the worklist.
 
 \begin{figure}[t]
 \hfill \framebox{$|\Gm|_e$} \hfill  \llap{Size measure.}
@@ -422,8 +425,8 @@ that is reduced by Rule 8 or 9. The new entries then are of the form $\Gm_\le$:
 Secondly, reducing the instantiation judgments may also affect the remainder of the worklist $\Gm$,
 by solving existing existentials and introducing new ones. This worklist update is captured in the 
 update judgement $\Gm \jExt \Gm'$ defined in Figure~\ref{fig:worklist_ext}.
-For instance, existential variable instantiation, 
-i.e. $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
+For instance, an existential variable instantiation, 
+$\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
 can be derived as a combination of the three rules that define the update relation.
 
 \begin{figure}
@@ -442,19 +445,21 @@ can be derived as a combination of the three rules that define the update relati
 \end{figure}
 
 The good news is that worklist update does not affect the three main worklist measures:
-\newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}\label{lemma:inst:invariant}
-\begin{lemma}[Measure Invariants of Worklist Extension]
+\newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
+\begin{lemma}[Measure Invariants of Worklist Extension]\label{lemma:inst:invariant}
 If $\Gm\jExt\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
 \end{lemma}
 
 Moreover, we can characterise the reduction of the instantiation judgments as follows.
 \begin{lemma}[Instantiation Decidability]\label{lemma:inst:decidable}
-For any well-formed algorithmic worklist $(\Gm, \Gm_i)$,
+For any well-formed algorithmic worklist $(\Gm, \Gm_i)$:
 \begin{enumerate}[1)]
-    \item When $|\Gm_i|_\forall = 0$, $(\Gm, \Gm_i) \redto \Gm'$,
-        where $|\Gm'|_{\al} = |\Gm|_{\al} - |\Gm_i|$ and $\Gm\jExt\Gm'$.
-    \item When $|\Gm_i|_\forall > 0$, $(\Gm, \Gm_i) \redto (\Gm', \Gm_\le)$,
-        where $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\jExt\Gm'$.
+    \item If $|\Gm_i|_\forall = 0$,
+        then there exists $\Gm'$\\
+        s.t. $(\Gm, \Gm_i) \redto \Gm'$ and $|\Gm'|_{\al} = |\Gm|_{\al} - |\Gm_i|$ and $\Gm\jExt\Gm'$.
+    \item If $|\Gm_i|_\forall > 0$,
+        then there exist $\Gm', \Gm_\le$\\
+        s.t. $(\Gm, \Gm_i) \redto (\Gm', \Gm_\le)$ and $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\jExt\Gm'$.
 \end{enumerate}
 \end{lemma}
 Hence, reducing the instantiation judgment prefix $\Gm_i$ either
@@ -470,8 +475,10 @@ which is decreased by nearly all rules.
 In the exceptional case that the measure does not decrease immediately, 
 we encounter an instantiation judgment at the top of the worklist. We can then
 make use of Lemma~\ref{lemma:inst:decidable} to show that $|\Gm|_{\al}$ or $|\Gm|_\forall$ decreases
-when that instantiation judgment is consumed. Moreover, Lemma~\ref{lemma:inst:invariant} establishes
-that no higher-priority measure component increases. Hence, in the exceptional case we have an overall measure decrease too.
+when that instantiation judgment is consumed or partially reduced.
+Moreover, Lemma~\ref{lemma:inst:invariant} establishes
+that no higher-priority measure component increases.
+Hence, in the exceptional case we have an overall measure decrease too.
 
 Combining all three main results (soundness, completeness and termination), we conclude that the declarative system is decidable
 by means of our algorithm.
@@ -510,7 +517,7 @@ The files are linearly dependent due to the limitation of Abella.
     decl.thm            &  226 & 33  & Basic declarative properties\\\hline
     order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strenthening\\\hline
     alg.thm             &  655 & 72  & Basic algorithmic properties\\\hline
-    trans.thm           &  628 & 53  & \makecell[l]{Transfer and its basic properties \\
+    trans.thm           &  628 & 53  & \makecell[l]{Worklist instantiation with basic properties \\
                             Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
     declTyping.thm      &  944 & 72  & \makecell[l]{Non-overlapping declarative system \\
                             Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll}, \ref{lem:inv_chkLam}}\\\hline
@@ -521,7 +528,7 @@ The files are linearly dependent due to the limitation of Abella.
                             Completeness theorem; aux. lemmas and relations\\\hline
     inst\_decidable.thm &  830 & 42  & Other measures; Lemma~\ref{lemma:inst:decidable}\\\hline
     decidability.thm    &  885 & 50  & Decidability theorem\\\hline
-    Total               & 7700 & 567 & (51 definitions in total)\\\hline
+    \hline\emph{Total}               & 7700 & 567 & (51 definitions in total)\\\hline
 \end{tabular}
 \caption{Statistics for the proof scripts}
 \label{fig:proof_statistics}
