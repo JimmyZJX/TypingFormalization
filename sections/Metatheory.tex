@@ -95,10 +95,10 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 
 \paragraph{Declarative transfer.}
 Figure~\ref{fig:decl:worklist} defines a relation $\Om \rto \Om'$,
-which transfers all judgements in the declarative worklists to the
-declarative type system. This relation checks that every judgement entry in the worklist
-holds using a corresponding conventional declarative judgement. 
-The typing contexts of declarative judgements are recovered using an
+which transfers all judgments in the declarative worklists to the
+declarative type system. This relation checks that every judgment entry in the worklist
+holds using a corresponding conventional declarative judgment. 
+The typing contexts of declarative judgments are recovered using an
 auxiliary erasure function $\|\Om\|$
 \footnote{In the proof script we do not use the erasure function,
 for the declarative system and well-formedness judgments automatically fit
@@ -233,7 +233,7 @@ our algorithm is also complete with respect to DK's declarative system.
 
 Our algorithm is sound with respect to DK's declarative system.
 For any worklist $\Gm$ that reduces successfully,
-there is a valid instantiation $\Om$ that transfers all judgements successfully to the declarative system.
+there is a valid instantiation $\Om$ that transfers all judgments successfully to the declarative system.
 \begin{theorem}[Soundness]
 If \emph{wf }$\Gm$ and $\Gm \redto \nil$,
 then there exists $\Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
@@ -248,7 +248,7 @@ For example, when $\al$ is solved to $\al[1] \to \al[2]$ in the algorithm,
 applying the Extract lemma gives two instantiations $\al[1] = \sigma$ and $\al[2] = \tau$.
 It follows that $\al = \sigma \to \tau$, which enables the induction hypothesis
 and finishes the corresponding case. Some immediate corollaries which
-show the soundness for specific judgement forms are: 
+show the soundness for specific judgment forms are: 
 
 
 \begin{corollary}[Soundness, single judgment form]
@@ -343,7 +343,7 @@ Our termination proof is based on a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 on the worklist $\Gm$. The definitions of these measures can be found in Figure~\ref{fig:measures}. The first two, 
 $|\cdot|_e$ and $|\cdot|_\Leftrightarrow$, measure the total size of terms
-and the total difficulty of judgments, respectively. In the latter, check judgements
+and the total difficulty of judgments, respectively. In the latter, check judgments
 count for 2, inference judgments for 1 and function inference judgments for 3.
 Other two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
 universal quantifiers and function types, respectively. Finally,
@@ -402,7 +402,7 @@ reduced by Rule 28, which decreases the measures.) The two exceptions are Rules
 decreasing the number of universal quantifiers. However, they are both
 immediately followed by Rule 7, which breaks the subtyping problem into two
 smaller problems of the form $\al \le A$ and $A \le \al$ which we call
-\emph{instantiation judgements}.
+\emph{instantiation judgments}.
 
 We now show that entirely reducing these smaller problems leaves the worklist
 in a state with an overall smaller measure. Our starting point is a 
@@ -424,7 +424,7 @@ that is reduced by Rule 8 or 9. The new entries then are of the form $\Gm_\le$:
 \end{gather*}
 Secondly, reducing the instantiation judgments may also affect the remainder of the worklist $\Gm$,
 by solving existing existentials and introducing new ones. This worklist update is captured in the 
-update judgement $\Gm \jExt \Gm'$ defined in Figure~\ref{fig:worklist_ext}.
+update judgment $\Gm \jExt \Gm'$ defined in Figure~\ref{fig:worklist_ext}.
 For instance, an existential variable instantiation, 
 $\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
 can be derived as a combination of the three rules that define the update relation.

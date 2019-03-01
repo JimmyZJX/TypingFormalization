@@ -16,7 +16,7 @@ Anything to say about the implementation? Do we have one?
 \subsection{Contrasting our scoping mechanisms with DK's scoping}\label{sec:discussion:scoping}
 
 A nice feature of our worklists is that, simply by interleaving variable declarations and
-judgement chains, they make the scope of variables
+judgment chains, they make the scope of variables
 precise.  DK's algorithm deals with garbage collecting variables in a
 different way: through type variable or existential variable
 markers (as discussed in Section~\ref{ssec:DK_Algorithm}).  Despite
@@ -97,8 +97,8 @@ $$
 {\Gamma \vdash e \Lto B \dashv \Delta}
 $$
 Here we employ the markers in a way they were originally not intended for.
-We create a dummy fresh existential $\al$ and add a marker to the input context of the inference judgement.
-After the subtyping judgement is processed we look for the marker and drop everything afterwards.
+We create a dummy fresh existential $\al$ and add a marker to the input context of the inference judgment.
+After the subtyping judgment is processed we look for the marker and drop everything afterwards.
 We pick this rule because it is the only one where a checking judgment calls an inference judgment.
 That is the point where our algorithm recycles variables---right after a judgment chain is satisfied.
 After applying this patch, to the best of our knowledge,

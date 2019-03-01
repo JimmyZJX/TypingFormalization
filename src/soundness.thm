@@ -244,9 +244,9 @@ induction on 1. intros. case H1.
 	apply exFree_weaken to H4. apply exFree_weaken to H5.
 		apply exFree_j to H6 with J = inferC (lam X) W. search.
 	case H4. case H5. case H10. case H12.
-		assert forall (F : ty -> judgement) W (A : ty -> ty), nabla x,
+		assert forall (F : ty -> judgment) W (A : ty -> ty), nabla x,
 			F x = W x (A x) -> F = x\ W x (A x).
-		assert forall (F : ty -> judgement) W (A : ty -> ty) m, nabla x,
+		assert forall (F : ty -> judgment) W (A : ty -> ty) m, nabla x,
 			F x = W x (A x) -> F m = W m (A m).
 		apply H14 to H13 with A1 = x\ arrow (A x) (B x), W = W.
 		assert forall (L A : ty) L1, nabla (x : ty), L = L1 A x -> exists L0, L1 = a\ x\ L0 a.
@@ -255,7 +255,7 @@ induction on 1. intros. case H1.
 		apply wfj_remove_exvar_mono to H12 H13 _ _.
 		M: apply append_mem to H12 _. apply mono_prune_exvar to _ _ H4.
 		W: apply mono_wfta to H9. M: apply mono_strenthen_exvar to H13 H12 _ W.
-		Aux: assert forall (F W : ty -> judgement), nabla x, F x = W x -> F = W.
+		Aux: assert forall (F W : ty -> judgment), nabla x, F x = W x -> F = W.
 		apply Aux to H2.
 		apply IH to H7 _ _ _ with W = W m, Arr = Arr m. search.*/
 

@@ -9,11 +9,11 @@ Secondly, our algorithm also
 accounts for the type system (and not just subtyping). To deal with
 inference judgments that arise in the type system we employ a \emph{continuation
 passing style} to enable the transfer of inferred information across
-judgements in a worklist.
+judgments in a worklist.
 
 \subsection{Syntax and Well-Formedness}
 
-Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness judgements used by the algorithm.
+Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness judgments used by the algorithm.
 
 \begin{figure}
 \begin{gather*}
@@ -24,14 +24,14 @@ Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness judgements used
 %\text{Types}\qquad&A', B', C' &::=&\quad 1 \mid a \mid \forall x. A' \mid A'\to B'\\
 % \text{Mono-types}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
 %\text{Context}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A' \color{red} \\[2mm]
-% \text{Declarative Judgements}\qquad&\jo &::=&\quad \nil \mid \P\vdash A' \le B' \jc \jo\\
+% \text{Declarative Judgments}\qquad&\jo &::=&\quad \nil \mid \P\vdash A' \le B' \jc \jo\\
 % &&&\quad \mid \P\vdash e\Leftarrow A' \jc \jo \mid \P\vdash e\To A' \jc \jo \mid \P\vdash A' \bullet e\TTo C' \jc \jo\\
 % \noalign{\jimmy{\text{What do the markers do: $\G \vdash,a \vdash,b\vdash \j_1;\j_2;\j_3$ means $\G,a,b\vdash \j_1 \land \G,a\vdash \j_1,\j_2 \land \G\vdash \j_3$}}} \\[2mm]
 \text{Algorithmic types}\qquad&A, B, C &::=& \quad 1 \mid a \mid \all A \mid A\to B \mid \al % \quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B
 \\
 % \text{Terms}\qquad&e&::=&\quad x \mid () \mid \lam{e} \mid e_1~e_2 \mid (e:A)
 % \\[2mm]
-\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
+\text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
 \\
 \text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg%\\
 % \text{Declarative worklist}\qquad&\Om &::=&\quad \nil \mid \Om, a \mid \Om, x: A \mid \Om \Vdash \jg
@@ -104,12 +104,12 @@ of judgments in our system: subtyping ($A \le B$), checking ($e\Lto
 A$), inference ($e\To_{a} \jg$) and
 application inference ($\appInfAlg{A}{e}$).  Subtyping and checking are relatively simple,
 since their result is only success or failure. However both inference and
-application inference return a type that is used in subsequent judgements. We use a
+application inference return a type that is used in subsequent judgments. We use a
 continuation-passing-style encoding to accomplish this. For example, the judgment
 chain $e \To_a (a \le B)$ contains two judgments: first we want to
 infer the type of the expression $e$, and then check if that type is a
 subtype of $B$. The \emph{unknown} type of $e$ is represented by a
-type variable $a$, which is used as a placeholder in the second judgement to denote the 
+type variable $a$, which is used as a placeholder in the second judgment to denote the 
 type of $e$.
 
 \paragraph{Worklist Judgments} Our algorithm has a non-standard form.
@@ -200,8 +200,8 @@ this corresponds to successful type checking.
 
 Let us explain the rules in more details:
 Rules 1-3 pop a variable declaration. Essentially this is garbage: variables that are
-out of scope for the remaining judgements in the worklist.
-All other rules concern a judgement at the front of the worklist. Logically we
+out of scope for the remaining judgments in the worklist.
+All other rules concern a judgment at the front of the worklist. Logically we
 can discern 6 groups of rules.
 
 \paragraph{{\bf 1. Declarative Subtyping}}
@@ -273,7 +273,7 @@ respect the scope of existential variables. For example, Rule 12
 states that an existential variable $\al$ can be solved with another
 existential variable $\bt$ only if $\bt$ occurs after $\al$.
 
-\paragraph{\bf 4. Checking judgements.}
+\paragraph{\bf 4. Checking judgments.}
 Rules 18-21 deal with checking judgments.
 Rule 18 is similar to $\mathtt{DeclSub}$, but rewritten in the
 continuation-passing-style.
@@ -343,7 +343,7 @@ Rule 25 introduces variables $\al, \bt$ that affect the remaining judgment chain
 This rule is carefully designed so that the output variables are bound by earlier declarations,
 thus the well-formedness of the worklist is preserved,
 and the garbage will be collected at the correct time.
-By making use of the continuation-passing-style judgement chain,
+By making use of the continuation-passing-style judgment chain,
 inner judgments always share the context with their parent judgment.
 
 \begin{comment}
@@ -393,7 +393,7 @@ and we further discuss the differences in Section~\ref{sec:discussion:scoping}.
 % \bruno{You have some note ``differs'' on the rules. Should that
 %   deserve an explanation here?}
 
-\paragraph{\bf 6. Application inference judgements}
+\paragraph{\bf 6. Application inference judgments}
 Finally, Rules 27-29 deal with application inference judgments.
 Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}$ and $\mathtt{Decl\to App}$.
 Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.

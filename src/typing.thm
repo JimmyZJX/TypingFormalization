@@ -52,18 +52,18 @@ Define wftm : olist -> tm -> prop by
 	wftm E (app X Y) := wftm E X /\ wftm E Y;
 	wftm E (anno X A) := wftm E X /\ wft nil A.
 
-Kind judgement type.
+Kind judgment type.
 
-Type j        judgement -> o.
+Type j        judgment -> o.
 
-Type subty    ty -> ty -> judgement.
-Type check    tm -> ty -> judgement.
-Type infer    tm -> ty -> judgement.
-Type inferApp ty -> tm -> ty -> judgement.
-Type equal    ty -> ty -> judgement.
+Type subty    ty -> ty -> judgment.
+Type check    tm -> ty -> judgment.
+Type infer    tm -> ty -> judgment.
+Type inferApp ty -> tm -> ty -> judgment.
+Type equal    ty -> ty -> judgment.
 
-Type inferC    tm -> (ty -> judgement) -> judgement.
-Type inferAppC ty -> tm -> (ty -> judgement) -> judgement.
+Type inferC    tm -> (ty -> judgment) -> judgment.
+Type inferAppC ty -> tm -> (ty -> judgment) -> judgment.
 
 % Algorithmic well-formed judgments
 Define wfj : olist -> prop by

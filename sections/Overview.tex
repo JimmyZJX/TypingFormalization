@@ -4,8 +4,8 @@ This section starts by introducing DK's declarative type system. Then
 it discusses several techniques that have been used in algorithmic
 formulations, and which have influenced our own algorithmic design.
 Finally we introduce the novelties of our new algorithm.
-In particular the support for inference judgements in
-judgement worklists, and a new form of judgement worklist
+In particular the support for inference judgments in
+judgment worklists, and a new form of judgment worklist
 that the unifies \emph{ordered contexts} and the worklists themselves. 
 
 \subsection{DK's Declarative System}
@@ -397,7 +397,7 @@ into the context and threading this context through all judgments.
 % two This means that every judgments takes two contexts---an input and an output
 % context---rather than the conventional single context. The output context
 % records any new variable instantations; to propagate these instantiations to
-% the remaining judgements, their predecessor's output context---which is their
+% the remaining judgments, their predecessor's output context---which is their
 % input context---is applied to them as a substitution.
 While this works well on paper, this approach is still fairly involved and thus
 hard to reason about in a mechanised setting. Indeed, the instantiations have
@@ -512,9 +512,9 @@ substitute solutions into these copies.
 In recent work, \citet{itp2018} have shown how to mechanise a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
 subtyping judgment. This approach overcomes the problem's in DK's formulation
-by using a \emph{worklist}-based judgement of the form $$\Gamma \vdash \Omega$$
+by using a \emph{worklist}-based judgment of the form $$\Gamma \vdash \Omega$$
 where $\Omega$ is a worklist (or sequence) of subtyping problems of the
-form $A \leq B$.  The judgement is defined by case analysis on the first
+form $A \leq B$.  The judgment is defined by case analysis on the first
 element of $\Omega$ and recursively processes the worklist until it is empty.
 Using both a single common ordered context $\Gamma$ and a worklist $\Omega$ greatly
 simplifies propagating the instantiation of type variables in one
@@ -532,7 +532,7 @@ This complicates establishing the relation with the declarative system.
 
 
 \paragraph{No Inference Judgments} 
-Secondly and more importantly, the approach only deals with a judgement for
+Secondly and more importantly, the approach only deals with a judgment for
 \emph{checking} whether one type is the subtype of another. While this may not
 be so difficult to adapt to the \emph{checking} mode of term typing $\Gamma
 \vdash e \Leftarrow A$, it clearly lacks the functionality to support the
@@ -557,7 +557,7 @@ variable is no longer needed and can be popped from the worklist. This way, no
 garbage (i.e. variables out-of-scope) builds up.
 
 $$\begin{aligned}
-\text{Algorithmic judgement chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
+\text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
 \text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
 \end{aligned}$$
 
@@ -583,10 +583,10 @@ and it has a similar variable scoping scheme.
 % $$\Gm \Vdash \all a \to a \le \all a \to a$$
 % $$\Gm, a, \al \Vdash \al \to \al \le a \to a$$
 
-\paragraph{Inference Judgements}
-To express the DK's inference judgements, we use a novel form of work entries in
-the worklist: our algorithmic judgement chains $\omega$. In its simplest form,
-such a judgement chain is just a check, like a subtyping check $A \leq B$ or a
+\paragraph{Inference Judgments}
+To express the DK's inference judgments, we use a novel form of work entries in
+the worklist: our algorithmic judgment chains $\omega$. In its simplest form,
+such a judgment chain is just a check, like a subtyping check $A \leq B$ or a
 term typecheck $e \Leftarrow A$. 
 However, the non-trivial forms of chains capture an
 inference task together with the work that depends on its outcome. For
@@ -626,5 +626,5 @@ Finally the last judgment becomes $1 \le 1$, a trivial base case.
 % Our algorithm borrows some ideas from previous work, while adding new ones. 
 % A small-step style processing worklists; \emph{Judgment Chains}; others. 
 
-% Importantly we now deal with inference judgement.
+% Importantly we now deal with inference judgment.
 

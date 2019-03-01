@@ -172,7 +172,7 @@ induction on 1. intros. case H1. search. search. search.
 	apply add_total to H6 with n = m1. search.
 	apply IH to H2. apply order_prune to H3. search.
 
-% iexp :: Env -> Judgements -> prop
+% iexp :: Env -> Judgments -> prop
 Define iexp : olist -> olist -> prop by
 	iexp E nil;
 	nabla x, iexp (E x) (j (subty x A) :: Exp) :=
