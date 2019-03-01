@@ -316,14 +316,14 @@ The following corollary is derived immediately from Theorem~\ref{thm:completenes
 \begin{corollary}[Completeness, single judgment form]
 Given \emph{wf }$\Gm$ containing no judgment chains:
 \begin{enumerate}
-    \item If $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$ and $\|\Om\| \vdash A' \le B'$
+    \item If $\Om \vdash A' \le B'$ and $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$
         then $\Gm \Vdash A \le B \redto \nil$;
-    \item If $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$ and $\|\Om\| \vdash e \Lto A'$
+    \item If $\Om \vdash e \Lto A'$ and $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$
         then $\Gm \Vdash e \Lto A \redto \nil$;
-    \item If $\Gm \sto \Om$ and exists $A$ s.t. $\|\Om\| \vdash e \To A$
+    \item If $\Om \vdash e \To A$ and $\Gm \sto \Om$
         then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
-    \item If $\Gm \Vdash \appInfAlg{A}{e}[a][1 \to 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \to 1]$
-        and exists $C$ s.t. $\|\Om\| \vdash \appInf{A'}{e}{C}$
+    \item If $\Om \vdash \appInf{A'}{e}{C}$ and
+        $\Gm \Vdash \appInfAlg{A}{e}[a][1 \to 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \to 1]$
         \\
         then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
@@ -483,7 +483,11 @@ Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 
 % ---------------------------------------------
 \subsection{Abella and Proof Statistics}
-We have chosen the Abella (v2.0.7-dev) proof assistant~\cite{AbellaDesc} to develop our formalization.
+We have chosen the Abella (v2.0.7-dev
+\footnote{A develop version is used because the dev just fixed a serious bug that
+accepts a simple proof of false, which also affects the completeness of our proof.
+The author compiled the scripts against commit 92829a of the GitHub repository of Abella.}
+) proof assistant~\cite{AbellaDesc} to develop our formalization.
 Abella is designed to help with such formalizations of programming languages,
 due to its built-in support for variable binding and
 the $\lambda$-tree syntax~\cite{miller2000abstract}, i.e. a form of HOAS.
@@ -509,14 +513,14 @@ The files are linearly dependent due to the limitation of Abella.
     alg.thm             &  655 & 72  & Basic algorithmic properties\\\hline
     trans.thm           &  628 & 53  & \makecell[l]{Transfer and its basic properties \\
                             Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
-    declTyping.thm      &  944 & 72  & \makecell[l]{Additional properties for declarative typing \\
+    declTyping.thm      &  944 & 72  & \makecell[l]{Non-overlapping declarative system \\
                             Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll}, \ref{lem:inv_chkLam}}\\\hline
     soundness.thm       & 1069 & 70  & Soundness theorem; aux. lemmas on transfer\\\hline
-    depth.thm           &  206 & 14  & \makecell[l]{The $|\cdot|_\to$ measure; \\
-                            Lemma~\ref{lem:prune_inst}}\\\hline
-    \makecell{dcl.thm, \\completeness.thm} & 1458 & 73  &
+    depth.thm           &  206 & 14  & The $|\cdot|_\to$ measure; Lemma~\ref{lem:prune_inst}\\\hline
+    dcl.thm             &  383 & 12  & Non-overlapping declarative worklist \\\hline
+    completeness.thm    & 1075 & 61  &
                             Completeness theorem; aux. lemmas and relations\\\hline
-    inst\_decidable.thm &  830 & 42  & Lemma~\ref{lemma:inst:decidable}\\\hline
+    inst\_decidable.thm &  830 & 42  & Other measures; Lemma~\ref{lemma:inst:decidable}\\\hline
     decidability.thm    &  885 & 50  & Decidability theorem\\\hline
     Total               & 7683 & 567 & (51 definitions in total)\\\hline
 \end{tabular}
