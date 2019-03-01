@@ -365,12 +365,19 @@ variables $\al$ and $\bt$ in the next judgment are out of scope
 and will break the well-formedness of the worklist.
 \end{comment}
 
-Rules 22-26 deal with type inference judgments.
-Inference judgment chains are written in continuation-passing-style.
+Rules 22-26 deal with type inference judgments, written in continuation-passing-style.
 When an inference judgment succeeds with type $A$,
-the algorithm continues to work on the inner-chain $\jg$ by assigning $A$ to its placeholder variable $a$.
+the algorithm continues to work on the inner-chain $\jg$ by
+assigning $A$ to its placeholder variable $a$.
 Rule 23 infers an annotated expression by changing into checking mode,
 therefore another judgment chain is created.
+Rule 24 is a base case,
+where the unit type $1$ is inferred and thus passed to its child judgment chain.
+Rule 26 infers the type of an application by
+firstly inferring the type of the function $e_1$,
+and then leaving the rest work to an application inference judgment,
+which passes $a$, representing the return type of the application,
+to the reminder of the judgment chain $\jg$.
 
 Rule 25 infers the type of a lambda expression by introducing $\al, \bt$
 as the input and output types of the function, respectively.
