@@ -10,12 +10,31 @@ Outline:
     \item difficulties following DK's formalization
     \item a blend of ideas from various sources DK's ordered contexts
     \item list of judgements + some novel ideas
-    \item Future work:
-    \begin{itemize}
-        \item Scoped type variables?
-        \item Go beyond predicative instantiations
-        \item More complicated features, such as dependent type
-    \end{itemize}
+    \item lessons learned: problems identified in proofs and scoping
+    \item Future work
 \end{itemize}
 
 
+
+\paragraph{Future work}
+\begin{itemize}
+    \item Scoped type variables?
+    \item Go beyond predicative instantiations
+    \item More complicated features, such as dependent type
+\end{itemize}
+
+We have not yet explore lexically-scoped type variables~\cite{jones2003lexically}
+as a practical extension to our system.
+Formalization of a different variable scoping scheme is also
+a challenging task for formal proofs via proof assistants.
+
+Moreover, the garbage collection process for type variables and
+existential variables do worth further attention:
+the inference of $\lam x$ leaves an unsolved $\al$ in the context,
+which we simply remove the variable after it is no longer refered to.
+Is it possible that we infer better types by making better use of that piece of information?
+How do we deal with, at least some ``trivial'' impredicative instantiations?
+
+Last but not least, a further expectation is that our system would
+adapt to various complicated type inference algorithms,
+such as ones for dependent types.
