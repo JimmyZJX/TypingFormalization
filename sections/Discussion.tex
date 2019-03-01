@@ -109,23 +109,23 @@ However, this exploits markers in a way they were not intended to be used and se
 
 %-------------------------------------------------------------------------------
 \subsection{Elaboration}
-A common extension to type-inference algorithms is to have an
-associated elaboration.  For example, for languages with implicit
+
+Type-inference algorithms are often extended with an
+associated elaboration. For example, for languages with implicit
 polymorphism, it is common to have an elaboration to a variant of
 System F~\cite{reynolds1983types}, which recovers type information and explicit type
 applications. Therefore a natural question is whether our algorithm
-can also accomodate an elaboration step.
+can also accomodate such elaboration.
 While our algorithmic reduction does not elaborate to System F,
 we believe that it is not difficult to extend the algorithm with a (type-directed) elaboration.
-We explain the rought idea as follows.
+We explain the rough idea as follows.
 
 Since the judgment form of our algorithmic worklist contains a collection of judgments,
 elaboration expressions are also generated as a list of equal length to
 the number of judgments (\emph{not judgment chains}) in the worklist.
-Within expectation, subtyping judgments translate to coercions (denoted by $f$),
+As usual, subtyping judgments translate to coercions (denoted by $f$ and
+represented by System F functions),
 all three other types of judgments translate to terms in System F (denoted by $t$).
-\bruno{Why distinguish coercions and terms? Coercions are just terms, right?}
-\jimmy{please help on the question @Tom.}
 
 Let $\Phi$ be the elaboration list, containing translated type coercions and terms:
 $$\Phi ::= \nil \mid \Phi, f \mid \Phi, t$$
@@ -133,21 +133,21 @@ $$\Phi ::= \nil \mid \Phi, f \mid \Phi, t$$
 Then the form of our algorithmic judgment becomes:
 $$\Gamma \hookrightarrow \Phi$$
 
-We take Rule 18 as an example, rewritting small-step reduction in a relational style,
+We take Rule 18 as an example, rewriting small-step reduction in a relational style,
 $$
 \inferrule*[right=$\mathtt{Translation\_18}$]
 {\Gamma \Vdash e \To_a a \le B \hookrightarrow \Phi, f, t}
 {\Gamma \Vdash e \Lto B \hookrightarrow \Phi, f t}
 $$
 As is shown in the conclusion of the rule,
-a checking judgment on the top of the worklist corresponds to a top element for elaboration.
-The premise indicates that one judgment chain may relate to more than one elaboration elements,
+a checking judgment at the top of the worklist corresponds to a top element for elaboration.
+The premise shows that one judgment chain may relate to more than one elaboration elements,
 and that the outer judgment, being processed before inner ones,
 elaborates to the top element in the elaboration list.
 
-Existential variables need special treatment, since they may be solved at any step,
-or being recycled if not solved in its scope.
-If an existential variable is solved, we not only propagate the solution to the rest judgments,
+Existential variables need special treatment, since they may be solved at any point,
+or be recycled if not solved within its scope.
+If an existential variable is solved, we not only propagate the solution to the other judgments,
 but also replace ocurrences in the elaboration list.
 If an existential variable is recycled, meaning that it is not constrained,
 we can pick any well-formed monotype as its solution.
