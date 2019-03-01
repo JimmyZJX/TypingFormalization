@@ -76,7 +76,9 @@ $$
 {\Gamma, \al \vdash [\al/a] \appInf{A}{e}{C} \dashv \Delta}
 {\Gamma \vdash \appInf{\all A}{e}{C} \dashv \Delta}
 $$
-In contrast our algorithm collects the existential variables right after the next judgment chain:
+In contrast Rule 25 of our algorithm collects the existential variables
+right after the second judgment chain,
+and Rule 27 collects one exsitential variable similarly:
 \[\Gm \Vdash \lambda x. e \To_a \jg \rrule{25}
 \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\]
 \[\Gm \Vdash \appInfAlg{\forall a. A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\]
@@ -96,7 +98,7 @@ $$
 $$
 Here we employ the markers in a way different from what they were originally intended for.
 We create a dummy fresh $\al$ and push a marker into the inference judgement.
-When the subtyping judgement is used we look for the marker and drop everything afterwards.
+After the subtyping judgement is processed we look for the marker and drop everything afterwards.
 We pick this rule because this is the only one where a checking judgment calls an inference judgment.
 And that's the point where our algorithm recycles variables---right after a judgment chain is satisfied.
 After applying this patch, to our best knowledge,
@@ -123,6 +125,7 @@ the number of judgments (\emph{not judgment chains}) in the worklist.
 Within expectation, subtyping judgments translate to coercions (denoted by $f$),
 all three other types of judgments translate to terms in System F (denoted by $t$).
 \bruno{Why distinguish coercions and terms? Coercions are just terms, right?}
+\jimmy{please help on the question @Tom.}
 
 Let $\Phi$ be the elaboration list, containing translated type coercions and terms:
 $$\Phi ::= \nil \mid \Phi, f \mid \Phi, t$$
