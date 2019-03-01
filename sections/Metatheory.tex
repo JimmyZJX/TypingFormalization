@@ -33,11 +33,11 @@ Abella theorem prover~\cite{AbellaDesc}.
 To aid formalizing the correspondence between the declarative and algorithmic
 systems, we introduce the notion of a declarative worklist $\Om$, defined in
 Figure~\ref{fig:trans}. A declarative worklist $\Om$ has the same structure as an
-algorithmic worklist $\Gm$, but does not contain any extistential variables $\al$.
+algorithmic worklist $\Gm$, but does not contain any existential variables $\al$.
 
 \paragraph{Worklist instantiation.}
 The relation $\Gm \sto \Om$ expresses that the algorithmic worklist $\Gm$ can 
-be instiantiated to the declarative worklist $\Om$, by appropriately instantiating
+be instantiated to the declarative worklist $\Om$, by appropriately instantiating
 all existential variables $\al$ in $\Gm$ with well-scoped monotypes $\tau$.
 The rules of this instantiation relation are shown in Figure~\ref{fig:trans} too.
 Rule $\mathtt{{\sto}\al}$ replaces the first existential variable with a well-scoped monotype and
@@ -444,7 +444,7 @@ can be derived as a combination of the three rules that define the update relati
 \caption{Worklist Update}\label{fig:worklist_ext}
 \end{figure}
 
-The good news is that worklist update does not affect the three main worklist measures:
+The good news is that worklist updates do not affect the three main worklist measures:
 \newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
 \begin{lemma}[Measure Invariants of Worklist Extension]\label{lemma:inst:invariant}
 If $\Gm\jExt\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
@@ -492,7 +492,7 @@ We have chosen the Abella (v2.0.7-dev
 \footnote{We use a development version because the developers
 just fixed a serious bug that accepts a simple proof of false,
 which also affects the completeness of one of our proofs.
-Specifically, our scipts compile against commit 92829a of Abella's GitHub repository.}
+Specifically, our scripts compile against commit 92829a of Abella's GitHub repository.}
 ) proof assistant~\cite{AbellaDesc} to develop our formalization.
 Abella is designed to help with formalizations of programming languages,
 due to its built-in support for variable binding and
@@ -515,7 +515,7 @@ The files are linearly dependent due to the limitation of Abella.
     olist.thm, nat.thm  &  309 & 56  & Basic data structures\\\hline
     typing.thm          &  238 & 5   & Declarative \& algorithmic system, debug examples\\\hline
     decl.thm            &  226 & 33  & Basic declarative properties\\\hline
-    order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strenthening\\\hline
+    order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strengthening\\\hline
     alg.thm             &  655 & 72  & Basic algorithmic properties\\\hline
     trans.thm           &  628 & 53  & \makecell[l]{Worklist instantiation and declarative transfer\\
                             Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline

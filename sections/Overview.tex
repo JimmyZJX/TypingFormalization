@@ -137,7 +137,7 @@ Declarative Subtyping}\label{fig:decl:sub}
 \paragraph{Declarative Subtyping}
 Figure~\ref{fig:decl:sub} shows DK's declarative subtyping judgment $\Psi \vdash A \le B$,
 which was adopted from \citet{odersky1996putting}. It compares the
-degree of polymorphism between between $A$ and $B$ in DK's implicit polymorphic type system. 
+degree of polymorphism between $A$ and $B$ in DK's implicit polymorphic type system. 
 Essentially, if $A$ can always be instantiated to match any instantiation of $B$,
 then A is ``at least as polymorphic as'' $B$. We also 
 say that $A$ is ``more polymorphic than'' $B$ and write $A \le B$.
@@ -162,7 +162,7 @@ The fact that $\tau$ is a monotype rules out the possibility of
 polymorphic (or impredicative) instantiation.
 However this restriction ensures that the subtyping relation remains
 decidable. Allowing an arbitrary type (rather than a monotype) in rule $\mathtt{{\le}\forall L}$
-is know to give rise to an undecidable subtyping relation~\cite{tiuryn1996subtyping}.
+is known to give rise to an undecidable subtyping relation~\cite{tiuryn1996subtyping}.
 \citet{jones2007practical} also impose the restriction of
 predicative instantiation in their type system.
 Both systems are adopted by several practical programming languages.
@@ -282,9 +282,9 @@ $\al$. These are placeholders for monotypes $\tau$ that are still to
 be determined by the inference algorithm. When the existential variable is
 ``solved'', its entry in the context is replaced by the assignment
 $\al = \tau$.
-A context applications on a type, denoted by $[\Gamma]A$,
+A context application on a type, denoted by $[\Gamma]A$,
 substitutes all solved existential type variables in $\Gamma$
-with their solutions on the type $A$.
+with their solutions on type $A$.
 
 All algorithmic judgments thread an algorithmic context. They have the form
 $\Gamma \vdash \ldots \dashv \Delta$, where $\Gamma$ is the input context and
@@ -295,7 +295,7 @@ The output context is a functional update of the input context that records newl
 introduced existentials and solutions.
 
 Solutions are incrementally propagated by applying the algorithmic output
-context of a previous task as substitution to the next task. This can be seen
+context of a previous task as substitutions to the next task. This can be seen
 in the subsumption rule:
 \[
 \inferrule*[right=$\mathtt{DK\_Sub}$]
@@ -348,7 +348,7 @@ a different, more mechanisation-friendly algorithm.
 While going through the manual proofs of DK's algorithm, we found several
 problems.  Indeed, two proofs of lemmas---Lemma 19 (Extension Equality
 Preservation) and Lemma 14 (Subsumption)--- wrongly apply induction hypotheses
-in several cases. Fortunately, we have found simple work-arounds that fix these
+in several cases. Fortunately, we have found simple workarounds that fix these
 proofs without affecting the appeals to these lemmas.
 
 % The proof of Lemma 19 (Extension Equality Preservation) applies a wrong

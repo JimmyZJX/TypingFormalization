@@ -115,7 +115,7 @@ associated elaboration. For example, for languages with implicit
 polymorphism, it is common to have an elaboration to a variant of
 System F~\cite{reynolds1983types}, which recovers type information and explicit type
 applications. Therefore a natural question is whether our algorithm
-can also accomodate such elaboration.
+can also accommodate such elaboration.
 While our algorithmic reduction does not elaborate to System F,
 we believe that it is not difficult to extend the algorithm with a (type-directed) elaboration.
 We explain the rough idea as follows.
@@ -148,7 +148,7 @@ elaborates to the top element in the elaboration list.
 Moreover, existential variables need special treatment, since they may be solved at any point,
 or be recycled if not solved within its scope.
 If an existential variable is solved, we not only propagate the solution to the other judgments,
-but also replace ocurrences in the elaboration list.
+but also replace occurrences in the elaboration list.
 If an existential variable is recycled, meaning that it is not constrained,
 we can pick any well-formed monotype as its solution.
 The unit type $1$, as the simplest type in the system, is a good choice.

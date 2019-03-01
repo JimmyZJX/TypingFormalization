@@ -297,7 +297,7 @@ because Rules 18 and 24 can be combined to give the same result.
 \paragraph{Rule 21 Design Choice}
 The addition of Rule 21 is a design choice we have made to simplify the side
 condition of Rule 18 (which avoids overlap). It also streamlines the algorithm
-and the meatatheory as we now treat all cases
+and the metatheory as we now treat all cases
 where we can see that an existential variable should be instantiated to a
 function type  (i.e., Rules 10, 11, 21 and 29) uniformly.
 
@@ -338,7 +338,7 @@ they \emph{return} a type instead of only accepting or rejecting.
 For the algorithmic system, where guesses are involved,
 it may happen that the output type of an inference judgment refers to new existential variables,
 such as Rule 25.
-In comparison to Rule 8 and 9, where new variables are only refered by the sub-derivation,
+In comparison to Rule 8 and 9, where new variables are only referred by the sub-derivation,
 Rule 25 introduces variables $\al, \bt$ that affect the remaining judgment chain.
 This rule is carefully designed so that the output variables are bound by earlier declarations,
 thus the well-formedness of the worklist is preserved,

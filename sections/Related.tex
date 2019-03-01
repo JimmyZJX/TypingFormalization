@@ -26,7 +26,7 @@ Though carefully written, some of the proofs are incorrect
 which creates difficulties when formalizing them in a proof assistant.
 In their follow-up work \citet{DunfieldIndexed} enrich the bidirectional higher-rank system with
 existentials and indexed types.
-With a more complex declarative system, they developed a proofs of over 150 pages.
+With a more complex declarative system, they developed a proof of over 150 pages.
 It is even more difficult to argue its correctness for every single detail within such a big development.
 Unfortunately, we find that their Lemma 26 (Parallel Admissibility) appears to have the same issue 
 as lemma 29 in \citet{dunfield2013complete}: the conclusion is false. We also discuss
@@ -99,7 +99,7 @@ has been manually proven to be sound and complete
 with respect to the Hindley-Milner type system~\cite{hindley1969principal,milner1978theory,damas1982principal}.
 After around 15 years, the algorithm was formally verified by
 \citet{naraschewski1999type} in Isabelle/HOL~\cite{nipkow2002isabelle}.
-The treatment of new variables was tricky at that time, while the overall structure follow the
+The treatment of new variables was tricky at that time, while the overall structure follows the
 structure of Damas's manual proof closely.
 %Another complication is the encoding of substitutions,
 %which they chose to formalize as a function instead of an association list.
@@ -134,7 +134,7 @@ while processing them in a similar way to those algorithms.
 One important difference is that contexts are
 duplicated in their unification judgments, which complicates the unification process,
 since the information of each local context needs to be synchronized.
-Instead we make use of the natural of ordered context to control the scoping of unification variables.
+Instead we make use of the nature of ordered context to control the scoping of unification variables.
 While their algorithms focus only on unification,
-our algorithm also deals with other type of judgments like type inference.
+our algorithm also deals with other types of judgments like type inference.
 A detailed discussion is in Section~\ref{sec:overview:list}.
