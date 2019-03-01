@@ -42,6 +42,15 @@ resulting in a complicated mechanism for implicit instantiation taken care by th
 A manual proof is given, showing that the algorithm is sound and
 complete with respect to their declarative specification.
 
+\jimmy{Let arguments go first by Ningning}
+In a more recent work, \citet{xie2018letarguments} proposed a variant of
+bidirectional type inference system where type information flows from arguments to
+functions with an additional \emph{application} mode,
+which allows more higher-order typed programs to be inferred without additional annotations.
+Following the new mode, the let-generalization of the Hindley-Milner system
+is well supported as a syntactic sugar.
+Unfortunately, no formal proofs are given for the correctness of its algorithmic system.
+
 \paragraph{Impredicative Higher-Ranked Polymorphism Type Inference Algorithms}
 Impredicative System F allows instantiation with polymorphic types,
 but unfortunately its subtyping system is already undecidable~\cite{tiuryn1996subtyping}.
