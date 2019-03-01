@@ -181,14 +181,13 @@ and an algorithmic one) that have been \emph{manually} proven
 \emph{sound}, \emph{complete} and \emph{decidable}. We present 
 a mechanical formalization in the Abella theorem prover 
 of DK's declarative type system with a novel algorithmic system. We have
-several reasons to use a new algorithm. Firstly, our new algorithm
+a few reasons to use a new algorithm. Firstly, our new algorithm
 employs \emph{worklist judgements}, which allow precise capture of the
 scope of variables and simplify the formalization of scoping in a
 theorem prover. Secondly, while DK's original formalization comes with very
-well-written manual proofs, there are several details missing,
+well-written manual proofs, there are several details missing and some
+incorrect proofs,
 which complicate the task of writing a formal proof. 
-Moreover, some proofs/lemmas are wrong and it is
-not clear how to replace these by other valid ones. 
 Despite the use of a different algorithm we prove the
 same results as DK, although with significantly different proofs and
 proof techniques. Since such type inference algorithms are quite
