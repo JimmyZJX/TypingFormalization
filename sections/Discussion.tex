@@ -2,16 +2,27 @@
 
 % \subsection{Overlapping Rules} Already discussed in previous sections
 
+This section discusses some insights that we gained from our work and contrast
+the scoping mechanisms employed by us with those DK's original algorithm.
+We also discuss a way to improve their scoping tracking precision.
+Furthermore we discuss and sketch out an extension of the our algorithm with
+elaboration to a target calculus.
+
+\begin{comment}
 \subsection{Implementation}
 Anything to say about the implementation? Do we have one?
+\end{comment}
 
-\subsection{Making DK's scoping more precise}\label{sec:discussion:scoping}
+\subsection{Contrasting our scoping mechanisms with DK's scoping}\label{sec:discussion:scoping}
 
-DK's algorithm deals with garbage variables in a different approach,
-as discussed in Section~\ref{ssec:DK_Algorithm},
-through type variables or existential variable markers.
-However, there is still a chance that
-unused existential variables leak to output context and accumulate infinitely.
+One nice feature of our worklists is that scoping of variables can be
+made precise, simply by interleaving variable declarations and
+judgement chains.  DK's algorithm deals with garbage variables in a
+different way through type variables or existential variable
+markers (as discussed in Section~\ref{ssec:DK_Algorithm}).  Despite
+the sophistication employed in DK's algorithm to keep scoping precise,
+there is still a chance that unused existential variables leak their
+scope to an output context and accumulate indefinitely.
 For example, the derivation of the judgment $(\lam x)~() \Lto 1$ is as follows
 $$
 \inferrule*
@@ -54,7 +65,7 @@ or to the very end of a type inference task.
 In that sense, DK's algorithm does not control the scoping of variables precisely enough.
 %However, it is a minor issue that does not affect the soundness and completeness properties.
 
-One may blame that the inference rule for lambda functions does not collect garbages correctly.
+One may blame the inference rule for lambda functions for not collecting garbage correctly.
 Here we also show another rule for application inference with a similar problem:
 $$
 \inferrule*[right=$\mathtt{DK\_{\to}I{\To}}$]
@@ -65,17 +76,17 @@ $$
 {\Gamma, \al \vdash [\al/a] \appInf{A}{e}{C} \dashv \Delta}
 {\Gamma \vdash \appInf{\all A}{e}{C} \dashv \Delta}
 $$
-But our algorithm collects the existential variables right after the next judgment chain:
-$$\Gm \Vdash \lambda x. e \To_a \jg \rrule{25}
-\Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt$$
-$$\Gm \Vdash \appInfAlg{\forall a. A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}$$
-But it seems impossible to propose a fix by only modifying this rule.
+In contrast our algorithm collects the existential variables right after the next judgment chain:
+\[\Gm \Vdash \lambda x. e \To_a \jg \rrule{25}
+\Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\]
+\[\Gm \Vdash \appInfAlg{\forall a. A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\]
+But it seems impossible to achieve a similar outcome by only modifying the two rules in DK's system.
 Taking $\mathtt{DK\_{\to}I{\To}}$ as an example,
-the declaration or solution for $\al$ and $\bt$ may be referred by following judgments,
-therefore leaving $\al$ and $\bt$ in the output context is the only choice,
-when the next judgments are inaccessible to us at the moment.
+the declaration or solution for $\al$ and $\bt$ may be referred to by following judgments.
+Therefore leaving $\al$ and $\bt$ in the output context is the only choice,
+when the next judgments are still inaccessible.
 
-To fix the problem, we suggest a modification on the algorithmic subsumption rule,
+To fix the problem, one possible modification is on the algorithmic subsumption rule,
 as garbage collection for a checking judgment is always safe:
 $$
 \inferrule*[right=$\mathtt{DK\_Sub}$]
@@ -83,10 +94,14 @@ $$
 \Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta, \blacktriangleright_{\al}, \Delta'}
 {\Gamma \vdash e \Lto B \dashv \Delta}
 $$
+Here we employ the markers in a way different from what they were originally intended for.
+We create a dummy fresh $\al$ and push a marker into the inference judgement.
+When the subtyping judgement is used we look for the marker and drop everything afterwards.
 We pick this rule because this is the only one where a checking judgment calls an inference judgment.
 And that's the point where our algorithm recycles variables---right after a judgment chain is satisfied.
 After applying this patch, to our best knowledge,
 DK's algorithm behaves equivalently to our algorithm in terms of variable scoping.
+However this is exploiting markers in a way that they were not intended for and seems ad-hoc.
 
 % \subsection{Scoped type variables} Not discussed for this paper
 
