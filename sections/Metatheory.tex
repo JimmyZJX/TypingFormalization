@@ -517,17 +517,18 @@ The files are linearly dependent due to the limitation of Abella.
     decl.thm            &  226 & 33  & Basic declarative properties\\\hline
     order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strenthening\\\hline
     alg.thm             &  655 & 72  & Basic algorithmic properties\\\hline
-    trans.thm           &  628 & 53  & \makecell[l]{Worklist instantiation with basic properties \\
+    trans.thm           &  628 & 53  & \makecell[l]{Worklist instantiation and declarative transfer\\
                             Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
     declTyping.thm      &  944 & 72  & \makecell[l]{Non-overlapping declarative system \\
-                            Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll}, \ref{lem:inv_chkLam}}\\\hline
+                            Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll},
+                                \ref{lem:inv_chkLam}, \ref{lem:subsumption}}\\\hline
     soundness.thm       & 1086 & 70  & Soundness theorem; aux. lemmas on transfer\\\hline
     depth.thm           &  206 & 14  & The $|\cdot|_\to$ measure; Lemma~\ref{lem:prune_inst}\\\hline
     dcl.thm             &  383 & 12  & Non-overlapping declarative worklist \\\hline
     completeness.thm    & 1075 & 61  &
                             Completeness theorem; aux. lemmas and relations\\\hline
-    inst\_decidable.thm &  830 & 42  & Other measures; Lemma~\ref{lemma:inst:decidable}\\\hline
-    decidability.thm    &  885 & 50  & Decidability theorem\\\hline
+    inst\_decidable.thm &  830 & 42  & Other worklist measures; Lemma~\ref{lemma:inst:decidable}\\\hline
+    decidability.thm    &  885 & 50  & Termination theorem and decidability corollary\\\hline
     \hline\emph{Total}               & 7700 & 567 & (51 definitions in total)\\\hline
 \end{tabular}
 \caption{Statistics for the proof scripts}
