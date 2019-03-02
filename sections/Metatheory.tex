@@ -341,7 +341,8 @@ Given a well-formed input $\Gm$, the algorithm terminates.
 \end{theorem}
 Our termination proof is based on a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
-on the worklist $\Gm$. The definitions of these measures can be found in Figure~\ref{fig:measures}. The first two, 
+on the worklist $\Gm$. Formal definitions of these measures can be found in
+Figure~\ref{fig:measures} in the Appendix. The first two, 
 $|\cdot|_e$ and $|\cdot|_\Leftrightarrow$, measure the total size of terms
 and the total difficulty of judgments, respectively. In the latter, check judgments
 count for 2, inference judgments for 1 and function inference judgments for 3.
@@ -349,51 +350,6 @@ Other two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number 
 universal quantifiers and function types, respectively. Finally,
 $|\cdot|_{\al}$ counts the number of existential variables in the worklist,
 and $|\cdot|$ is simply the length of the worklist.
-
-\begin{figure}[t]
-\hfill \framebox{$|\Gm|_e$} \hfill  \llap{Size measure.}
-\begin{gather*}
-\begin{aligned}
-|\Gm|_e &= \textstyle\sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
-    \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
-\text{where } |x|_e &= |()|_e = 1 \qquad |\lam e|_e = |e|_e + 1\\
-|e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1 \qquad |e:A|_e = |e| + 1
-\end{aligned}
-\end{gather*}
-\hfill \framebox{$|\Gm|_\Leftrightarrow$} \hfill  \llap{Judgment measure.}
-\begin{gather*}
-\begin{aligned}
-|\Gm|_\Leftrightarrow &= 2\cdot\#_{e\Lto A\in\Gm} +
-    \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
-\end{aligned}
-\end{gather*}
-\hfill \framebox{$|\Gm|_\forall$} \hfill  \llap{Polymorphism measure.}
-\begin{gather*}
-\begin{aligned}
-|\Gm|_\forall &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
-    \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
-\text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
-|A\to B|_\forall &= |A|_\forall + |B|_\forall \qquad |\all A|_\forall = |A|_\forall + 1
-\end{aligned}
-\end{gather*}
-\hfill \framebox{$|\Gm|_\to$} \hfill  \llap{Function measure.}
-\begin{gather*}
-\begin{aligned}
-|\Gm|_\to &= \textstyle\sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
-    \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
-\text{where } |1|_\to &= |a|_\to = |\al|_\to = 1\\
-|A\to B|_\to &= |A|_\to + |B|_\to + 1 \qquad |\all A|_\to = |A|_\to
-\end{aligned}
-\end{gather*}
-\hfill \framebox{$|\Gm|_{\al}$} \hfill  \llap{Existential measure.}
-\begin{gather*}
-\begin{aligned}
-|\Gm|_{\al} &= \#_{\al\in\Gm}\\
-\end{aligned}
-\end{gather*}
-\caption{Worklist measures}
-\label{fig:measures}
-\end{figure}
 
 It is not difficult to see that all but two algorithmic reduction rules
 decrease the group of measures.  (The result of Rule 29 could be directly
