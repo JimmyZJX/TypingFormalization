@@ -361,8 +361,7 @@ proofs without affecting the appeals to these lemmas.
 % thus are easily misused.
 
 More seriously, we have also found a lemma that simply does not hold, 
-Lemma 29 (Parallel Admissibility). See Appendix~\ref{appendix:false_lemmas}
-\bruno{reference} for a detailed explanation
+Lemma 29 (Parallel Admissibility). See Appendix~\ref{appendix:false_lemmas} for a detailed explanation
 and counterexample. This lemma is a cornerstone of the two metatheoretical results 
 of the algorithm, soundness and completeness with respect to the declarative system.
 In particular, both instantiation soundness (i.e. a part of subtyping
@@ -511,7 +510,7 @@ substitute solutions into these copies.
 
 In recent work, \citet{itp2018} have shown how to mechanise a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
-subtyping judgment. This approach overcomes the problem's in DK's formulation
+subtyping judgment. This approach overcomes the some problems in DK's formulation
 by using a \emph{worklist}-based judgment of the form $$\Gamma \vdash \Omega$$
 where $\Omega$ is a worklist (or sequence) of subtyping problems of the
 form $A \leq B$.  The judgment is defined by case analysis on the first
@@ -532,7 +531,7 @@ This complicates establishing the relation with the declarative system.
 
 
 \paragraph{No Inference Judgments} 
-Secondly and more importantly, the approach only deals with a judgment for
+Secondly, and more importantly, the approach only deals with a judgment for
 \emph{checking} whether one type is the subtype of another. While this may not
 be so difficult to adapt to the \emph{checking} mode of term typing $\Gamma
 \vdash e \Leftarrow A$, it clearly lacks the functionality to support the
