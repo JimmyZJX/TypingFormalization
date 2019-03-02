@@ -338,10 +338,10 @@ $$
 %Due to the complication of its scoping control method,
 %it is hard to argue the preciseness of scoping for each variable when designing algorithms.
 
-At first sight, the DK algorithm would seem a good basis for mechanisation. After
+At first sight, the DK algorithm would seem a good basis for mechanization. After
 all it comes with a careful description and extensive manual proofs.
 Unfortunately, we ran into several obstacles that have prompted us to formulate
-a different, more mechanisation-friendly algorithm.
+a different, more mechanization-friendly algorithm.
 
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 \paragraph{Broken Metatheory} % Talk about the lemmas that are false, show counterexample.
@@ -381,8 +381,8 @@ Unfortunately, we have not yet found a way to fix this problem.
 
 Besides the problematic lemmas in DK's metatheory, there are other reasons to
 look for an alternative algorithmic formulation of the type system that is more
-amenable to mechanisation. Indeed, two aspects that are particularly
-challenging to mechanise are the scoping of universal and existential type
+amenable to mechanization. Indeed, two aspects that are particularly
+challenging to mechanize are the scoping of universal and existential type
 variables, and the propagation of the instantiation of existential type
 variables across judgments. 
 DK is already quite disciplined on these accounts, in particular compared to
@@ -400,7 +400,7 @@ into the context and threading this context through all judgments.
 % the remaining judgments, their predecessor's output context---which is their
 % input context---is applied to them as a substitution.
 While this works well on paper, this approach is still fairly involved and thus
-hard to reason about in a mechanised setting. Indeed, the instantiations have
+hard to reason about in a mechanized setting. Indeed, the instantiations have
 to be recorded in the context and are applied incrementally to each remaining
 judgment in turn, rather than immediately to all remaining judgments at once.
 Also, as we have mentioned above, the stack discipline of the ordered contexts
@@ -412,7 +412,7 @@ A detailed discussion on this issue with a possible fix is in Section~\ref{sec:d
 
 The complications of scoping and propagation are compelling reasons
 to look for a simpler algorithm that is easier to
-reason about in a mechanised setting.
+reason about in a mechanized setting.
 
 
 %-------------------------------------------------------------------------------
@@ -509,7 +509,7 @@ substitute solutions into these copies.
 %-------------------------------------------------------------------------------
 \subsection{Single-Context Worklist Algorithm for Subtyping}
 
-In recent work, \citet{itp2018} have shown how to mechanise a variant of DK's
+In recent work, \citet{itp2018} have shown how to mechanize a variant of DK's
 subtyping algorithm and shown it correct with respect to DK's declarative
 subtyping judgment. This approach overcomes the problem's in DK's formulation
 by using a \emph{worklist}-based judgment of the form $$\Gamma \vdash \Omega$$
