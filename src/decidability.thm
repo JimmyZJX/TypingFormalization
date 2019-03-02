@@ -1,4 +1,4 @@
-Import "decidability_inst".
+Import "inst_decidable".
 
 Theorem jExt_wfj : forall E Ext, jExt E Ext -> wfj E -> wfj Ext.
 induction on 1. intros. case H1. search.

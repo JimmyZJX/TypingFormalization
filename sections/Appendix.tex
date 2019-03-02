@@ -1,6 +1,57 @@
 
 \section{Appendix}
 
+\subsection{Formal Definitions for Worklist Measures}
+
+\begin{figure}[h!]
+\hfill \framebox{$|\Gm|_e$} \hfill  \llap{Size measure.}
+\begin{gather*}
+    \begin{aligned}
+    |\Gm|_e &= \sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
+        \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
+    \text{where } |x|_e &= |()|_e = 1\\
+        \qquad |\lam e|_e &= |e|_e + 1\\
+        |e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1\\
+        |e:A|_e &= |e| + 1
+    \end{aligned}
+    \end{gather*}
+    \hfill \framebox{$|\Gm|_\Leftrightarrow$} \hfill  \llap{Judgment measure.}
+    \begin{gather*}
+    \begin{aligned}
+    |\Gm|_\Leftrightarrow &= 2\cdot\#_{e\Lto A\in\Gm} +
+        \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
+    \end{aligned}
+    \end{gather*}
+    \hfill \framebox{$|\Gm|_\forall$} \hfill  \llap{Polymorphism measure.}
+    \begin{gather*}
+    \begin{aligned}
+    |\Gm|_\forall &= \sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
+        \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
+    \text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
+        |A\to B|_\forall &= |A|_\forall + |B|_\forall\\
+        |\all A|_\forall &= |A|_\forall + 1
+    \end{aligned}
+    \end{gather*}
+    \hfill \framebox{$|\Gm|_\to$} \hfill  \llap{Function measure.}
+    \begin{gather*}
+    \begin{aligned}
+    |\Gm|_\to &= \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
+        \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
+    \text{where } |1|_\to &= |a|_\to = |\al|_\to = 1\\
+        |A\to B|_\to &= |A|_\to + |B|_\to + 1\\
+        |\all A|_\to &= |A|_\to
+    \end{aligned}
+    \end{gather*}
+    \hfill \framebox{$|\Gm|_{\al}$} \hfill  \llap{Existential measure.}
+    \begin{gather*}
+    \begin{aligned}
+    |\Gm|_{\al} &= \#_{\al\in\Gm}\\
+    \end{aligned}
+\end{gather*}
+\caption{Worklist measures}
+\label{fig:measures}
+\end{figure}
+
 \subsection{Broken Lemmas in DK's papers}
 \label{appendix:false_lemmas}
 
@@ -62,7 +113,7 @@ Given $\Psi' \le \Psi$:
 \end{enumerate}
 \end{lemma}
 
-\paragraph{Problem in DK's Manual Proof}
+\paragraph{Problems in DK's Manual Proof}
 We tried to follow DK's manual proof for this lemma.
 While being written in a clear format and providing enough details,
 the proof is not fully accepted by the proof assistant.
@@ -82,7 +133,7 @@ and the third measure does not apply to case (2) since no $A$ is used.
 
 All but two cases can be finished easily following the declarative typing derivation,
 and the proof shares a similar structure to DK's.
-One tricky case related to Rule $\mathtt{Decl\forall I}$ inducates that $A$ has the shape $\all A_0$,
+One tricky case related to Rule $\mathtt{Decl\forall I}$ indicates that $A$ has the shape $\all A_0$,
 thus the subtyping relation derives from either $\mathtt{{\le}\forall L}$ or $\mathtt{{\le}\forall R}$.
 For each of the case, the third measure $|A|_\forall + |A'|_\forall$ decreases
 (the $\mathtt{{\le}\forall L}$ case requires a type substitution lemma obtaining

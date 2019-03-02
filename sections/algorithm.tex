@@ -141,28 +141,28 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm, a &\algrule \Gm \qquad
 \Gm, \al \algrule \Gm \qquad
 \Gm, x:A \algrule \Gm
-\\[2mm]
+\\[3mm]
 \Gm \Vdash 1\le 1 &\algrule \Gm\\
 \Gm \Vdash a\le a &\algrule \Gm\\
 \Gm \Vdash \al\le \al &\algrule \Gm\\
 \Gm \Vdash A_1\to A_2 \le B_1\to B_2 &\algrule \Gm \Vdash A_2 \le B_2 \Vdash B_1\le A_1\\
 \Gm \Vdash \all A\le B &\algrule \Gm,\al \Vdash [\al/a]A\le B \quad\text{when } B \neq \all B'\\
 \Gm \Vdash A\le \all[b]B &\algrule \Gm,b \Vdash A\le B
-\\[2mm]
+\\[3mm]
 %\\
 %\text{Let } \color{red}\Gm[\al \toto B // G_M] &:= \Gm_L, G_M, [B/\al]\Gm_R, \text{ when } \Gm[\al] = \Gm_L,\al,\Gm_R \ (G_M\text{ defaults to }\nil)\\
 \Gm[\al] \Vdash \al \le A\to B &\algrule [\al[1]\to\al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash \al[1]\to \al[2] \le A \to B)\\
  &\qquad \text{when }\al\notin FV(A)\cup FV(B)\\
 \Gm[\al] \Vdash A\to B \le \al &\algrule [\al[1]\to \al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash A \to B \le \al[1]\to \al[2])\\
  &\qquad \text{when }\al\notin FV(A)\cup FV(B)
- \\[2mm]
+ \\[3mm]
 \Gm[\al][\bt] \Vdash \al \le \bt &\algrule [\al/\bt](\Gm[\al][])\\
 \Gm[\al][\bt] \Vdash \bt \le \al &\algrule [\al/\bt](\Gm[\al][])\\
 \Gm[a][\bt] \Vdash a \le \bt &\algrule [a/\bt](\Gm[a][])\\
 \Gm[a][\bt] \Vdash \bt \le a &\algrule [a/\bt](\Gm[a][])\\
 \Gm[\bt] \Vdash 1 \le \bt &\algrule [1/\bt](\Gm[])\\
 \Gm[\bt] \Vdash \bt \le 1 &\algrule [1/\bt](\Gm[])
-\\[2mm]
+\\[3mm]
 \Gm \Vdash e \Lto B &\algrule \Gm \Vdash e\To_a a\le B \quad
     \text{when } e \neq \lam e' \text{ and } B \neq \all B'\\
 % \Gm \Vdash () \Lto 1 &\algrule \Gm\\
@@ -170,14 +170,14 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 \Gm \Vdash \lam e \Lto A\to B &\algrule \Gm, x:A  \Vdash e \Lto B\\
 \Gm[\al] \Vdash \lam e \Lto \al &\algrule [\al[1]\to \al[2] / \al](\Gm[\al[1],\al[2]], x:\al[1] \Vdash e \Lto \al[2])
 % \quad\text{\jimmy{Additional}}
-\\[2mm]
+\\[3mm]
 \Gm \Vdash x\To_a \jg &\algrule \Gm \Vdash [A/a] \jg \quad \text{when } (x:A)\in \Gm\\
 \Gm \Vdash (e:A)\To_a \jg &\algrule \Gm \Vdash [A/a]\jg \Vdash e \Lto A\\
 \Gm \Vdash ()\To_a \jg &\algrule \Gm \Vdash [1/a]\jg\\
 \Gm \Vdash \lam e \To_a \jg &\algrule
     \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\\
 \Gm \Vdash e_1\ e_2 \To_a \jg &\algrule \Gm \Vdash e_1\To_b (\appInfAlg{b}{e_2})
-\\[2mm]
+\\[3mm]
 \Gm \Vdash \appInfAlg{\all A}{e} &\algrule \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\\
 \Gm \Vdash \appInfAlg{A\to C}{e} &\algrule \Gm \Vdash [C/a]\jg \Vdash e \Lto A\\
 \Gm[\al] \Vdash \appInfAlg{\al}{e} &\algrule
@@ -310,10 +310,11 @@ must end up equating $\bt[1] \to \bt[2]$ with $\al$ and thus have the same effec
 fashion.
 
 In comparison,
-DK's original algorithmic subsumption rule has no restriction on the expression $e$,
+DK's algorithmic subsumption rule has no restriction on the expression $e$,
 and they do not have a rule that explicitly handles the case $\lam e \Lto \al$.
 Therefore their only way to check a lambda function against an existential variable
-is by combining the inferenced type of the lambda function with the subsumption rule.
+is by applying the subsumption rule, which further breaks into
+a type inference of the lambda function and a subtyping judgment.
 % A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
 % may result in a similar effect to Rule 21.
 % Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
