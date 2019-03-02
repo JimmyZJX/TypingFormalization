@@ -213,9 +213,9 @@ In such case, choosing $\mathtt{{\le}\forall R}$ first is always better,
 since we introduce the type variable $a$ to the context earlier,
 which gives more flexibility on the choice of $\tau$.
 Declarative typing rule $\mathtt{DeclSub}$ overlaps with
-both $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$.
+both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
 However, we argue that more specific rules are always the best choices,
-i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl\to I}$ should have
+i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$ should have
 higher priority to $\mathtt{DeclSub}$. We will come back to this
 topic in Section~\ref{sec:metatheory:non-overlapping}.
 \begin{comment}
@@ -361,8 +361,8 @@ proofs without affecting the appeals to these lemmas.
 % thus are easily misused.
 
 More seriously, we have also found a lemma that simply does not hold, 
-Lemma 29 (Parallel Admissibility). See Appendix~\ref{appendix:false_lemmas}
-\bruno{reference} for a detailed explanation
+Lemma 29 (Parallel Admissibility).
+See Appendix~\ref{appendix:false_lemmas} for a detailed explanation
 and counterexample. This lemma is a cornerstone of the two metatheoretical results 
 of the algorithm, soundness and completeness with respect to the declarative system.
 In particular, both instantiation soundness (i.e. a part of subtyping
