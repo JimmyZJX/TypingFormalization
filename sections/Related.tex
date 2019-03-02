@@ -42,14 +42,15 @@ resulting in a complicated mechanism for implicit instantiation taken care by th
 A manual proof is given, showing that the algorithm is sound and
 complete with respect to their declarative specification.
 
-\jimmy{Let arguments go first by Ningning}
-In a more recent work, \citet{xie2018letarguments} proposed a variant of
-bidirectional type inference system where type information flows from arguments to
-functions with an additional \emph{application} mode,
-which allows more higher-order typed programs to be inferred without additional annotations.
+In a more recent work, \citet{xie2018letarguments} proposed a variant of a
+bidirectional type inference system for a predicative system with higher-ranked types.
+Type information flows from arguments to
+functions with an additional \emph{application} mode. This variant 
+allows more higher-order typed programs to be inferred without additional annotations.
 Following the new mode, the let-generalization of the Hindley-Milner system
-is well supported as a syntactic sugar.
-Unfortunately, no formal proofs are given for the correctness of its type inference algorithm.
+is well supported as a syntactic sugar. The formalization includes some
+mechanized proofs for the declarative type system, but all proofs regarding
+the algorithmic type system are manual.
 
 \paragraph{Impredicative Higher-Ranked Polymorphism Type Inference Algorithms}
 Impredicative System F allows instantiation with polymorphic types,
@@ -67,7 +68,8 @@ their algorithm is already quite useful in practice.
 \paragraph{Mechanical Formalization of Polymorphic Subtyping}
 In all previous work on type inference for higher-ranked polymorphism
 (predicative and impredicative) discussed above, proofs and
-metatheory are manual. The only partial effort on mechanizing aspects of type inference
+metatheory for the algorithmic aspects are manual. The only partial effort on mechanizing algorithmic
+aspects of type inference
 for higher-ranked types is
 the Abella formalization of \emph{polymorphic subtyping} by \citet{itp2018}.
 The judgment form of worklist $\Gm \vdash \Omega$ used in the formalization simplifies
