@@ -310,10 +310,11 @@ must end up equating $\bt[1] \to \bt[2]$ with $\al$ and thus have the same effec
 fashion.
 
 In comparison,
-DK's original algorithmic subsumption rule has no restriction on the expression $e$,
+DK's algorithmic subsumption rule has no restriction on the expression $e$,
 and they do not have a rule that explicitly handles the case $\lam e \Lto \al$.
 Therefore their only way to check a lambda function against an existential variable
-is by combining the inferenced type of the lambda function with the subsumption rule.
+is by applying the subsumption rule, which further breaks into
+a type inference of the lambda function and a subtyping judgment.
 % A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
 % may result in a similar effect to Rule 21.
 % Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
