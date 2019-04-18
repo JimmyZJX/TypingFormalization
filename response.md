@@ -2,8 +2,8 @@
 Response for Submission 66, ICFP 2019
 ======
 
-We thank the reviewers for their helpful comments and positive reception of the paper.
-We answer main questions below.
+We are grateful for the helpful reviews and are elated that you appreciate our work.
+In what follows  we respond to your main comments.
 
 Review A
 ------
@@ -50,24 +50,3 @@ Tom:
 
 We believe that the algorithm proposed can adapt to other bidirectional type systems,
 and we will further extend the discussion to point this out.
-
-
-Review C
-------
-<!--
-In the course of their investigation, the authors found several problems with the mathematical proof DK give and provided alternatives. I am not in a position to comment on whether these criticisms of DK are justified, nor do I find this significant for the evaluation of the paper.
--->
-<!--
-Jimmy:
-If the reviewer are not interested in the criticisms,
-we can reduce relevant discussion in the paper.
-My point was that I am not sure whether DK's algorithm and proofs
-could be easily formalized, but it seems no easy.
-And I decided not to take time investigate,
-given that there are already some issues, though they might be minor.
--->
-
-> Criticisms of DK's proof
-
-...
-
