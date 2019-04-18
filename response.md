@@ -19,7 +19,7 @@ And the rules are not overlapping with each other.
 These properties indicates that a trivial translation to
 the big step style used in the proofs preserves equivalence.
 
-We believe the presentation of the algorithmic rules in the paper is much clear
+We believe the presentation of the algorithmic rules in the paper is much clearer
 and restricted to the form $\Gamma$ --> $\Gamma$,
 while the big step unary relation in the proof simplfies the induction scheme.
 More importantly, the difference is just a matter of presentation,
@@ -27,11 +27,8 @@ but the logic behind remains unchanged.
 
 > The proof scripts are hard to read, and some parts are inconsistent with the paper.
 
-We apologize for the lack of clean-up on the proof scripts.
-We are now refactoring the scripts,
-after that we will provide a better documentation on the encoding details
-that might cover all the concerns by the reviewer,
-preferrably to the appendix of the paper.
+We apologize for the state of the proof scripts. Currently, we are refactoring them.
+and will document the mapping between the paper and the mechanisation.
 
 
 Review B
