@@ -48,5 +48,5 @@ Tom:
 
 > General hints/guidlines about the formalization of the properties of an inference algorithm for a complex typing descipline.
 
-We believe that the algorithm proposed can adapt to other bidirectional type systems,
-and we will further extend the discussion to point this out.
+That is a good point. We believe that our approach can indeed be adapted to other bidirectional type systems, and we will extend the discussion in the paper to point this out.
+We are also happy to see that Reviewer C already looks forward to trying out our approach in other settings.
