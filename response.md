@@ -69,9 +69,8 @@ to avoid potential confusion.
 > I could not find a direct counterpart of this theorem in the Abella script.
 
 The `decidable_thm` Theorem is the one that proves the Termination Theorem (4.12),
-following what is described from L918,
-and the `decidable` Theorem is its pretty version.
-We will make the theorem names consistent for publish.
+following what is described from L918, and the `decidable` Theorem is its pretty version.
+We will make the theorem names consistent in the final version.
 
 Review B
 ------
