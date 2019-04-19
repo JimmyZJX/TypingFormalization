@@ -39,7 +39,8 @@ in the final version of the paper.
 > How does polynomial complexity follow from the reduction rule being deterministic?
 
 We did not justify the point clearly in the paper.
-A detailed proof will be provided for the final version.
+We will either provide a detailed proof in the final version, or omit
+this informal claim.
 
 > Why not treat the languages of declarative and algorithmic worklists as subsets?
 
