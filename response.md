@@ -32,10 +32,26 @@ similar symmetric unification.
 
 > The proof scripts are hard to read, and some parts are inconsistent with the paper.
 
-We apologize for the state of the proof scripts. Currently, we are refactoring them.
+We apologize for the state of the proof scripts. Currently, we are refactoring them,
 and will document the mapping between the paper and the mechanisation
 in the final version of the paper.
 
+> How does polynomial complexity follow from the reduction rule being deterministic?
+
+We did not justify the point clearly in the paper.
+A detailed proof will be provided for the final version.
+
+> Why not treat the languages of declarative and algorithmic worklists as subsets?
+
+The proof script allows one to treat them as subsets.
+However, we explicitly treat them as different syntactic sorts in the paper
+to avoid potential confusion.
+
+> I could not find a direct counterpart of this theorem in the Abella script.
+
+The `decidable_thm` Theorem is the one that proves the Termination Theorem (4.12),
+following what is described from L918, and the `decidable` Theorem is its pretty version.
+We will make the theorem names consistent in the final version.
 
 Review B
 ------
