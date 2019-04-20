@@ -18,13 +18,13 @@ indicates that a trivial translation to the big step style used in the
 proofs preserves equivalence.
 
 We believe the presentation of the algorithmic rules in the paper is
-clearer and restricted to the form $\Gamma$ --> $\Gamma$, while
+clearer and restricted to the form $\Gamma$ --> $\Gamma'$, while
 the big step unary relation in the proof simplifies the induction
 scheme.  More importantly, the difference is just a matter of
 presentation, but the logic behind remains unchanged.
 We will mention this difference in presentation clearly in the paper.
 
-> The restriction of subtyping to simple  types is effectively an
+> The restriction of subtyping to simple types is effectively an
 > equivalence (and thus symmetric).  Is this correct?
 
 Yes, this is correct. Note also that DK's algorithm also suggests a
@@ -57,8 +57,8 @@ We will make the theorem names consistent in the final version.
 Review B
 ------
 
-> General hints/guidlines about the formalization of the properties of
-> an inference algorithm for a complex typing descipline.
+> General hints/guidelines about the formalization of the properties of
+> an inference algorithm for a complex typing discipline.
 
 That is a good point. We believe that our approach can indeed be
 adapted to other bidirectional type systems, and we will extend the
