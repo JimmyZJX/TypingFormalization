@@ -146,7 +146,7 @@ and that the outer judgment, being processed before inner ones,
 elaborates to the top element in the elaboration list.
 
 Moreover, existential variables need special treatment, since they may be solved at any point,
-or be recycled if not solved within its scope.
+or be recycled if not solved within their scopes.
 If an existential variable is solved, we not only propagate the solution to the other judgments,
 but also replace occurrences in the elaboration list.
 If an existential variable is recycled, meaning that it is not constrained,

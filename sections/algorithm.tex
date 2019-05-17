@@ -38,6 +38,47 @@ Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness judgments used 
 \end{aligned}
 \end{gather*}
 
+\centering \framebox{$\Gm \vdash A$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf\_ unit}$]
+    {~}{\Gm\vdash 1}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ var}$]
+    {a\in\Gm}{\Gm\vdash a}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ exvar}$]
+    {\al\in\Gm}{\Gm\vdash \al}
+\qquad
+\inferrule*[right=$\mathtt{wf\_{\to}}$]
+    {\Gm\vdash A\quad \Gm\vdash B}
+    {\Gm\vdash A\to B}
+\qquad
+\inferrule*[right=$\mathtt{wf\_\forall}$]
+    {\Gm, a\vdash A}
+    {\Gm\vdash \forall a. A}
+\end{gather*}
+
+\centering \framebox{$\Gm \vdash e$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf\_ tmvar}$]
+    {x:A\in\Gm}{\Gm\vdash x}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ tmunit}$]
+    {~}{\Gm\vdash ()}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ abs}$]
+    {\Gm,x:A\vdash e}
+    {\Gm\vdash \lam e}
+\\
+\inferrule*[right=$\mathtt{wf\_ app}$]
+    {\Gm\vdash e_1 \quad \Gm\vdash e_2}
+    {\Gm\vdash e_1~e_2}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ anno}$]
+    {\Gm\vdash A \quad \Gm\vdash e}
+    {\Gm\vdash (e:A)}
+\end{gather*}
+
 \framebox{$\Gm\vdash\jg$} Well-formed algorithmic judgment
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf{\le}}$]
@@ -152,9 +193,9 @@ For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
 %\\
 %\text{Let } \color{red}\Gm[\al \toto B // G_M] &:= \Gm_L, G_M, [B/\al]\Gm_R, \text{ when } \Gm[\al] = \Gm_L,\al,\Gm_R \ (G_M\text{ defaults to }\nil)\\
 \Gm[\al] \Vdash \al \le A\to B &\algrule [\al[1]\to\al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash \al[1]\to \al[2] \le A \to B)\\
- &\qquad \text{when }\al\notin FV(A)\cup FV(B)\\
+ &\qquad\qquad \text{when }\al\notin FV(A)\cup FV(B)\\
 \Gm[\al] \Vdash A\to B \le \al &\algrule [\al[1]\to \al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash A \to B \le \al[1]\to \al[2])\\
- &\qquad \text{when }\al\notin FV(A)\cup FV(B)
+ &\qquad\qquad \text{when }\al\notin FV(A)\cup FV(B)
  \\[3mm]
 \Gm[\al][\bt] \Vdash \al \le \bt &\algrule [\al/\bt](\Gm[\al][])\\
 \Gm[\al][\bt] \Vdash \bt \le \al &\algrule [\al/\bt](\Gm[\al][])\\
@@ -452,8 +493,9 @@ In summary, our algorithm accepts the type checking $(\lam x)~() \Lto 1$.
 \paragraph{Non-overlapping and Deterministic Reduction}
 An important feature of our algorithmic rules is that they are directly
 implementable. Indeed, although written in the form of reduction rules, they do
-not overlap and are thus deterministic.  This has the added benefit that our
-algorithm runs in polynomial time, which makes it suitable for practical use.
+not overlap and are thus deterministic.
+%This has the added benefit that our % INCORRECT!
+%algorithm runs in polynomial time, which makes it suitable for practical use.
 
 Consider in particular Rules 8 and 9, which correspond to the declarative rules
 $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$. While those

@@ -327,7 +327,7 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
     \item If $\Om \vdash e \To A$ and $\Gm \Vdash e \To_a 1 \le 1 \sto \Om \Vdash e \To_a 1 \le 1$
         \\then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
     \item If $\Om \vdash \appInf{A'}{e}{C}$ and
-        $\Gm \Vdash \appInfAlg{A}{e}[a][1 \to 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \to 1]$
+        $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \le 1]$
         \\then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
 \end{enumerate}
 \end{corollary}
@@ -335,7 +335,7 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
 %-------------------------------------------------------------------------------
 \subsection{Termination and Decidability}
 
-Finally, we show that our algorithm terminates. In other words:
+Finally, we show that our algorithm terminates:
 \begin{theorem}[Termination]
 Given a well-formed input $\Gm$, the algorithm terminates.
 \end{theorem}
@@ -346,7 +346,7 @@ Figure~\ref{fig:measures} in the Appendix. The first two,
 $|\cdot|_e$ and $|\cdot|_\Leftrightarrow$, measure the total size of terms
 and the total difficulty of judgments, respectively. In the latter, check judgments
 count for 2, inference judgments for 1 and function inference judgments for 3.
-Other two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
+Another two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
 universal quantifiers and function types, respectively. Finally,
 $|\cdot|_{\al}$ counts the number of existential variables in the worklist,
 and $|\cdot|$ is simply the length of the worklist.
@@ -458,6 +458,12 @@ which supports explicit freshness control and substitutions.
 Although Abella lacks packages, tactics and support for modules,
 its higher-order unification and the ease of formalizing substitution-intensive relations
 are very helpful for our formalization.
+
+\jimmy{Discuss briefly on the difference of encodings in the script and this paper.}
+While the algorithmic rules are in a small-step style,
+the proof script rewrites them into big-step style,
+where inductions are more strightforward to handle.
+In addition, we do prove the equivalence of the two representations.
 
 \paragraph{Statistics of the Proof}
 The proof script consists of 7683 lines of Abella code with a total of

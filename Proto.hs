@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, OverlappingInstances #-}
+{-# LANGUAGE FlexibleInstances, OverlappingInstances, ScopedTypeVariables #-}
 
 import Prelude hiding (drop)
 import Data.List
@@ -69,6 +69,17 @@ instance Show [Work] where
   show (WBind x t : w) = show w ++ ", " ++ x ++ " : " ++ show t
   show (WJug c : w) = show w ++ " ||- " ++ show c
 
+
+eesubst :: String -> Exp -> Exp -> Exp
+eesubst s e (Lam x b)
+  | s == x    = Lam x b
+  | otherwise = Lam x (eesubst s e b)
+eesubst s e (App e1 e2) = App (eesubst s e e1) (eesubst s e e2)
+eesubst s e (Ann e1 t) = Ann (eesubst s e e1) t
+eesubst s e (Var x)
+  | s == x    = e
+  | otherwise = Var x
+eesubst s e t = t
 
 esubst :: String -> Typ -> Exp -> Exp
 esubst e s (Lam x b) = Lam x (esubst e s b)
@@ -175,13 +186,21 @@ findBind x (WBind y a : w)
 findBind x (_ : w) = findBind x w
 findBind _ [] = Nothing
 
-pickNewVar w = [fromJust $ find (\c -> all (\var -> c `notElem` var) wvars) ['a'..'z']]
+pickNewVar w = [fromJust $ find (\c -> all (\var -> c `notElem` var) wvars) ['a'..'w']]
   where
     wvars = concatMap (\x -> case x of
         WEVar v -> [v]
         WTVar v -> [v]
         _ -> []
       ) w
+
+pickNewBindVar w = fromJust $ find (`notElem` wvars) bvarsupply
+  where
+    wvars = concatMap (\x -> case x of
+        WBind v _ -> [v]
+        _ -> []
+      ) w
+    bvarsupply = "x" : "y" : [ xy : show n | n <- [1..100], xy <- ['x', 'y'] ]
 
 step :: Worklist -> Worklist
 -- First 3 rules
@@ -211,10 +230,14 @@ step (WJug (Sub (EVar b) TInt) : w) = wsubst b [] TInt w
 -- rule 7
 step (WJug (Sub (TArr a b) (TArr c d)) : w) = WJug (Sub c a) : WJug (Sub b d) : w
 -- rules 9 and 8
-step (WJug (Sub t1 (Forall a t2)) : w) = WJug (Sub t1 (ttsubst a (TVar x) t2)) : WTVar x : w
-    where x = pickNewVar w
-step (WJug (Sub (Forall a t1) t2) : w) = WJug (Sub (ttsubst a (EVar x) t1) t2) : WEVar x : w
-    where x = pickNewVar w
+step (WJug (Sub t1 (Forall a t2)) : w) = WJug (Sub t1 t') : WTVar x : w
+    where
+      x = pickNewVar w
+      t' = ttsubst a (TVar x) t2
+step (WJug (Sub (Forall a t1) t2) : w) = WJug (Sub t' t2) : WEVar x : w
+    where
+      x = pickNewVar w
+      t' = ttsubst a (EVar x) t1
 -- rules 10 and 11
 step (WJug (Sub (EVar a) (TArr b c)) : w)
   | EVar a `notElem` ftv (TArr b c) = let (a1, a2) = genSplit a
@@ -227,13 +250,20 @@ step (WJug (Sub (TArr b c) (EVar a)) : w)
 
 -- Checking --
 -- rules 19-21
-step (WJug (Chk e (Forall a t)) : w) = WJug (Chk e (ttsubst a (TVar x) t)) : WTVar x : w
-    where x = pickNewVar w
-step (WJug (Chk (Lam x e) (TArr a b)) : w) = WJug (Chk e b) : WBind x a : w
+step (WJug (Chk e (Forall a t)) : w) = WJug (Chk e t') : WTVar x : w
+    where
+      x = pickNewVar w
+      t' = ttsubst a (TVar x) t
+step (WJug (Chk (Lam x e) (TArr a b)) : w) = WJug (Chk e' b) : WBind x a : w
+    where
+      y = pickNewBindVar w
+      e' = eesubst x (Var y) e
 step (WJug (Chk (Lam x e) (EVar a)) : w) = let (a1, a2) = genSplit a
       in wsubst a [a1, a2] (TArr (EVar a1) (EVar a2)) $
-        WJug (Chk e (EVar a2)) : WBind x (EVar a1) : w
-      -- TODO gen new var
+        WJug (Chk e' (EVar a2)) : WBind x (EVar a1) : w
+    where
+      y = pickNewBindVar w
+      e' = eesubst x (Var y) e
 -- rule 18
 step (WJug (Chk e b) : w) = WJug (Inf e (\a -> Sub a b)) : w
 
@@ -243,17 +273,20 @@ step (WJug (Inf (Var x) c) : w) = case findBind x w of
     Nothing -> error $ "No binding for " ++ x
 step (WJug (Inf (Ann e a) c) : w) = WJug (Chk e a) : WJug (c a) : w
 step (WJug (Inf (Lit _) c) : w) = WJug (c TInt) : w
-step (WJug (Inf (Lam x e) c) : w) = WJug (Chk e (EVar b)) : WBind x (EVar a) :
+step (WJug (Inf (Lam x e) c) : w) = WJug (Chk e' (EVar b)) : WBind x (EVar a) :
       WJug (c (TArr (EVar a) (EVar b))) : WEVar b : WEVar a : w
     where
       a = pickNewVar w
       b = pickNewVar (WEVar a : w)
-      -- TODO gen new var
+      y = pickNewBindVar w
+      e' = eesubst x (Var y) e
 step (WJug (Inf (App e1 e2) c) : w) = WJug (Inf e1 (\b -> AInf b e2 c)) : w
 
 -- Application Inference --
-step (WJug (AInf (Forall a t) e c) : w) = WJug (AInf (ttsubst a (EVar x) t) e c) : WEVar x : w
-    where x = pickNewVar w
+step (WJug (AInf (Forall a t) e c) : w) = WJug (AInf t' e c) : WEVar x : w
+    where
+      x = pickNewVar w
+      t' = ttsubst a (EVar x) t
 step (WJug (AInf (TArr a b) e c) : w) = WJug (Chk e a) : WJug (c b) : w
 step (WJug (AInf (EVar a) e c) : w) = let (a1, a2) = genSplit a
       in wsubst a [a1, a2] (TArr (EVar a1) (EVar a2)) $ WJug (AInf (EVar a) e c) : w
@@ -272,4 +305,26 @@ success1 = [WJug (Sub (Forall "a" (TArr ta TInt)) (TArr (Forall "a" (TArr ta ta)
 
 failure1 = [WJug (Sub (Forall "a" (TArr TInt ta)) (TArr TInt (Forall "b" tb)))]
 
-typing1 = [WJug (Chk (App (Lam "x" (Var "x")) (Lit 33)) TInt)]
+lamId = Lam "x" (Var "x")
+litNum = Lit 33
+
+typing1 = [WJug (Chk (App lamId litNum) TInt)]
+
+typing2 = [WJug (Chk (
+    App (App lamId lamId) litNum
+  ) TInt)]
+
+
+f :: [a] -> [a]
+f (xs::[a]) = reverse xs :: [a]
+
+g :: [a -> a] -> [a -> a]
+g (xs::[a -> b]) = reverse xs :: [b -> b]
+
+g' (xs::[a -> b]) = reverse xs :: [b -> a]
+
+fex :: forall a. [a] -> [a]
+fex xs = ys ++ ys
+     where
+       ys :: [a]
+       ys = reverse xs

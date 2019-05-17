@@ -36,25 +36,46 @@ but monotypes $\tau$ do not have any universal quantifier.
 Terms include a unit term $()$, variables $x$, lambda-functions $\lam e$,
 applications $e_1~e_2$ and annotations $(e:A)$.
 Contexts $\Psi$ are sequences of type variable declarations and
-term variables with its type declared $x:A$.
+term variables with their types declared $x:A$.
 
 \begin{figure}[t]
-%\centering \framebox{$\Psi \vdash A$}
-%\begin{gather*}
-%\inferrule*[right=$\mathtt{wf_d unit}$]
-%    {~}{\Psi\vdash 1}
-%\qquad
-%\inferrule*[right=$\mathtt{wf_d var}$]
-%    {a\in\Psi}{\Psi\vdash a}
-%\qquad
-%\inferrule*[right=$\mathtt{wf_d{\to}}$]
-%    {\Psi\vdash A\quad \Psi\vdash B}
-%    {\Psi\vdash A\to B}
-%\qquad
-%\inferrule*[right=$\mathtt{wf_d\forall}$]
-%    {\Psi, a\vdash A}
-%    {\Psi\vdash \forall a. A}
-%\end{gather*}
+\centering \framebox{$\Psi \vdash A$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf_d unit}$]
+    {~}{\Psi\vdash 1}
+\qquad
+\inferrule*[right=$\mathtt{wf_d var}$]
+    {a\in\Psi}{\Psi\vdash a}
+\qquad
+\inferrule*[right=$\mathtt{wf_d{\to}}$]
+    {\Psi\vdash A\quad \Psi\vdash B}
+    {\Psi\vdash A\to B}
+\qquad
+\inferrule*[right=$\mathtt{wf_d\forall}$]
+    {\Psi, a\vdash A}
+    {\Psi\vdash \forall a. A}
+\end{gather*}
+
+\centering \framebox{$\Psi \vdash e$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf_d tmvar}$]
+    {x:A\in\Psi}{\Psi\vdash x}
+\qquad
+\inferrule*[right=$\mathtt{wf_d tmunit}$]
+    {~}{\Psi\vdash ()}
+\qquad
+\inferrule*[right=$\mathtt{wf_d abs}$]
+    {\Psi,x:A\vdash e}
+    {\Psi\vdash \lam e}
+\\
+\inferrule*[right=$\mathtt{wf_d app}$]
+    {\Psi\vdash e_1 \quad \Psi\vdash e_2}
+    {\Psi\vdash e_1~e_2}
+\qquad
+\inferrule*[right=$\mathtt{wf_d anno}$]
+    {\Psi\vdash A \quad \Psi\vdash e}
+    {\Psi\vdash (e:A)}
+\end{gather*}
 
 \centering \framebox{$\Psi \vdash A \le B$}
 \begin{gather*}
@@ -73,17 +94,19 @@ term variables with its type declared $x:A$.
     {\Psi\vdash \all A \le B}
 \qquad
 \inferrule*[right=$\mathtt{{\le}\forall R}$]
-    {\Psi, a\vdash A\le B}
+    {\Psi, b\vdash A\le B}
     {\Psi\vdash A \le \all[b]B}
 \end{gather*}
 \caption{%Well-formedness of Declarative Types and 
 Declarative Subtyping}\label{fig:decl:sub}
 \end{figure}
 
+\jimmy{TODO: Mention the implicit freshness conditions in the premises throughout the text}
+
 \begin{figure}[t]
 \begin{tabular}{rl}
-    \framebox{$\Psi \vdash A \Lto B$} & $e$ checks against input type $A$.\\[0.5mm]
-    \framebox{$\Psi \vdash A \To B$} & $e$ synthesizes output type $A$.\\[0.5mm]
+    \framebox{$\Psi \vdash e \Lto A$} & $e$ checks against input type $A$.\\[0.5mm]
+    \framebox{$\Psi \vdash e \To A$} & $e$ synthesizes output type $A$.\\[0.5mm]
     \framebox{$\Psi \vdash \appInf{A}{e}{C}$} & Applying a function of type $A$ to $e$ synthesizes type $C$.
 \end{tabular}
 \begin{gather*}
@@ -216,7 +239,7 @@ Declarative typing rule $\mathtt{DeclSub}$ overlaps with
 both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
 However, we argue that more specific rules are always the best choices,
 i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$ should have
-higher priority to $\mathtt{DeclSub}$. We will come back to this
+higher priority than $\mathtt{DeclSub}$. We will come back to this
 topic in Section~\ref{sec:metatheory:non-overlapping}.
 \begin{comment}
 For example, $\Psi\vdash \lam x \Lto \all a\to a$ succeeds if derived from
@@ -556,6 +579,8 @@ anything in front of it in the worklist. If there is nothing in front, the
 variable is no longer needed and can be popped from the worklist. This way, no
 garbage (i.e. variables out-of-scope) builds up.
 
+\jimmy{Comment A is not satisfied with the term "continuation passing style" for our definition.}
+
 $$\begin{aligned}
 \text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
 \text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
@@ -595,6 +620,8 @@ This form models a \emph{continuation passing style}:
 it
 denotes that we need to infer the type, say $A$, for expression $e$ and use it
 in the chain $\omega$ by substituting it for the placeholder type variable $a$.
+Notice that such $a$ binds a fresh type variable for the inner chain $\jg$,
+which behaves similarly to the variable declarations in the context.
 
 Take the following worklist as an example
 $$\al \Vdash \underline{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \underline{\al \le \bt} \Vdash \underline{\bt \le 1}$$
