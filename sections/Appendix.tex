@@ -4,50 +4,72 @@
 \subsection{Formal Definitions for Worklist Measures}
 
 \begin{figure}[h!]
-\hfill \framebox{$|\Gm|_e$} \hfill  \llap{Size measure.}
-\begin{gather*}
-    \begin{aligned}
-    |\Gm|_e &= \sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
-        \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
-    \text{where } |x|_e &= |()|_e = 1\\
-        \qquad |\lam e|_e &= |e|_e + 1\\
-        |e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1\\
-        |e:A|_e &= |e| + 1
-    \end{aligned}
-    \end{gather*}
-    \hfill \framebox{$|\Gm|_\Leftrightarrow$} \hfill  \llap{Judgment measure.}
-    \begin{gather*}
-    \begin{aligned}
-    |\Gm|_\Leftrightarrow &= 2\cdot\#_{e\Lto A\in\Gm} +
-        \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
-    \end{aligned}
-    \end{gather*}
-    \hfill \framebox{$|\Gm|_\forall$} \hfill  \llap{Polymorphism measure.}
-    \begin{gather*}
-    \begin{aligned}
-    |\Gm|_\forall &= \sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
-        \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
-    \text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
-        |A\to B|_\forall &= |A|_\forall + |B|_\forall\\
-        |\all A|_\forall &= |A|_\forall + 1
-    \end{aligned}
-    \end{gather*}
-    \hfill \framebox{$|\Gm|_\to$} \hfill  \llap{Function measure.}
-    \begin{gather*}
-    \begin{aligned}
-    |\Gm|_\to &= \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
-        \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
-    \text{where } |1|_\to &= |a|_\to = |\al|_\to = 1\\
-        |A\to B|_\to &= |A|_\to + |B|_\to + 1\\
-        |\all A|_\to &= |A|_\to
-    \end{aligned}
-    \end{gather*}
-    \hfill \framebox{$|\Gm|_{\al}$} \hfill  \llap{Existential measure.}
-    \begin{gather*}
-    \begin{aligned}
-    |\Gm|_{\al} &= \#_{\al\in\Gm}\\
-    \end{aligned}
-\end{gather*}
+    \begin{minipage}[t]{.5\textwidth}
+        \centering\framebox{$|\Gm|_e$, $|\jg|_e$, $|e|_e$} {Size measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_e &= \sum_{\jg \in \Gm} |\jg|_e\\[2mm]
+            |A \le B|_e &= 0\\
+            |e \Lto A|_e &= |e|_e\\
+            |e \To \jg|_e &= |e|_e + |\jg|_e\\
+            |\appInfAlg{A}{e}|_e &= |e|_e + |\jg|_e\\[2mm]
+            |x|_e &= |()|_e = 1\\
+            \qquad |\lam e|_e &= |e|_e + 1\\
+            |e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1\\
+            |e:A|_e &= |e|_e + 1
+            \end{aligned}
+        \end{gather*}
+        
+        \centering\framebox{$|\Gm|_\Leftrightarrow$, $|\jg|_\Leftrightarrow$} {Judgment measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_\Leftrightarrow &= \sum_{\jg \in \Gm} |\jg|_e\\[2mm]
+            % 2\cdot\#_{e\Lto A\in\Gm} +
+            %    \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
+            |A \le B|_\Leftrightarrow &= 0\\
+            |e \Lto A|_\Leftrightarrow &= 2\\
+            |e \To \jg|_\Leftrightarrow &= |\jg|_\Leftrightarrow + 1\\
+            |\appInfAlg{A}{e}|_\Leftrightarrow &= |\jg|_\Leftrightarrow + 3
+            \end{aligned}
+        \end{gather*}
+        \centering\framebox{$|\Gm|_{\al}$} {Existential measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_{\al} &= \#_{\al\in\Gm}\\
+            \end{aligned}
+        \end{gather*}
+    \end{minipage}%
+    \begin{minipage}[t]{.5\textwidth}
+        \centering\framebox{$|\Gm|_\forall$, $|\jg|_\forall$, $|A|_\forall$} {Polymorphism measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_\Leftrightarrow &= \sum_{\jg \in \Gm} |\jg|_\forall\\[2mm]
+            |A \le B|_\forall &= |A|_\forall + |B|_\forall\\
+            |e \Lto A|_\forall &= |A|_\forall\\
+            |e \To \jg|_\forall &= |\jg|_\forall\\
+            |\appInfAlg{A}{e}|_\forall &= |A|_\forall + |\jg|_\forall\\[2mm]
+            |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
+            |A\to B|_\forall &= |A|_\forall + |B|_\forall\\
+            |\all A|_\forall &= |A|_\forall + 1
+            \end{aligned}
+        \end{gather*}
+        
+        \centering\framebox{$|\Gm|_\to$, $|\jg|_\to$, $|A|_\to$} {Function measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_\to &= \sum_{\jg \in \Gm} |\jg|_\forall\\[2mm]
+            |A \le B|_\forall &= |A|_\forall + |B|_\forall\\
+            |e \Lto A|_\forall &= |A|_\forall\\
+            |e \To \jg|_\forall &= |\jg|_\forall\\
+            |\appInfAlg{A}{e}|_\forall &= |A|_\forall + |\jg|_\forall\\[2mm]
+            |1|_\to &= |a|_\to = |\al|_\to = 1\\
+            |A\to B|_\to &= |A|_\to + |B|_\to + 1\\
+            |\all A|_\to &= |A|_\to
+            % \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
+            %     \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
+            \end{aligned}
+        \end{gather*}
+    \end{minipage}
 \caption{Worklist measures}
 \label{fig:measures}
 \end{figure}
