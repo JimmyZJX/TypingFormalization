@@ -101,8 +101,6 @@ term variables with their types declared $x:A$.
 Declarative Subtyping}\label{fig:decl:sub}
 \end{figure}
 
-\jimmy{TODO: Mention the implicit freshness conditions in the premises throughout the text}
-
 \begin{figure}[t]
 \begin{tabular}{rl}
     \framebox{$\Psi \vdash e \Lto A$} & $e$ checks against input type $A$.\\[0.5mm]
@@ -189,6 +187,13 @@ is known to give rise to an undecidable subtyping relation~\cite{tiuryn1996subty
 \citet{jones2007practical} also impose the restriction of
 predicative instantiation in their type system.
 Both systems are adopted by several practical programming languages.
+
+\jimmy{Mention the implicit freshness conditions in the premises throughout the text}
+Please note that when we introduce a new binder in the premise, we implicitly pick a fresh one.
+This applies to rules such as $\mathtt{wf_d\forall}$, $\mathtt{wf_dabs}$, $\mathtt{{\le}\forall R}$,
+throughout the whole text.
+For algorithmic rules in Figure~\ref{fig:alg}, the right-hand side $\Gm'$
+is actually the premise if re-written in bit-step style.
 
 \paragraph{Declarative Typing}
 The bidirectional type system, shown in Figure~\ref{fig:decl:typing}, has three judgments.
