@@ -210,10 +210,10 @@ $$
 $$
 $$\Gm \Vdash \Lambda a.~e:A \To_b \jg \algrule \Gm \Vdash [(\all A)/b]\jg, a \Vdash e \Lto A$$
 
-In a practical point of view, programmers may not write the syntax $\Lambda a. e : A$ directly.
+In a practical point of view, programmers may not write the syntax $\Lambda a.~e : A$ directly.
 The ScopedTypeVariables extension of Haskell is effective only
 when the type signature is explicitly universally quantified
-(the compiler translates into an expression similar to $\Lambda a. e : A$);
+(the compiler translates into an expression similar to $\Lambda a.~e : A$);
 otherwise the program means the normal syntax $e : \all A$,
 and one may not later refer to the type variable $a$.
 
