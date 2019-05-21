@@ -176,16 +176,12 @@ $$
 $$
 
 But there are issues about the well-formedness condition.
-Normally $\Gm \vdash_{wf} (e : A)$ is defined by $\Gm \vdash_{wf} e$ and $\Gm \vdash_{wf} A$.
-When $A = \all A'$, the type variable $a$ is not introduced to the context of $e$,
-therefore $\Gm \vdash_{wf} e$ is not derivable.
+Normally $\Psi \vdash (e : A)$ is defined by $\Psi \vdash e$ and $\Psi \vdash A$.
+However, when $A = \all A'$, the type variable $a$ is not introduced to the context of $e$,
+therefore $\Psi \vdash e$ is not derivable.
 
-To address the problem, one can either
-1) change the well-formedness judgment by introducing the binder for terms as well;
-or 2) add a syntax that explicitly bind the generic type variable.
-The former approach requires to resolve overlapping cases
-$(e : \all A)$ with $(e : B)$ where $B \neq \all B'$.
-Therefore we choose the latter approach due to its simplicity.
+To address the problem,
+we add a syntax that explicitly bind the generic type variable into a function and its annotation.
 The syntax of expression is extended with one more constructor:
 $$
 \begin{array}{l@{\qquad}lcl}
@@ -193,8 +189,19 @@ $$
 \end{array}
 $$
 
-Notice that the type-lambda syntax $\Lambda a.~e:A$ annotates the generic function $e$ with $\all A$,
+The new type-lambda syntax $\Lambda a.~e:A$ actually annotates the generic function $e$ with $\all A$,
 while making $a$ visible inside the body of the function.
+The well-formedness judgments are updated naturally:
+$$
+\inferrule*[right=$\mathtt{wf_d}\Lambda$]
+    {\Psi,a \vdash e \quad \Psi,a \vdash A}
+    {\Psi \vdash \Lambda a.~e:A}
+\qquad
+\inferrule*[right=$\mathtt{wf\_}\Lambda$]
+    {\Gm,a \vdash e \quad \Gm,a \vdash A}
+    {\Gm \vdash \Lambda a.~e:A}
+$$
+
 Corresponding rules are introduced for both the declarative system and the algorithmic system:
 $$
 \inferrule*[right=$\mathtt{Decl}\Lambda$]
@@ -202,13 +209,6 @@ $$
     {\Psi\vdash \Lambda a.~e:A \To \all A}
 $$
 $$\Gm \Vdash \Lambda a.~e:A \To_b \jg \algrule \Gm \Vdash [(\all A)/b]\jg, a \Vdash e \Lto A$$
-
-The new syntax for expressions also affect the well-formedness judgment:
-$$
-\inferrule*[right=$\mathtt{wf\_}\Lambda$]
-    {\Gm,a \vdash_{wf} e \quad \Gm,a \vdash_{wf} A}
-    {\Gm \vdash_{wf} \Lambda a.~e:A}
-$$
 
 In a practical point of view, programmers may not write the syntax $\Lambda a. e : A$ directly.
 The ScopedTypeVariables extension of Haskell is effective only
