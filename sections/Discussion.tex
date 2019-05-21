@@ -8,6 +8,8 @@ We also discuss a way to improve the precision of their scope tracking.
 Furthermore we discuss and sketch an extension of our algorithm with
 an elaboration to a target calculus.
 
+\jimmy{TODO: update the summary}
+
 \begin{comment}
 \subsection{Implementation}
 Anything to say about the implementation? Do we have one?
@@ -152,3 +154,69 @@ but also replace occurrences in the elaboration list.
 If an existential variable is recycled, meaning that it is not constrained,
 we can pick any well-formed monotype as its solution.
 The unit type $1$, as the simplest type in the system, is a good choice.
+
+\subsection{Lexically-scoped type variables}
+We further extend the type system to support a simple extension, Lexically-scoped type variables.
+From a practical point of view,
+such extension enables the programmer to refer to type variables in a generic function signature
+when implementing of that function.
+For example,
+$$(\lam{\lam[y] (x:a)}) : \all[a~b] a \to b \to a$$
+has an inner annotation $(x:a)$ that refers to the outer generic type variable $a$.
+This is not a surprising feature, since the declarative system already accepts these kind of programs
+$$
+\inferrule*[right=$\mathtt{DeclAnno}$]
+{
+    \Psi \vdash \all A \quad
+    \inferrule*[right=$\mathtt{Decl\forall I}$]
+    {\Psi,a \vdash e \Lto A}
+    {\Psi\vdash e\Lto \all A}
+}
+    {\Psi\vdash (e: \all A)\To \all A}
+$$
+
+But there are issues about the well-formedness condition.
+Normally $\Gm \vdash_{wf} (e : A)$ is defined by $\Gm \vdash_{wf} e$ and $\Gm \vdash_{wf} A$.
+When $A = \all A'$, the type variable $a$ is not introduced to the context of $e$,
+therefore $\Gm \vdash_{wf} e$ is not derivable.
+
+To address the problem, one can either
+1) change the well-formedness judgment by introducing the binder for terms as well;
+or 2) add a syntax that explicitly bind the generic type variable.
+The former approach requires to resolve overlapping cases
+$(e : \all A)$ with $(e : B)$ where $B \neq \all B'$.
+Therefore we choose the latter approach due to its simplicity.
+The syntax of expression is extended with one more constructor:
+$$
+\begin{array}{l@{\qquad}lcl}
+\text{Expressions}\qquad&e &::=&\quad x \mid () \mid \lam e \mid e_1~e_2 \mid (e:A) \mid \Lambda a.~e:A
+\end{array}
+$$
+
+Notice that the type-lambda syntax $\Lambda a.~e:A$ annotates the generic function $e$ with $\all A$,
+while making $a$ visible inside the body of the function.
+Corresponding rules are introduced for both the declarative system and the algorithmic system:
+$$
+\inferrule*[right=$\mathtt{Decl}\Lambda$]
+    {\Psi,a \vdash A \quad \Psi,a \vdash e\Lto A}
+    {\Psi\vdash \Lambda a.~e:A \To \all A}
+$$
+$$\Gm \Vdash \Lambda a.~e:A \To_b \jg \algrule \Gm \Vdash [(\all A)/b]\jg, a \Vdash e \Lto A$$
+
+The new syntax for expressions also affect the well-formedness judgment:
+$$
+\inferrule*[right=$\mathtt{wf\_}\Lambda$]
+    {\Gm,a \vdash_{wf} e \quad \Gm,a \vdash_{wf} A}
+    {\Gm \vdash_{wf} \Lambda a.~e:A}
+$$
+
+In a practical point of view, programmers may not write the syntax $\Lambda a. e : A$ directly.
+The ScopedTypeVariables extension of Haskell is effective only
+when the type signature is explicitly universally quantified
+(the compiler translates into an expression similar to $\Lambda a. e : A$);
+otherwise the program means the normal syntax $e : \all A$,
+and one may not later refer to the type variable $a$.
+
+We also obtained all three desired properties for the extended system,
+namely soundness, completeness and decidability.
+
