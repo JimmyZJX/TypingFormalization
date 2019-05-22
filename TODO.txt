@@ -1,0 +1,341 @@
+> ICFP 2019 Paper #66 Reviews and Comments
+> ===========================================================================
+> Paper #66 A Mechanical Formalization of Higher-Ranked Polymorphic Type
+> Inference
+> 
+> 
+> Review #66A
+> ===========================================================================
+> 
+> Overall merit
+> -------------
+> A. Good paper. I will champion it at the PC meeting.
+> 
+> Reviewer expertise
+> ------------------
+> Y. I am knowledgeable in the area, though not an expert.
+> 
+> Paper summary
+> -------------
+> The paper proposes a new algorithm for type inference in a system with
+> higher-rank polymorphism.  The algorithm is based on previous work by
+> Dunfield and Krishnaswami (DK) with three significant improvements:
+> 
+>  1. the new algorithm and its metatheory (soundness, completeness,
+>     decidability) have been fully mechanized using the Abella theorem
+>     prover;
+>  2. several errors in the pen-and-paper proofs of the DK formalization
+>     have been identified and corrected;
+>  3. the new algorithm is based on a novel use of worklist judgments.
+> 
+> The paper presents a "human-readable" version of the new algorithm and
+> its metatheory, gives sketches of the metatheoretic proofs and
+> discusses the relationship with previous work (notably the original DK
+> algorithm).
+> 
+> Comments for author
+> -------------------
+> This is an impressive and well-written paper presenting a solid piece
+> of technical work.
+> 
+> Designing and mechanizing a nontrivial piece of metatheory like the
+> one described in this paper is challenging in itself.  Additionally
+> the authors succeeded in presenting their work and the lessons learned
+> from mechanizing the metatheory in an enlightening and convincing way.
+> I particularly liked the proposed use of worklist judgments to unify
+> scoped unification, type checking, type inference and subtype
+> checking, which seems completely novel to me.  The resulting algorithm
+> resembles an abstract machine semantics, where the "program" to
+> be executed is the initial type checking task and the context/worklist
+> acts as a stack.
+> 
+> One minor point of criticism I have is that there appear to be some
+> unexplained differences between the presentation in the paper and the
+> Abella mechanization, which made it harder than necessary for me to
+> relate the two and to follow some of the proof sketches in the paper.
+> For example, the (binary) multi-step reduction relations on
+> algorithmic and declarative worklists seem to be represented by unary
+> predicates (`judge` and `dc` respectively) in the Abella script, which
+> look more like big-step than small-step reduction relations.  This
+> change of representation may even impact the structure of some proofs
+> (e.g. the induction hypothesis used in the proofs of soundness and
+> completeness).  I know very little about Abella, so this choice of
+> representation may well be more idiomatic than the one presented in
+> the paper.  Still, I would have liked to see a short discussion of the
+> pros/cons of the two representations and why different representations
+> are used in the paper and the proof script.  More extensive
+> documentation of the proof script (e.g. more comments) would also be
+> helpful in navigating the mechanization.
+> 
+> What follows is a list of line-by-line comments, mostly regarding
+> minor issues in the presentation, and typos.
+> 
+> L15, abstract: "allow precise capture".  I'm not sure what is meant
+> by this, maybe "precisely captures"?
+> 
+> L17: "which complicate the task of writing a formal proof".
+> Technically, a "formal proof" has already been given.  The authors
+> probably mean the task of "mechanizing the formal proof" or "writing a
+> mechanized version of the proof"?
+> 
+> L26: Here (and elsewhere, e.g. L54) "Hindley-Milner" is used as a
+> shorthand for the "Hindley-Milner type system", but this was a bit
+> confusing to me on a first read.  I thought it referred to the actual
+> people behind the system.  Maybe an abbreviation like "HM" (analogous
+> to "DK" for Dunfield and Krishnaswami's system) could be used instead.
+> 
+> L79: "which removes the burden _from_ checking" -> "of"
+> 
+> L81: "full mechanical formalization".  I think what is meant is a
+> "fully mechanized formalization"?
+> 
+> L83: the names of Dunfield and Krishnaswami are duplicated in the
+> citation on this line.  The style used e.g. on L1128 is more readable.
+> 
+> L161, Fig. 2:
+> 
+>  - rule $\leq\forall L$: the judgment form of the premise $\Psi \vdash
+>    \tau$ has not been introduced.  I assume it means $e$ is
+>    well-scoped?  Please add a comment about this in the text.
+> 
+>  - rule $\leq\forall R$: the type variable $b$ in the conclusion
+>    should probably be $a$?  Also, there seems to be a missing
+>    freshness side-condition ($a \notin FV(A)$)?
+> 
+> L177: "variables with _its_ type declared" -> "their"
+> 
+> L251: "should have higher priority _to_" -> "than"
+> 
+> L389, after syntax definition: since this paragraph introduces some
+> non-standard syntax (or at least syntax with non-standard scoping) it
+> might be good to explicitly state which of the syntactic forms are
+> _binders_, and what the scope of the newly introduced variable is.  If
+> I understand correctly, the two inference "judgments" are binders: $a$
+> is a bound variable (and thus free in the sub-chain $\omega$).  This
+> is mentioned in the discussion that follows (e.g. after L482) and
+> implicitly in the well-formedness rules in Fig. 4, but I think it
+> deserves to be mentioned explicitly here since scoping is such an
+> important aspect of the worklist approach.
+> 
+> L409 (and elsewhere): "This form models a continuation passing style".
+> I'm not too fond of this analogy since no continuation is being
+> passed.  What is being passed is the "return value" (via the newly
+> bound variable $a$) _to_ the continuation $\omega$ (i.e. the remainder
+> of the chain).  If anything, this is more like _sequencing_, or
+> _let-binding_ in ANF, where intermediate results are named.
+> 
+> L442, Fig. 4: again, the well-scopedness premises (?) in rules
+> $wf\leq$, $wf\Rightarrow$, and $wf_{of}$ deserve some explanation.
+> 
+> L504: "Declarative subtyping" -> "Algorithmic subtyping".
+> 
+> L540, Fig. 5:
+> 
+>  - I would have preferred readable names for the reduction rules
+>    rather than numbers.  The numbers made it hard for me to keep track
+>    of the reduction rules in the discussion that follows.
+> 
+>  - It would be helpful to include the names of key judgments (like
+>    this reduction judgment) in the Abella script for easier
+>    comparison.  Alternatively, one could extend the table in Fig. 11
+>    with the names of key judgments.
+> 
+>  - Rules 10 and 11 probably require some freshness conditions on
+>    $\hat{\alpha}_1$ and $\hat{\alpha}_2$.  This is mentioned later in
+>    the text (they should have the same scope as $\hat{\alpha}$) but it
+>    might be nice to include the conditions here.
+> 
+>  - Rule 26 (and maybe others) introduce a new binding for $b$.  There
+>    should probably be an associated freshness condition, e.g. $b
+>    \notin FV(e_2) \cup FV(\omega)$?
+> 
+> L596: the unification rules (12--17) seemed puzzling to me at first
+> since the subtyping relation is not symmetric, yet the rules seem to
+> allow unification in both directions.  I managed to convince myself
+> that this was OK since these rules only unify existential variables,
+> and thus only simple types.  The restriction of subtyping to simple
+> types is effectively an equivalence (and thus symmetric).  Is this
+> correct?  If so, maybe this could be mentioned in the discussion.
+> 
+> L704: "This has the added benefit that our algorithm runs in
+> polynomial time, which makes it suitable for practical use."  How does
+> polynomial complexity follow from the reduction rule being
+> deterministic?  This is not obvious at all to me and deserves some
+> explanation.  Rules 10 and 11 can grow type expressions considerably
+> (via substitution) and rule 7 can turn this growth into additional
+> goals, so it's unclear to me what would prevent the well-known
+> pathological cases that render HM-inference exponential from having
+> similar effects here.  Please explain how exponential growth is
+> avoided.
+> 
+> L782, footnote: I found this comment to be rather cryptic since I had
+> a hard time to find the Abella definitions corresponding to the
+> relevant judgments/worklists.  A table translating the paper
+> syntax/judgments to corresponding names in the Abella script would
+> have been helpful.
+> 
+> L859, proof of soundness theorem: "by induction on the derivation of
+> $\Gamma \longrightarrow^* \cdot$".  This is a bit vague since the
+> inference rules for multi-step reduction are never given.  Maybe the
+> induction proceeds from the head of the reduction sequence to the tail
+> (with the empty sequence as a base case), followed by case analysis on
+> the reduction rule in head position?  Also, the mechanized counterpart
+> of this lemma seems to use a different representation for multi-step
+> reductions (`judge` and `dc`) which are not binary but unary relations
+> on worklists.  Am I missing something here?
+> 
+> L881 (completeness theorem): why is the second premise (instantiation
+> of $\Gamma$ to $\Omega$) necessary here?  Isn't every declarative
+> worklist also an algorithmic worklist?  If so, why use the additional
+> $\Gamma$ at all?  Maybe the mechanization does not allow treating the
+> languages of declarative and algorithmic worklists as a subsets?
+> 
+> L883: same comment as above about the induction strategy used here.
+> 
+> L905 (and following): here, again, the use of $\Gamma$, $A$ and $B$
+> and the corresponding instantiation seems somewhat superfluous.  Why
+> not use the declarative counterparts only?
+> 
+> L916, termination theorem:
+> 
+>  - I could not find a direct counterpart of this theorem in the Abella
+>    script.  Instead there seems to be a collection of lemmas about the
+>    termination measures that are then used in the decidability
+>    theorem.  Is that correct?  If so, it might be good to add a
+>    comment about this in Section 4.6.
+> 
+>  - The formal statement of the theorem seems to be identical to the
+>    informal statement given just one line above.  Consider expanding
+>    the formal statement or at least removing "In other words" from the
+>    end of the preceding line.
+> 
+> L922: "Other two measures" -> "The other two measures"
+> 
+> L1042: "he/she".  Consider using the plural "they" (for readability).
+> 
+> L1106: "within _its_ scope" -> "their"
+> 
+> 
+> 
+> Review #66B
+> ===========================================================================
+> 
+> Overall merit
+> -------------
+> B. OK paper, but I will not champion it.
+> 
+> Reviewer expertise
+> ------------------
+> Y. I am knowledgeable in the area, though not an expert.
+> 
+> Paper summary
+> -------------
+> 
+> This paper presents the mechanisation, in the Abella theorem prover,
+> of a type-inference algorithm for a higher-ranked polymorphic
+> language. In that perspective, the authors designed a new
+> syntax-directed inference algorithm (whose main structure is based on
+> a unification between context and worklists) that is formally proved
+> to be strongly normalising and to be sound & complete w.r.t. the
+> original type inference algorithm. Doing so was driven by the fact
+> that the original pen-and-paper proofs where buggy (and no fixes have
+> been found) and less amenable to formalisation.
+> 
+> Comments for author
+> -------------------
+> 
+> I find the topic presented in that paper interesting as few has been
+> done w.r.t. mechanizing the correctness of type inference algorithms
+> for advanced typing discipline. Moreover, the mechanization has not be
+> done in a "push-symbol"/brute-force way, but in an elegant way,
+> defining a new but equivalent type inference algorithm that is more
+> amenable to mechanization. For instance, I am quite impressed that the
+> final development in only ~8k lines of code whereas the manual proof
+> is about 70 pages long. IMO, this is a good metric of the solution
+> effectiveness.
+> 
+> I also find the idea of unifying judgements & worklists, in the
+> context of type inference algorithm description, interesting on its
+> own. It allows to give an algorithmic, concise and readable
+> description of the DK inference algorithm. I suspect that such a
+> structure could be used for some other inference algorithms.
+> 
+> Last, I find the paper well written and easy to follow.
+> 
+> On the negative part, I am not sure that one can, from the paper,
+> infer general hints/guidelines about the formalization of the
+> correctness/completeness/... of an inference algorithm for a complex
+> typing discipline. This is mainly due to the fact that the authors
+> concentrate their attention to one single inference algorithm.
+> 
+> Minor comments
+> 
+>  - Fig2. Rule <=(forallR): \forall b. B -> \forall a. B
+> 
+>  - I found the proofs abstracts of Section 4 a bit hard to follow, especially the part regarding the termination order. I am not sure one can get some intuition from the technical parts of Section 4.5.
+> 
+> 
+> 
+> Review #66C
+> ===========================================================================
+> 
+> Overall merit
+> -------------
+> A. Good paper. I will champion it at the PC meeting.
+> 
+> Reviewer expertise
+> ------------------
+> X. I am an expert in the subject area of this paper.
+> 
+> Paper summary
+> -------------
+> The paper presents a fully formalized version of Dunfield and
+> Krishnaswami's bidirectional type system for higher-rank polymorphism
+> (2013).  The formalization is carried out in Abella, which has
+> intrinsic support for name generation.  In the course of the
+> formalization, the authors provide a new algorithmic system that is
+> sound and complete with respect to DK's declarative one,
+> deterministic, relatively straightforward to implement, and (most
+> importantly) possible to prove sound and complete.  Elaboration (which
+> I expect to be not too difficult) and a full analysis of DK's original
+> algorithmic system (which I expect to be hard) are left to future
+> work.
+> 
+> The principal challenge in an algorithm of this type and complexity is
+> the interplay between existential variables that are solved by
+> unification, universal variables due to polymorphic quantification, and
+> the scoping issues that this interplay creates.  A cool and novel
+> feature of the algorithm is that it uses a worklist (stack), some of
+> which is modeled after continuation-passing style.  When variables
+> leave their scope they are actually explicitly garbage collected.
+> 
+> I have come across related questions on how to present and prove
+> similar systems requiring unification (or, more generally, constraint
+> simplification) in the course of elaboration multiple times in my own
+> research.  Elegant solutions are very hard to come by, and this
+> submission presents a new approach that I will be sure to try next
+> time I am heading down this road again.  I don't think this paper is
+> the last word, but it is an important step forward.
+> 
+> Given the significance of type-checking and elaboration in modern
+> programming language research, a new approach to presenting and
+> proving the correctness of elaboration is an important contribution.
+> Moreover, even though it uses Abella, the presentation is in a clear
+> mathematical style which aids understanding even for those not
+> familiar with Abella and will enable adaptation of the underlying
+> ideas to other provers.  And even if provers are not used, the ideas
+> are still valuable for a clean informal presentation.
+> 
+> In the course of their investigation, the authors found several
+> problems with the mathematical proof DK give and provided
+> alternatives.  I am not in a position to comment on whether these
+> criticisms of DK are justified, nor do I find this significant for the
+> evaluation of the paper.
+> 
+> Comments for author
+> -------------------
+> L162: "Psi, a" -> "Psi, b"
+> L197: "A <= B" -> "e <= A"
+> L198: "A => B" -> "e => A"
+> L1227: "Schfer"
+> 
