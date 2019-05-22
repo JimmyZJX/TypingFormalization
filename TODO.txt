@@ -77,6 +77,9 @@
 > Technically, a "formal proof" has already been given.  The authors
 > probably mean the task of "mechanizing the formal proof" or "writing a
 > mechanized version of the proof"?
+
+Changed to "writing a machanized proof"
+
 > 
 > L26: Here (and elsewhere, e.g. L54) "Hindley-Milner" is used as a
 > shorthand for the "Hindley-Milner type system", but this was a bit
@@ -85,26 +88,44 @@
 > to "DK" for Dunfield and Krishnaswami's system) could be used instead.
 > 
 > L79: "which removes the burden _from_ checking" -> "of"
+
+Changed to "of"
+
 > 
 > L81: "full mechanical formalization".  I think what is meant is a
 > "fully mechanized formalization"?
 > 
 > L83: the names of Dunfield and Krishnaswami are duplicated in the
 > citation on this line.  The style used e.g. on L1128 is more readable.
-> 
+
+Changed the citation style to \citep
+
 > L161, Fig. 2:
 > 
 >  - rule $\leq\forall L$: the judgment form of the premise $\Psi \vdash
 >    \tau$ has not been introduced.  I assume it means $e$ is
 >    well-scoped?  Please add a comment about this in the text.
+
+Added rules for well-formedness
+
 > 
 >  - rule $\leq\forall R$: the type variable $b$ in the conclusion
 >    should probably be $a$?  Also, there seems to be a missing
 >    freshness side-condition ($a \notin FV(A)$)?
+
+Type variable corrected "a" -> "b"
+Freshness condition mentioned around L231.
+
 > 
 > L177: "variables with _its_ type declared" -> "their"
+
+Corrected.
+
 > 
 > L251: "should have higher priority _to_" -> "than"
+
+Corrected.
+
 > 
 > L389, after syntax definition: since this paragraph introduces some
 > non-standard syntax (or at least syntax with non-standard scoping) it
@@ -116,6 +137,9 @@
 > implicitly in the well-formedness rules in Fig. 4, but I think it
 > deserves to be mentioned explicitly here since scoping is such an
 > important aspect of the worklist approach.
+
+Jimmy: I think the binder is natural and explained in Paragraph <Inference Judgments>.
+
 > 
 > L409 (and elsewhere): "This form models a continuation passing style".
 > I'm not too fond of this analogy since no continuation is being
@@ -126,8 +150,14 @@
 > 
 > L442, Fig. 4: again, the well-scopedness premises (?) in rules
 > $wf\leq$, $wf\Rightarrow$, and $wf_{of}$ deserve some explanation.
+
+Added relavant rules
+
 > 
 > L504: "Declarative subtyping" -> "Algorithmic subtyping".
+
+Corrected.
+
 > 
 > L540, Fig. 5:
 > 
@@ -139,15 +169,25 @@
 >    this reduction judgment) in the Abella script for easier
 >    comparison.  Alternatively, one could extend the table in Fig. 11
 >    with the names of key judgments.
+
+Impossible. Abella does not allow named relational constructors.
+
 > 
 >  - Rules 10 and 11 probably require some freshness conditions on
 >    $\hat{\alpha}_1$ and $\hat{\alpha}_2$.  This is mentioned later in
 >    the text (they should have the same scope as $\hat{\alpha}$) but it
 >    might be nice to include the conditions here.
+
+Mentioned as before: the right-hand size of a algorithmic reduction is premise.
+Premise always pick a fresh variable.
+
 > 
 >  - Rule 26 (and maybe others) introduce a new binding for $b$.  There
 >    should probably be an associated freshness condition, e.g. $b
 >    \notin FV(e_2) \cup FV(\omega)$?
+
+Also implictly picked.
+
 > 
 > L596: the unification rules (12--17) seemed puzzling to me at first
 > since the subtyping relation is not symmetric, yet the rules seem to
@@ -167,6 +207,9 @@
 > pathological cases that render HM-inference exponential from having
 > similar effects here.  Please explain how exponential growth is
 > avoided.
+
+Unfortunately the statement is false. Already removed the sentense.
+
 > 
 > L782, footnote: I found this comment to be rather cryptic since I had
 > a hard time to find the Abella definitions corresponding to the
@@ -208,12 +251,21 @@
 >    informal statement given just one line above.  Consider expanding
 >    the formal statement or at least removing "In other words" from the
 >    end of the preceding line.
+
+Removed "In other words"
+
 > 
 > L922: "Other two measures" -> "The other two measures"
+
+Changed to "Another two measures"
+
 > 
 > L1042: "he/she".  Consider using the plural "they" (for readability).
 > 
 > L1106: "within _its_ scope" -> "their"
+
+Changed to "within their scopes"
+
 > 
 > 
 > 
@@ -271,6 +323,9 @@
 > Minor comments
 > 
 >  - Fig2. Rule <=(forallR): \forall b. B -> \forall a. B
+
+Type variable corrected "a" -> "b"
+
 > 
 >  - I found the proofs abstracts of Section 4 a bit hard to follow, especially the part regarding the termination order. I am not sure one can get some intuition from the technical parts of Section 4.5.
 > 
@@ -335,7 +390,16 @@
 > Comments for author
 > -------------------
 > L162: "Psi, a" -> "Psi, b"
+
+Type variable corrected "a" -> "b"
+
 > L197: "A <= B" -> "e <= A"
 > L198: "A => B" -> "e => A"
+
+These two are corrected.
+
 > L1227: "Schfer"
+
+Reference: corrected the author's name "Schafer"
+
 > 
