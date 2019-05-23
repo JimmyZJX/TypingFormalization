@@ -166,3 +166,61 @@ When the subtyping relation is derived from $\mathtt{{\le}{\to}}$,
 a simple application of induction hypothesis finishes the proof.
 When the subtyping relation is derived from $\mathtt{{\le}\forall R}$,
 $|A'|_\forall$ decreases, and thus the induction hypothesis finishes this case.
+
+\subsection{Translation Table for the Proof Scripts}
+In the proof scripts, we use textual relational definitions
+rather than the symbolic ones used in the paper.
+The mapping should be helpful for anyone who reads the script.
+
+\afterpage{%
+\clearpage% Flush earlier floats (otherwise order might not be correct)
+\begin{landscape}% Landscape page
+
+\begin{figure}[ht]
+\centering
+\begin{tabular}{c|c|c|c}
+Symbol & Abella textual relation & File (.thm) & Description\\\hline
+\hline
+$A$    & {\tt ty, wft, wfta} & typing &
+    The "type" type, decl./alg. well-formedness\\\hline
+$e$    & {\tt tm, wftm} & typing &
+    The "term" type, (alg.) well-formedness\\\hline
+$\Psi, \Gm$ & {\tt olist, wfj} & typing &
+    {\tt olist} is Abella's built-in list type, i.e. {\tt [o]}\\\hline
+$\jg$  & {\tt judgment, wfjg} & typing &
+    Judgment chain and its well-formedness\\\hline
+\hline
+$\Gm\rto\Gm'$ & {\tt reduction} & smallStep &
+    Algorithmic reduction: paper version\\\hline
+$\Gm\redto\nil$ & {\tt judge} & typing &
+    ({\tt judge} $\Gm$): a success reduction on $\Gm$\\\hline
+\hline
+$\Gm \sto \Om$ & {\tt tex} & trans &
+    "transfer existential variables"\\\hline
+$\Om\redto\nil$ & {\tt dc, dcl} & trans, dcl &
+    Declarative chain representation\\\hline
+\hline
+$\Psi'\le\Psi$ & {\tt esub} & declTyping & Declarative context subtyping\\\hline
+\hline
+$\Gm\jExt\Gm'$ & {\tt jExt} & inst\_decidable & "Judgment extension"\\\hline
+$\Gm_i$ & {\tt iexp} & inst\_decidable & instantiation judgments ($\Gm \vdash_{wf} \Gm_i$)\\\hline
+$\Gm_\le$ & {\tt subExp} & inst\_decidable & subtyping judgments\\\hline
+\hline
+$|\cdot|_e$ & {\tt tmSize, tmSizeJ, tmSizel} & declTyping, decidability &
+    Size measure for term, judgment chain or context\\\hline
+$|\cdot|_\Leftrightarrow$ & {\tt m\_judgeJ, m\_judge} & decidability &
+    Judgment measure for judgment chain or context\\\hline
+$|\cdot|_{\al}$ & {\tt nVar} & inst\_decidable &
+    Existential measure for context\\\hline
+$|\cdot|_\forall$ & {\tt order, orderJ, orderl} & order, inst\_decidable &
+    Polymorphism measure for type, judgment chain or context\\\hline
+$|\cdot|_\to$ & {\tt depth, depthJ, depthl} & order, decidability &
+    Function measure for type, judgment chain or context\\\hline
+\end{tabular}
+\caption{Translation Table for the Proof Scripts}
+\label{fig:translation_table}
+\end{figure}
+
+\end{landscape}
+\clearpage% Flush page
+}
