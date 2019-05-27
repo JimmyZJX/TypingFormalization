@@ -216,6 +216,9 @@ Unfortunately the statement is false. Already removed the sentense.
 > relevant judgments/worklists.  A table translating the paper
 > syntax/judgments to corresponding names in the Abella script would
 > have been helpful.
+
+Now there is a translation table in the last section of the appendix.
+
 > 
 > L859, proof of soundness theorem: "by induction on the derivation of
 > $\Gamma \longrightarrow^* \cdot$".  This is a bit vague since the
