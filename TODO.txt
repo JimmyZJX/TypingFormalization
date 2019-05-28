@@ -104,7 +104,7 @@ DONE
 > L83: the names of Dunfield and Krishnaswami are duplicated in the
 > citation on this line.  The style used e.g. on L1128 is more readable.
 
-Changed the citation style to \citep
+DONE: Changed the citation style to \citep
 
 > L161, Fig. 2:
 > 
@@ -181,9 +181,11 @@ DONE
 >    comparison.  Alternatively, one could extend the table in Fig. 11
 >    with the names of key judgments.
 
-Impossible. Abella does not allow named relational constructors.
+ANSWER: In Abella this is impossible todo: Abella does not allow named
+relational constructors.
 
-> 
+TODO: Ask Tom whether he things we should have names.
+
 >  - Rules 10 and 11 probably require some freshness conditions on
 >    $\hat{\alpha}_1$ and $\hat{\alpha}_2$.  This is mentioned later in
 >    the text (they should have the same scope as $\hat{\alpha}$) but it

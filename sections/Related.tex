@@ -122,6 +122,14 @@ eliminates the use of output contexts and their variable solution records ($\al 
 simplifying the information propagation process through immediate substitution
 by collecting all the judgments in a single worklist.
 
+\paragraph{The Essence of ML Type-Inference} \bruno{we deal with
+  higher-ranked polymorphism and do not have separate phases for 
+constraint generation and solving. In such multi-phase algorithms 
+there is typically a different constraint language. In contrast in our
+single phase algorithm one could view the judgements as a form 
+of constraints, and no separate constraint language is needed.
+Other more technical differences?}
+
 \paragraph{Lists of Judgments in Unification}
 Some work~\cite{Reed2009,Abel2011higher} adopts a similar idea to this paper
 in work on unification for dependently typed languages. Similarly to our work

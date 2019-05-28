@@ -451,8 +451,6 @@ reason about in a mechanized setting.
 
 %-------------------------------------------------------------------------------
 \subsection{Judgment Lists}\label{sec:overview:list}
-\bruno{Somewhere we should mention the ``Essence of ML type
-  inference'' as pointed out by our reviews/comments?}
 To avoid the problem of incrementally applying a substitution to remaining
 tasks, we can find inspiration in the formulation of constraint solving
 algorithms. For instance, the well-known unification
@@ -470,8 +468,13 @@ Because the whole set is explicitly available, the variable $x$ can be
 simultaneously substituted everywhere.
 
 In the above unification problem, all variables are implicitly bound in the same
-global scope. Recent unification algorithms for dependently-typed languages
-are more explicit about scopes. For instance, \citet{Reed2009} represents a unification
+global scope. 
+\bruno{Some constraint solving algorithms for Hindley-Milner type
+  inference use similar ideas, but are more careful tracking the
+  scopes of variables~\cite{}. However they have separate phases for 
+constraint generation and solving.}
+Recent unification algorithms for dependently-typed languages
+are also more explicit about scopes. For instance, \citet{Reed2009} represents a unification
 problem as $\Delta \vdash P$ where $P$ is a set of equations to be solved and $\Delta$ is
 a (modal) context. \citet{Abel2011higher} even use multiple contexts within a unification problem.
 Such a problem is denoted $\Delta \Vdash \mathcal{K}$ where the meta-context
