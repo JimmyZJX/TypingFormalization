@@ -209,7 +209,9 @@ Also implictly picked.
 > and thus only simple types.  The restriction of subtyping to simple
 > types is effectively an equivalence (and thus symmetric).  Is this
 > correct?  If so, maybe this could be mentioned in the discussion.
-> 
+
+TODO: Grab what we wrote in the reply and add it in the text?
+
 > L704: "This has the added benefit that our algorithm runs in
 > polynomial time, which makes it suitable for practical use."  How does
 > polynomial complexity follow from the reduction rule being
@@ -221,7 +223,7 @@ Also implictly picked.
 > similar effects here.  Please explain how exponential growth is
 > avoided.
 
-Unfortunately the statement is false. Already removed the sentense.
+DONE: Unfortunately the statement is false. Already removed the sentense.
 
 > 
 > L782, footnote: I found this comment to be rather cryptic since I had
@@ -230,9 +232,8 @@ Unfortunately the statement is false. Already removed the sentense.
 > syntax/judgments to corresponding names in the Abella script would
 > have been helpful.
 
-Now there is a translation table in the last section of the appendix.
+DONE: Now there is a translation table in the last section of the appendix.
 
-> 
 > L859, proof of soundness theorem: "by induction on the derivation of
 > $\Gamma \longrightarrow^* \cdot$".  This is a bit vague since the
 > inference rules for multi-step reduction are never given.  Maybe the
@@ -242,13 +243,17 @@ Now there is a translation table in the last section of the appendix.
 > of this lemma seems to use a different representation for multi-step
 > reductions (`judge` and `dc`) which are not binary but unary relations
 > on worklists.  Am I missing something here?
-> 
+
+TODO: Show the multi-step relation.
+
 > L881 (completeness theorem): why is the second premise (instantiation
 > of $\Gamma$ to $\Omega$) necessary here?  Isn't every declarative
 > worklist also an algorithmic worklist?  If so, why use the additional
 > $\Gamma$ at all?  Maybe the mechanization does not allow treating the
 > languages of declarative and algorithmic worklists as a subsets?
-> 
+
+TODO: Mention something similar to the reply
+
 > L883: same comment as above about the induction strategy used here.
 > 
 > L905 (and following): here, again, the use of $\Gamma$, $A$ and $B$
@@ -262,18 +267,21 @@ Now there is a translation table in the last section of the appendix.
 >    termination measures that are then used in the decidability
 >    theorem.  Is that correct?  If so, it might be good to add a
 >    comment about this in Section 4.6.
-> 
+
+TODO: Use decidability instead of termination and make terminology
+consistent (including on the proof scripts).
+
 >  - The formal statement of the theorem seems to be identical to the
 >    informal statement given just one line above.  Consider expanding
 >    the formal statement or at least removing "In other words" from the
 >    end of the preceding line.
 
-Removed "In other words"
+DONE: Removed "In other words"
 
 > 
 > L922: "Other two measures" -> "The other two measures"
 
-Changed to "Another two measures"
+DONE
 
 > 
 > L1042: "he/she".  Consider using the plural "they" (for readability).
@@ -489,3 +497,5 @@ capturing the scope of variables in the syntax of constraints, via
 solver as a kind of abstract machine which transforms a constraint,
 step by step, according to a predefined strategy, until a normal form
 (typically "True" or "False") is reached.
+
+TODO: Add sentnces in Section 2.3 and a paragraph in Related Work.
