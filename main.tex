@@ -1,5 +1,7 @@
-%% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For double-blind review submission, w/o CCS and ACM Reference (max
+%% submission space)
+\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true}
+%%\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
@@ -192,12 +194,12 @@ and an algorithmic one) that have been \emph{manually} proven
 a mechanical formalization in the Abella theorem prover 
 of DK's declarative type system with a novel algorithmic system. We have
 a few reasons to use a new algorithm. Firstly, our new algorithm
-employs \emph{worklist judgments}, which allow precise capture of the
+employs \emph{worklist judgments}, which precisely capture the
 scope of variables and simplify the formalization of scoping in a
 theorem prover. Secondly, while DK's original formalization comes with very
 well-written manual proofs, there are several details missing and some
 incorrect proofs,
-which complicate the task of writing a machanized proof. 
+which complicate the task of writing a mechanized proof. 
 Despite the use of a different algorithm we prove the
 same results as DK, although with significantly different proofs and
 proof techniques. Since such type inference algorithms are quite
@@ -256,14 +258,12 @@ formalizations are an important advance in type-inference research.
   %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
   %% acknowledge financial support and will be used by metadata
   %% extraction tools.
-  This material is based upon work supported by the
-  \grantsponsor{GS100000001}{National Science
-    Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
-  No.~\grantnum{GS100000001}{nnnnnnn} and Grant
-  No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
-  conclusions or recommendations expressed in this material are those
-  of the author and do not necessarily reflect the views of the
-  National Science Foundation.
+
+We sincerely thank the anonymous reviewers for their insightful
+comments. Ningning Xie found the issue with Lemma 29 that we reported 
+on this article. This work has been sponsored by the Hong Kong Research
+Grant Council projects number 17210617 and 17258816, and by the
+Research Foundation - Flanders.
 \end{acks}
 
 

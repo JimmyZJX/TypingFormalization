@@ -13,7 +13,10 @@ judgments in a worklist.
 
 \subsection{Syntax and Well-Formedness}
 
-Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness judgments used by the algorithm.
+Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness
+judgments used by the algorithm. Similarly to the declarative system 
+the well-formedness rules are unsurprising and merely ensure 
+well-scoping of variables.
 
 \begin{figure}
 \begin{gather*}
@@ -263,7 +266,7 @@ Reduction continues until all the subtyping judgments in front of $\al$
 are satisfied.  Finally we can safely remove $\al$ since no occurrence
 of $\al$ could have leaked into the left part of the worklist.  Moreover,
 the algorithm garbage-collects the $\al$
-variable at the perfect time: it leaves the environment immediately
+variable at the right time: it leaves the environment immediately
 after being unreferenced completely for sure.
 
 \paragraph{Example} The derivation of the subtyping judgment

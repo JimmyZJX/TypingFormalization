@@ -72,13 +72,15 @@
 > 
 > L15, abstract: "allow precise capture".  I'm not sure what is meant
 > by this, maybe "precisely captures"?
-> 
+
+DONE
+
 > L17: "which complicate the task of writing a formal proof".
 > Technically, a "formal proof" has already been given.  The authors
 > probably mean the task of "mechanizing the formal proof" or "writing a
 > mechanized version of the proof"?
 
-Changed to "writing a machanized proof"
+DONE: Changed to "writing a mechanized proof"
 
 > 
 > L26: Here (and elsewhere, e.g. L54) "Hindley-Milner" is used as a
@@ -86,15 +88,19 @@ Changed to "writing a machanized proof"
 > confusing to me on a first read.  I thought it referred to the actual
 > people behind the system.  Maybe an abbreviation like "HM" (analogous
 > to "DK" for Dunfield and Krishnaswami's system) could be used instead.
-> 
+
+TODO?
+
 > L79: "which removes the burden _from_ checking" -> "of"
 
-Changed to "of"
+DONE
 
 > 
 > L81: "full mechanical formalization".  I think what is meant is a
 > "fully mechanized formalization"?
-> 
+
+DONE
+
 > L83: the names of Dunfield and Krishnaswami are duplicated in the
 > citation on this line.  The style used e.g. on L1128 is more readable.
 
@@ -106,25 +112,26 @@ Changed the citation style to \citep
 >    \tau$ has not been introduced.  I assume it means $e$ is
 >    well-scoped?  Please add a comment about this in the text.
 
-Added rules for well-formedness
+DONE: We added the rules for well-formedness.
 
 > 
 >  - rule $\leq\forall R$: the type variable $b$ in the conclusion
 >    should probably be $a$?  Also, there seems to be a missing
 >    freshness side-condition ($a \notin FV(A)$)?
 
-Type variable corrected "a" -> "b"
-Freshness condition mentioned around L231.
+DONE: Type variable corrected "a" -> "b"
+We now have a note about freshness at the end of the paragraph
+"Declarative Subtyping".
 
 > 
 > L177: "variables with _its_ type declared" -> "their"
 
-Corrected.
+DONE
 
 > 
 > L251: "should have higher priority _to_" -> "than"
 
-Corrected.
+DONE
 
 > 
 > L389, after syntax definition: since this paragraph introduces some
@@ -138,6 +145,8 @@ Corrected.
 > deserves to be mentioned explicitly here since scoping is such an
 > important aspect of the worklist approach.
 
+TODO: Explain binders in chains!
+
 Jimmy: I think the binder is natural and explained in Paragraph <Inference Judgments>.
 
 > 
@@ -147,16 +156,18 @@ Jimmy: I think the binder is natural and explained in Paragraph <Inference Judgm
 > bound variable $a$) _to_ the continuation $\omega$ (i.e. the remainder
 > of the chain).  If anything, this is more like _sequencing_, or
 > _let-binding_ in ANF, where intermediate results are named.
-> 
+
+TODO: Ask Tom for his opinion about terminology here?
+
 > L442, Fig. 4: again, the well-scopedness premises (?) in rules
 > $wf\leq$, $wf\Rightarrow$, and $wf_{of}$ deserve some explanation.
 
-Added relavant rules
+DONE: Added relevant rules.
 
 > 
 > L504: "Declarative subtyping" -> "Algorithmic subtyping".
 
-Corrected.
+DONE
 
 > 
 > L540, Fig. 5:
@@ -327,7 +338,7 @@ Changed to "within their scopes"
 > 
 >  - Fig2. Rule <=(forallR): \forall b. B -> \forall a. B
 
-Type variable corrected "a" -> "b"
+DONE: Type variable corrected "a" -> "b"
 
 > 
 >  - I found the proofs abstracts of Section 4 a bit hard to follow, especially the part regarding the termination order. I am not sure one can get some intuition from the technical parts of Section 4.5.
@@ -394,12 +405,12 @@ Type variable corrected "a" -> "b"
 > -------------------
 > L162: "Psi, a" -> "Psi, b"
 
-Type variable corrected "a" -> "b"
+DONE: Type variable corrected "a" -> "b"
 
 > L197: "A <= B" -> "e <= A"
 > L198: "A => B" -> "e => A"
 
-These two are corrected.
+DONE: These two are corrected.
 
 > L1227: "Schfer"
 
