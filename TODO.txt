@@ -89,7 +89,7 @@ DONE: Changed to "writing a mechanized proof"
 > people behind the system.  Maybe an abbreviation like "HM" (analogous
 > to "DK" for Dunfield and Krishnaswami's system) could be used instead.
 
-TODO?
+TODO? Ask Tom
 
 > L79: "which removes the burden _from_ checking" -> "of"
 
