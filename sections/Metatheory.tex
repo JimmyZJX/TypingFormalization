@@ -444,14 +444,6 @@ Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 
 % ---------------------------------------------
 \subsection{Abella and Proof Statistics}
-\bruno{Comment about correspondence between small and big step should
-  probably come here.}
-
-\jimmy{Discuss briefly on the difference of encodings in the script and this paper.}
-While the algorithmic rules are in a small-step style,
-the proof script rewrites them into a big-step style,
-where inductions are more strightforward to handle.
-In addition, we do prove the equivalence of the two representations.
 
 We have chosen the Abella (v2.0.7-dev
 \footnote{We use a development version because the developers
@@ -468,11 +460,16 @@ Although Abella lacks packages, tactics and support for modules,
 its higher-order unification and the ease of formalizing substitution-intensive relations
 are very helpful for our formalization.
 
+While the algorithmic rules are in a small-step style,
+the proof script rewrites them into a big-step style,
+where inductions are easier to handle.
+In addition, we do prove the equivalence of the two representations.
+
 \paragraph{Statistics of the Proof}
 The proof script consists of 7683 lines of Abella code with a total of
 51 definitions and 567 theorems.
 Figure~\ref{fig:proof_statistics} briefly summarizes the contents of each file.
-The files are linearly dependent due to the limitation of Abella.
+The files are linearly dependent due to limitations of Abella.
 
 \begin{figure}[ht]
 \centering\begin{tabular}{|c|c|c|l|}\hline
