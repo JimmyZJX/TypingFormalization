@@ -333,13 +333,13 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
 \end{corollary}
 
 %-------------------------------------------------------------------------------
-\subsection{Termination and Decidability}
+\subsection{Decidability}
 
-Finally, we show that our algorithm terminates:
-\begin{theorem}[Termination]
-Given a well-formed input $\Gm$, the algorithm terminates.
+Finally, we show that our algorithm is decidable:
+\begin{theorem}[Decidability]
+Given a well-formed input $\Gm$, either $\Gm\redto\nil$ or not.
 \end{theorem}
-Our termination proof is based on a lexicographic group of induction measures\\
+Our decidability proof is based on a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 on the worklist $\Gm$. Formal definitions of these measures can be found in
 Figure~\ref{fig:measures} in the Appendix. The first two, 
@@ -425,7 +425,7 @@ The proof of this lemma proceeds by induction on the measure $2*|\Gm_i|_\to + |\
 of the instantiation judgment list $\Gm_i$.
 
 Let us go back to the whole algorithm and summarize our findings.
-The termination theorem is shown through a lexicographic group of induction measures
+The decidability theorem is shown through a lexicographic group of induction measures
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
 which is decreased by nearly all rules.
 In the exceptional case that the measure does not decrease immediately, 
@@ -436,7 +436,7 @@ Moreover, Lemma~\ref{lemma:inst:invariant} establishes
 that no higher-priority measure component increases.
 Hence, in the exceptional case we have an overall measure decrease too.
 
-Combining all three main results (soundness, completeness and termination), we conclude that the declarative system is decidable
+Combining all three main results (soundness, completeness and decidability), we conclude that the declarative system is decidable
 by means of our algorithm.
 \begin{corollary}[Decidability of Declarative Typing]
 Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
@@ -446,6 +446,13 @@ Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 \subsection{Abella and Proof Statistics}
 \bruno{Comment about correspondence between small and big step should
   probably come here.}
+
+\jimmy{Discuss briefly on the difference of encodings in the script and this paper.}
+While the algorithmic rules are in a small-step style,
+the proof script rewrites them into a big-step style,
+where inductions are more strightforward to handle.
+In addition, we do prove the equivalence of the two representations.
+
 We have chosen the Abella (v2.0.7-dev
 \footnote{We use a development version because the developers
 just fixed a serious bug that accepts a simple proof of false,
@@ -460,12 +467,6 @@ which supports explicit freshness control and substitutions.
 Although Abella lacks packages, tactics and support for modules,
 its higher-order unification and the ease of formalizing substitution-intensive relations
 are very helpful for our formalization.
-
-\jimmy{Discuss briefly on the difference of encodings in the script and this paper.}
-While the algorithmic rules are in a small-step style,
-the proof script rewrites them into big-step style,
-where inductions are more strightforward to handle.
-In addition, we do prove the equivalence of the two representations.
 
 \paragraph{Statistics of the Proof}
 The proof script consists of 7683 lines of Abella code with a total of
@@ -492,7 +493,8 @@ The files are linearly dependent due to the limitation of Abella.
     completeness.thm    & 1075 & 61  &
                             Completeness theorem; aux. lemmas and relations\\\hline
     inst\_decidable.thm &  830 & 42  & Other worklist measures; Lemma~\ref{lemma:inst:decidable}\\\hline
-    decidability.thm    &  885 & 50  & Termination theorem and decidability corollary\\\hline
+    decidability.thm    &  885 & 50  & Decidability theorem and corollary\\\hline
+    smallStep.thm       &  120 &  2  & The equivalence between big-step and small-step\\\hline
     \hline\emph{Total}               & 7700 & 567 & (51 definitions in total)\\\hline
 \end{tabular}
 \caption{Statistics for the proof scripts}
