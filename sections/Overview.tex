@@ -469,10 +469,10 @@ simultaneously substituted everywhere.
 
 In the above unification problem, all variables are implicitly bound in the same
 global scope. 
-\bruno{Some constraint solving algorithms for Hindley-Milner type
+Some constraint solving algorithms for Hindley-Milner type
   inference use similar ideas, but are more careful tracking the
-  scopes of variables~\cite{}. However they have separate phases for 
-constraint generation and solving.}
+  scopes of variables~\cite{remy-attapl}. However they have separate phases for 
+constraint generation and solving.
 Recent unification algorithms for dependently-typed languages
 are also more explicit about scopes. For instance, \citet{Reed2009} represents a unification
 problem as $\Delta \vdash P$ where $P$ is a set of equations to be solved and $\Delta$ is
