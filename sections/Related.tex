@@ -122,8 +122,20 @@ eliminates the use of output contexts and their variable solution records ($\al 
 simplifying the information propagation process through immediate substitution
 by collecting all the judgments in a single worklist.
 
-\paragraph{The Essence of ML Type-Inference} \bruno{we deal with
-  higher-ranked polymorphism and do not have separate phases for 
+\paragraph{The Essence of ML Type-Inference}
+Constraint-based type inference is adopted by \citep{remy-attapl} for ML type systems,
+which does not employ higher-ranked polymorphism.
+Constraint generating and solving are typical phases for a constraint-based algorithm,
+and an intermediate language is used to describe constaints.
+Furthermore, their constraint solver utilizes a stack to track the state of
+the solving process.
+In contrast, our algorithm has a single phase,
+where the judgment chains themselves act as constraints,
+thus no separate constaint language is needed.
+However, the constraint language provides a general and reuseable interface
+that interprets the desired properties for type inference.
+
+\bruno{we deal with higher-ranked polymorphism and do not have separate phases for 
 constraint generation and solving. In such multi-phase algorithms 
 there is typically a different constraint language. In contrast in our
 single phase algorithm one could view the judgements as a form 
