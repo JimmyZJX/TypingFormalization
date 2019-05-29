@@ -631,10 +631,11 @@ term typecheck $e \Leftarrow A$.
 However, the non-trivial forms of chains capture an
 inference task together with the work that depends on its outcome. For
 instance, a type inference task takes the form $e \Rightarrow_a \omega$.
+Here, $a$ is a binder for the inner chain $\jg$.
 This form models a \emph{continuation passing style}:
-it
-denotes that we need to infer the type, say $A$, for expression $e$ and use it
-in the chain $\omega$ by substituting it for the placeholder type variable $a$.
+it denotes that we need to infer the type, say $A$,
+for expression $e$ and use it in the chain $\omega$ by
+substituting it for the placeholder type variable $a$.
 Notice that such $a$ binds a fresh type variable for the inner chain $\jg$,
 which behaves similarly to the variable declarations in the context.
 

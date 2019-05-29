@@ -145,7 +145,8 @@ DONE
 > deserves to be mentioned explicitly here since scoping is such an
 > important aspect of the worklist approach.
 
-TODO: Explain binders in chains!
+Explain binders in chains!
+DONE: Explicitly point out the variable a is a "binder".
 
 Jimmy: I think the binder is natural and explained in Paragraph <Inference Judgments>.
 
@@ -210,7 +211,8 @@ Also implictly picked.
 > types is effectively an equivalence (and thus symmetric).  Is this
 > correct?  If so, maybe this could be mentioned in the discussion.
 
-TODO: Grab what we wrote in the reply and add it in the text?
+Grab what we wrote in the reply and add it in the text?
+DONE: L657 - 658, subtyping relation for simple types is just equivalence
 
 > L704: "This has the added benefit that our algorithm runs in
 > polynomial time, which makes it suitable for practical use."  How does
@@ -268,7 +270,7 @@ TODO: Mention something similar to the reply
 >    theorem.  Is that correct?  If so, it might be good to add a
 >    comment about this in Section 4.6.
 
-TODO: Use decidability instead of termination and make terminology
+DONE: Use decidability instead of termination and make terminology
 consistent (including on the proof scripts).
 
 >  - The formal statement of the theorem seems to be identical to the
@@ -288,7 +290,7 @@ DONE
 > 
 > L1106: "within _its_ scope" -> "their"
 
-Changed to "within their scopes"
+DONE: Changed to "within their scopes"
 
 > 
 > 
