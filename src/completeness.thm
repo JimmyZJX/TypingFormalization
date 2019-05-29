@@ -9,13 +9,15 @@ induction on 1. intros. case H1.
 	apply exFree_weaken to H2. search.
 	case H2. case H3. apply IH to H4. search.
 
-Theorem tex_insert_single : forall E Jo ji m, nabla x,
-	wfj (j (ji x) :: tyvar x :: E) -> tex (j (ji m) :: E) Jo -> mono E m ->
-	tex (j (ji x) :: exvar x :: E) Jo /\ wfj (j (ji x) :: exvar x :: E).
-intros.
-	apply wfj_insert_exvar_raw to _ _ H1 with F = j (ji n1) :: tyvar n1 :: nil.
-	apply wfj_subst_tyvar to H4 _ with m = n2.
-	split. backchain tex_insert. search.
+% Theorem tex_insert_single : forall E Jo ji m, nabla x,
+% 	wfj (j (ji x) :: tyvar x :: E) -> tex (j (ji m) :: E) Jo -> mono E m ->
+% 	tex (j (ji x) :: exvar x :: E) Jo /\ wfj (j (ji x) :: exvar x :: E).
+% intros.
+% 	W: case H1. W: case W.
+% 	W: apply wfjg_insert_exvar_raw to _ _ _ W1 with F = tyvar n1 :: nil,
+% 		FxE = x\ tyvar n1 :: exvar x :: E.
+% 	apply wfjg_subst_exvar to W2 _ _ with A = n1.
+% 	split. backchain tex_insert. search.
 
 Theorem tex_extract_exvarR : forall E F FxE FE Jo a A m, nabla x,
 	wfj (j (subty (a x) x) :: FxE x) ->
@@ -42,7 +44,7 @@ intros. apply tex_prune_ex to _ _ H3.
 	apply append_total_E to H4 with B = Er.
 	apply tex_extract_exvarR to H1 H4 _ H3.
 	apply wfj_remove_exvar_mono to _ _ H1 _ with F = x\ j (subty (a x) x) :: A1 x.
-	case H8. search.
+	W: case H8. W: case W1. search.
 
 Theorem tex_extract_exvarR_insert : forall F E FxE m Jo, nabla x y,
 	wfj (j (subty m x) :: FxE m x) -> wfj (FxE x x) ->
@@ -114,7 +116,7 @@ intros. apply tex_prune_ex to _ _ H3.
 	apply append_total_E to H4 with B = Er.
 	apply tex_extract_exvarL to H1 H4 _ H3.
 	apply wfj_remove_exvar_mono to _ _ H1 _ with F = x\ j (subty x (a x)) :: A1 x.
-	case H8. search.
+	case H8. case H10. search.
 
 Theorem tex_extract_exvarL_insert : forall F E FxE m Jo, nabla x y,
 	wfj (j (subty x m) :: FxE m x) -> wfj (FxE x x) ->
@@ -281,7 +283,7 @@ induction on 1. intros. case H1.
 		apply exFree_j to H6 with J = check (Xo n1) b. search.
 	case H4. case H5.
 		W: apply wfj_remove_exvar_mono to _ _ H3 _.
-		W: apply wfta_strenthen_exvar_mono to H10 H9 _ _ _.
+		W: apply wfta_strenthen_exvar_mono to H10 H9 _ _.
 		apply IH to H6 _ _. case H11. search.
 
 Theorem tex_remove_exvar_of : forall F E FE FxE A m, nabla x t,
@@ -394,15 +396,25 @@ intros. case H5.
 		backchain mono_weaken_f with E = exvar n1 :: nil.
 	search.
 
+Theorem wftm_subst : forall E T X m, wftm E (T X) -> wfta E m -> wftm E (T m).
+induction on 1. intros. case H1.
+	case H3. search.
+	case H3. search.
+	case H3. W: apply wfta_weaken_of to H2 with A = A.
+		apply IH to H5 W with T = x\ T1 x n1. search.
+	case H3. apply IH to H4 _ with T = T1. apply IH to H5 _ with T = T2. search.
+	case H3. apply IH to H4 _ with T = T1.
+		apply wfta_subst to H5 _ with T = T2. search.
+
 Theorem tex_insert_xy_intro_chkLamArr : forall F E FxE FE Jo m1 m2 X, nabla x t,
 	append (F x) (exvar x :: E) (FxE x) -> append (F x) E (FE x) ->
-		wfj (j (check (lam X) x) :: FxE x) ->
-		tex (j (check (X t) m2) :: of t m1 :: FE (arrow m1 m2)) (Jo t) ->
+		wfj (j (check (lam (X (arrow m1 m2))) x) :: FxE x) ->
+		tex (j (check (X (arrow m1 m2) t) m2) :: of t m1 :: FE (arrow m1 m2)) (Jo t) ->
 		mono E (arrow m1 m2) ->
 		exists FxyE, nabla y z t,
 			append (F (arrow y z)) (exvar z :: exvar y :: E) (FxyE y z) /\
-			wfj (FxyE y z) /\ wfj (j (check (X t) z) :: of t y :: FxyE y z) /\
-			tex (j (check (X t) z) :: of t y :: FxyE y z) (Jo t).
+			wfj (FxyE y z) /\ wfj (j (check (X (arrow y z) t) z) :: of t y :: FxyE y z) /\
+			tex (j (check (X (arrow y z) t) z) :: of t y :: FxyE y z) (Jo t).
 intros. M: case H5 (keep). permute (n2 n4) H4.
 	W: case H3.
 	E: apply wfj_weaken to H1 _. E: case E.
@@ -413,28 +425,37 @@ intros. M: case H5 (keep). permute (n2 n4) H4.
 	A: apply wfj_remove_exvar_intro to A1 _ _ with A = m2.
 		backchain wfta_weaken_ex. backchain mono_wfta.
 	A: apply append_subst to A with x = n2, A = m2.
-	A: assert append (j (check (X n4) m2) :: of n4 n1 :: F (arrow n1 m2))
-		(exvar n1 :: E) (j (check (X n4) m2) :: of n4 n1 :: FE1 n1 m2).
-	A: assert append (j (check (X n4) m2) :: of n4 n1 :: F (arrow n1 m2)) E
-		(j (check (X n4) m2) :: of n4 n1 :: FE (arrow n1 m2)).
+	A: assert append (j (check (X (arrow n1 m2) n4) m2) :: of n4 n1 :: F (arrow n1 m2))
+		(exvar n1 :: E) (j (check (X (arrow n1 m2) n4) m2) :: of n4 n1 :: FE1 n1 m2).
+	A: assert append (j (check (X (arrow n1 m2) n4) m2) :: of n4 n1 :: F (arrow n1 m2)) E
+		(j (check (X (arrow n1 m2) n4) m2) :: of n4 n1 :: FE (arrow n1 m2)).
 	T: apply tex_insert to A6 A7 _ H4 _.
 		apply append_mem to A3 _. assert member (exvar n1) (of n4 n1 :: FE1 n1 m2).
 		apply append_assoc_inv to _ A3 with C = E.
-		apply mono_weaken_f to _ M1 with EF = of n4 n1 :: FE1 n1 m2.
-		W: apply mono_wfta to H10.
-		W: apply mono_wfta to H5. W: apply wftm_strenthen_exvar_notfresh to H2 H1 _ W W4.
-		W: apply wftm_weaken_exvar_fresh to A5 A3 _ W5.
-		W: apply wftm_anyA to W6 with A = n1, x = n4. search.
+		M: apply mono_weaken_f to _ M1 with EF = of n4 n1 :: FE1 n1 m2.
+		W: apply mono_wfta to M2.
+		W: case W1.
+		W: apply wftm_insert_exvar to H1 _ _ W1. permute (n2 n3) W4.
+		W: apply wftm_subst to W4 _ with T = x\ lam (X (arrow x m2)), m = n1.
+			apply append_mem to A1 _ with X = exvar n1. search.
+		W: apply mono_wfta to M1. W: apply wfta_weaken_ex to W6.
+		W: apply wftm_strenthen_exvar to A2 A1 W5 W7.
+		W: apply wftm_anyA to W8 with A = n1.
+		search.
 	clear A6. clear A7.
-	A: assert append (j (check (X n4) n2) :: of n4 n1 :: F (arrow n1 n2))
-		(exvar n2 :: exvar n1 :: E) (j (check (X n4) n2) :: of n4 n1 :: C n1 n2).
-	A: assert append (j (check (X n4) n2) :: of n4 n1 :: F (arrow n1 n2))
-		(exvar n1 :: E) (j (check (X n4) n2) :: of n4 n1 :: FE1 n1 n2).
-		apply append_mem to A1 _ with X = exvar n1.
-		W: apply wftm_insert_exvar to H1 A1 _ W. W: apply wftm_anyA to W3 with A = n1, x = n4.
+	A: assert append (j (check (X (arrow n1 n2) n4) n2) :: of n4 n1 :: F (arrow n1 n2))
+		(exvar n2 :: exvar n1 :: E) (j (check (X (arrow n1 n2) n4) n2) :: of n4 n1 :: C n1 n2).
+	A: assert append (j (check (X (arrow n1 n2) n4) n2) :: of n4 n1 :: F (arrow n1 n2))
+		(exvar n1 :: E) (j (check (X (arrow n1 n2) n4) n2) :: of n4 n1 :: FE1 n1 n2).
+		M: apply append_mem to A1 _ with X = exvar n1.
+		M: apply append_mem to A1 _ with X = exvar n2.
+		W: case W1. W: apply wftm_insert_exvar to H1 A1 _ W1.
+		W: apply wftm_subst to W3 _ with T = x\ lam (X (arrow x m2)), m = n1.
+		W: apply wftm_subst to W4 _ with T = x\ lam (X (arrow n1 x)), m = n2.
+		W: apply wftm_anyA to W5 with A = n1, x = n4.
 		M: apply append_mem to A1 _ with X = exvar n2.
 	T: apply tex_insert to A6 A7 _ T _.
-		backchain mono_weaken_f with E = exvar n1 :: nil.
+		backchain mono_weaken_ex.
 	search.
 
 
@@ -477,9 +498,6 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ex to H2. apply IH to H3 _. search.
 	apply tex_uncons_of to H2.
 	apply tex_uncons_shape to H2.
-	apply tex_uncons_shape to H2.
-	apply tex_uncons_shape to H2.
-	apply tex_uncons_shape to H2.
 
 Theorem tex_Ljudge : forall E Jo jo,
 	wfj E -> tex E (j jo :: Jo) ->
@@ -489,7 +507,7 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ty to H2.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_uncons_of to H2.
-	backchain H3. backchain H3. backchain H3. backchain H3.
+	backchain H3.
 
 Theorem tex_L_tyvar_judge : forall E Jo, nabla x,
 	wfj (E x) -> tex (E x) (tyvar x :: Jo) ->
@@ -502,8 +520,9 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_no_ex to _ _ H2.
 	apply tex_uncons_of to H2.
-	apply tex_match_subty to H2. apply tex_match_check to H2 _.
-	apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
+	case H5.
+		apply tex_match_subty to H2. apply tex_match_check to H2.
+		apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
 
 Theorem tex_L_of_judge : forall E Jo a, nabla x,
 	wfj (E x) -> tex (E x) (of x a :: Jo) ->
@@ -515,8 +534,9 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_uncons_of to H2.
 	backchain H3.
-	apply tex_match_subty to H2. apply tex_match_check to H2 _.
-	apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
+	case H5.
+		apply tex_match_subty to H2. apply tex_match_check to H2.
+		apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
 
 Theorem tex_L_subty_judge : forall E Jo a b,
 	wfj E -> tex E (j (subty a b) :: Jo) ->
@@ -527,8 +547,9 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ty to H2.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_uncons_of to H2.
-	backchain H3. apply tex_match_check to H2 _.
-	apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
+	case H5. backchain H3.
+		apply tex_match_check to H2.
+		apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
 
 Theorem tex_L_check_judge : forall E Jo x a,
 	wfj E -> tex E (j (check x a) :: Jo) ->
@@ -539,8 +560,9 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ty to H2.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_uncons_of to H2.
-	apply tex_match_subty to H2. backchain H3.
-	apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
+	case H5.
+		apply tex_match_subty to H2. backchain H3.
+		apply tex_match_inferC to H2 _. apply tex_match_inferAppC to H2 _.
 
 Theorem tex_L_inferC_judge : forall E Jo x a,
 	wfj E -> tex E (j (inferC x a) :: Jo) ->
@@ -551,8 +573,9 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ty to H2.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_uncons_of to H2.
-	apply tex_match_subty to H2. apply tex_match_check to H2 _.
-	backchain H3. apply tex_match_inferAppC to H2 _.
+	case H5.
+		apply tex_match_subty to H2. apply tex_match_check to H2.
+		backchain H3. apply tex_match_inferAppC to H2 _.
 
 Theorem tex_L_inferAppC_judge : forall E Jo a x c,
 	wfj E -> tex E (j (inferAppC a x c) :: Jo) ->
@@ -563,8 +586,9 @@ induction on 1. intros. case H1. search.
 	apply tex_uncons_ty to H2.
 	apply tex_uncons_ex to H2. apply IH to H4 _ _. search.
 	apply tex_uncons_of to H2.
-	apply tex_match_subty to H2. apply tex_match_check to H2 _.
-	apply tex_match_inferC to H2 _. backchain H3.
+	case H5.
+		apply tex_match_subty to H2. apply tex_match_check to H2.
+		apply tex_match_inferC to H2 _. backchain H3.
 
 Theorem tex_wft_inv : forall E Jo A, tex E Jo -> wfj E -> wft Jo A -> wft E A.
 induction on 1. intros. case H1. search.
@@ -583,7 +607,8 @@ induction on 3. intros. case H3 (keep).
 	backchain tex_L_of_judge. intros. W: case H5. T: apply tex_uncons_of to H6.
 		J: apply IH to _ _ H4. search.
 	% i <: i
-	backchain tex_L_subty_judge. intros. T: apply tex_uncons to H6. W: case H5.
+	backchain tex_L_subty_judge. intros. T: apply tex_uncons to H6.
+		W2: case H5. W: case W1.
 		W: case W (keep).
 			% A = 1
 			W: case W1 (keep).
@@ -636,7 +661,8 @@ induction on 3. intros. case H3 (keep).
 			% A = A1 -> B1 or \forall
 			apply tex_arrow_matchL to H6. apply tex_all_matchL to H6.
 	% a <: a
-	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		W: case W (keep).
 			% A = 1
 			apply tex_wft_L to _ t.
@@ -706,7 +732,8 @@ induction on 3. intros. case H3 (keep).
 			% A = A1 -> B1 or \forall
 			apply tex_arrow_matchL to t. apply tex_all_matchL to t.
 	% A1 -> A2 <: B1 -> B2
-	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		W: case W (keep).
 			% A = 1 or a
 			apply tex_wft_L to _ t. apply tex_mem_tyvar to _ _ W3. apply tex_wft_L to _ t.
@@ -799,10 +826,10 @@ induction on 3. intros. case H3 (keep).
 					T: apply tex_insert_xy_intro to _ _ _ T4 T3 with
 						FE = x\ j (subty x (arrow Ar Br)) :: FE x,
 						FxE = x\ j (subty x (arrow Ar Br)) :: Er x.
-					A: case T8. W: case T9. W: case W6. W: case W7.
+					A: case T8. W: case T9. W: case W7. W: case W7. W: case W8.
 					T: apply tex_subArr_shape to T10.
+					W: apply wfta_weaken_j to W8 with J = subty n2 Br.
 					W: apply wfta_weaken_j to W7 with J = subty n2 Br.
-					W: apply wfta_weaken_j to W6 with J = subty n2 Br.
 					J: apply IH to _ T8 H4. search.
 				% B = \forall a. A3
 				apply tex_all_matchR to t.
@@ -818,10 +845,10 @@ induction on 3. intros. case H3 (keep).
 					T: apply tex_insert_xy_intro to _ _ _ T4 T3 with
 						FE = x\ j (subty (arrow Ar Br) x) :: FE x,
 						FxE = x\ j (subty (arrow Ar Br) x) :: Er x.
-					A: case T8. W: case T9. W: case W6. W: case W7.
+					A: case T8. W: case T9. W: case W7. W: case W7. W: case W8.
 					T: apply tex_subArr_shape to T10.
+					W: apply wfta_weaken_j to W8 with J = subty Br n2.
 					W: apply wfta_weaken_j to W7 with J = subty Br n2.
-					W: apply wfta_weaken_j to W6 with J = subty Br n2.
 					J: apply IH to _ T8 H4. search.
 				% B = A4 -> B4
 				T: apply tex_subArr_shape to t.
@@ -834,7 +861,8 @@ induction on 3. intros. case H3 (keep).
 			% A = \forall a. A3
 			apply tex_all_matchL to t.
 	% \forall a. A1 <: B1
-	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		W: case W (keep).
 			% A = 1 or a
 			apply tex_wft_L to _ t. apply tex_mem_tyvar to _ _ W3. apply tex_wft_L to _ t.
@@ -854,7 +882,8 @@ induction on 3. intros. case H3 (keep).
 					FxE = x\ j (subty (A2 x) B1) :: exvar x :: Er.
 				J: apply IH to _ T3 H6. search.
 	% A1 <: \forall a. B1
-	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_subty_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		W: case W1 (keep).
 			% B = 1 or a
 			apply tex_wft_R to _ t. apply tex_mem_tyvar to _ _ W3. apply tex_wft_R to _ t.
@@ -871,23 +900,26 @@ induction on 3. intros. case H3 (keep).
 				J: apply IH to _ _ H4. search.
 
 	% inferC x
-	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t. W: case w (keep).
+	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w (keep). W: case W1.
 		W: apply wfj_weaken1 to w.
 		T: apply tex_inferX_shape_inv to t _ _.
 		W: apply wfj_of_wfta to _ T1.
-		W: apply wfj_subst_tyvar to W1 W3.
+		W: apply wfjg_subst_tyvar to W1 _ W3.
 		J: apply IH to _ _ H5. search.
 	% inferC (X : A)
-	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t. W: case w (keep).
+	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w (keep). W: case W1.
 		W: apply wfj_weaken1 to w.
 		T: apply tex_inferAnno_shape_inv to t.
-		W: case W. A: apply wfj_append_nil to W2. W: apply wft_wfta to W3.
-		W: apply wfta_weaken_f to A W4. W: apply wfj_subst_tyvar to W1 _.
+		W: case W (keep).
+		W: apply wfjg_subst_tyvar to W1 _ _.
 		W: apply wftm_weaken_j to W with J = A1 Ai.
-		W: apply wfta_weaken_j to W5 with J = A1 Ai.
+		W: case W7.
 		J: apply IH to _ _ H4. search.
 	% unit <= 1
-	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		W: case W1 (keep).
 			% A = 1
 			T: apply tex_unit_check to t.
@@ -901,31 +933,38 @@ induction on 3. intros. case H3 (keep).
 			% A = A1 -> B or \forall
 			apply tex_arrow_matchChk to t. apply tex_all_matchChk to t.
 	% inferC () => 1
-	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t. W: case w (keep).
-		W: apply wfj_subst_tyvar to W1 _.
+	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
+		W: apply wfjg_subst_tyvar to W1 _ _.
 		T: apply tex_inferUnit_shape_inv to t.
 		J: apply IH to _ _ H4. search.
 	% X <= \forall x. A1
-	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		apply tex_all_matchChk_inv to t. T: apply tex_chkallR_shape_inv to t.
 		W: case W1. W: apply wftm_weaken_ty to W.
 		T: apply tex_J_ty to T1 _.
 		J: apply IH to _ _ H4. search.
 	% \lambda x. X <= A -> B
-	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		W: case W1 (keep).
 			% A = i or a
 			apply tex_wft_check to _ t.
 			apply tex_mem_tyvar to _ _ W3. apply tex_wft_check to _ t.
 			% A = ^a
 			apply tex_prune_ex to _ _ t.
-				apply wftm_prune_var to W _.
+				% apply wftm_prune_exvar to W _ _.
 				T: apply tex_extract_exvarChk_intro to _ _ t.
 				T: apply tex_uncons to T4. M: apply tex_mono_x to T2 _ _ T3.
 				M: apply tex_mono_inv to T6 _ _. W: apply mono_wfta to M1. W: case W4.
 				T: apply tex_chkLam_shape_inv to T4 _ _.
-				permute (n1 n2) T7.
-				T: apply tex_insert_xy_intro_chkLamArr to T1 T2 _ T7 T3 with X = Xl.
+				permute (n1 n2) T8. case T7.
+				T: apply tex_insert_xy_intro_chkLamArr to T1 T2 _ T8 T3 with X = X2.
+					W: apply mono_wfta to T3.
+					W: apply wfta_weaken_ex to *W6.
+					W: apply wfta_weaken_f to _ *W6.
+					W: apply wftm_subst to _ W6 with T = x\ lam (X2 x). search.
 				permute (n1 n3) H5. J: apply IH to _ T11 H5. search.
 			% A = A2 -> B1
 			T: apply tex_chkLam_shape_inv to t _ _.
@@ -935,29 +974,31 @@ induction on 3. intros. case H3 (keep).
 			% A = \forall x. A
 			apply tex_chkArrR_shape_allL to t.
 	% inferC (\x. X)
-	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t. W: case w (keep).
+	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w (keep). W: case W1.
 		W: apply wfj_weaken1 to w.
 		T: apply tex_inferLam_shape_inv to t _ _.
-		M: apply tex_mono_inv to T _ H4. W: apply mono_wfta to M. M: case M. W: case W3.
+		M: apply tex_mono_inv to T _ H4. W: apply mono_wfta to M. M: case M. W: case W4.
 			A: assert append (j (A (arrow n2 M2)) :: exvar n2 :: nil) Er
 				(j (A (arrow n2 M2)) :: exvar n2 :: Er).
-			W: apply wfta_weaken_ex to W4 with x = n2.
-			W: apply wfj_insert_exvar_raw to _ _ W1 with F = j (A n1) :: tyvar n1 :: nil.
-			W: apply wfj_subst_tyvar to W6 _ with m = arrow n2 M2.
-			W: apply wftm_weaken_f to A W. W: apply wftm_anyA to W8 with A = n2.
-			W: apply wfta_weaken_f to A W4. W: apply wfta_weaken_of to W10 with A = n2.
+			W: apply wfta_weaken_ex to W5 with x = n2.
+			W: apply wfjg_insert_exvar_raw to _ _ _ W1 with F = tyvar n1 :: nil,
+				FxE = x\ tyvar n1 :: exvar x :: Er.
+			W: apply wfjg_subst_tyvar to W7 _ _ with A = arrow n2 M2.
+			W: apply wftm_weaken_f to A W. W: apply wftm_anyA to W9 with A = n2.
+			W: apply wfta_weaken_f to A W5. W: apply wfta_weaken_of to W11 with A = n2.
 		T: apply tex_insert to _ _ _ T1 M with
 			FE = m\ j (check (Xi n1) M2) :: of n1 m :: j (A (arrow m M2)) :: Er,
 			FxE = m\ j (check (Xi n1) M2) :: of n1 m :: j (A (arrow m M2)) :: exvar m :: Er.
 		W: assert wfj (j (check (Xi n1) n3) :: of n1 n2 :: j (A (arrow n2 n3)) ::
 			exvar n3 :: exvar n2 :: Er).
-			W: apply wfj_insert_exvar_raw to _ _ W6 with
-				F = j (A n1) :: tyvar n1 :: nil.
-			W: apply wfj_subst_tyvar to W12 _ with m = arrow n2 n3.
+			W: apply wfjg_insert_exvar_raw to _ _ _ W7 with
+				FxE = x\ tyvar n1 :: exvar x :: exvar n2 :: Er.
+			W: apply wfjg_subst_tyvar to W13 _ _ with A = arrow n2 n3.
 			W: apply wftm_weaken_f to _ W with
 				E = j (A (arrow n2 n3)) :: exvar n3 :: exvar n2 :: nil,
 				EF = j (A (arrow n2 n3)) :: exvar n3 :: exvar n2 :: Er.
-			W: apply wftm_anyA to W14 with A = n2.
+			W: apply wftm_anyA to W15 with A = n2.
 			search 6.
 		M: apply mono_weaken_f to _ M1 with EF = exvar n2 :: Er.
 		T: apply tex_insert to _ _ _ T2 M2 with
@@ -966,28 +1007,36 @@ induction on 3. intros. case H3 (keep).
 				exvar m :: exvar n2 :: Er.
 		J: apply IH to _ T3 H5. search.
 	% inferC (X1 X2)
-	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t. W: case w (keep).
+	backchain tex_L_inferC_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w (keep). W: case W1.
 		W: apply wfj_weaken1 to w.
 		T: apply tex_inferApp_shape_inv to t.
-		W: case W. W: apply wftm_weaken_ty to W3.
-		W: apply wfj_insert_tyvar_raw to _ _ W1 with F = j (A n1) :: tyvar n1 :: nil.
+		W: case W. W: apply wftm_weaken_ty to W4.
+		W: apply wfjg_weaken_tyvar_fresh to _ _ _ W1 with
+			FxE = x\ tyvar n1 :: tyvar x :: Er.
 		J: apply IH to _ _ H4. search.
 	% e <= B
-	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t. W: case w.
+	backchain tex_L_check_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w. W: case W1.
 		T: apply tex_chkB_shape_inv to t _ _.
 		W: apply wfta_weaken_ty to W1.
 		J: apply IH to _ _ H6. search.
 	% A ` X =>> \forall x. A
-	backchain tex_L_inferAppC_judge. intros w t. T: apply tex_uncons to t. W: case w (keep).
+	backchain tex_L_inferAppC_judge. intros w t. T: apply tex_uncons to t.
+		W2: case w (keep). W: case W1.
 		T: apply tex_inferAppAll_shape_inv to t _.
 		W: apply wfj_weaken1 to w. M: apply tex_mono_inv to T _ _.
-		W: case W. W: apply wftm_weaken_ty to W1.
-		W: apply wfj_insert_tyvar_raw to _ _ W2 with F = j (C n1) :: tyvar n1 :: nil.
-		T: apply tex_insert_single to _ T1 _ with ji = x\ inferAppC (Ai x) X1 C.
+		W: case W1. W: apply wftm_weaken_ex to W.
+		W: apply wfta_open_exvar to _ _.
+		W: apply wfjg_insert_exvar_raw to _ _ _ W3 with F = tyvar n1 :: nil,
+			FxE = x\ tyvar n1 :: exvar x :: Er.
+		T: apply tex_insert to _ _ _ T1 M with
+			FE = m\ j (inferAppC (Ai m) X1 C) :: Er,
+			FxE = x\ j (inferAppC (Ai x) X1 C) :: exvar x :: Er.
 		J: apply IH to _ T2 H5. search.
 	% A ` X =>> A1 -> C
 	backchain tex_L_inferAppC_judge. intros w t. T: apply tex_uncons to t.
-		W: apply wfj_weaken1 to w. W: case w. W: case W1 (keep).
+		W2: case w. W: case W1. W: case W1 (keep).
 			% A = 1 or a
 			apply tex_infApp_wft to t _.
 			apply tex_mem_tyvar to T _ _. apply tex_infApp_wft to t _.
@@ -1002,16 +1051,16 @@ induction on 3. intros. case H3 (keep).
 				A: case T6.
 				T: apply tex_infAppArr_shape to T8.
 				J: apply IH to _ T6 H5.
-					W: case T7. W: case W6.
-					W: apply wfj_subst_tyvar to W8 W9.
+					W: case T7. W: case W7. W: case W8.
+					W: apply wfjg_subst_tyvar to W9 W10 _.
 					W: apply wftm_weaken_j to W7 with J = C1 (arrow n1 n2) n2.
-					W: apply wfta_weaken_j to W6 with J = C1 (arrow n1 n2) n2.
+					W: apply wfta_weaken_j to W8 with J = C1 (arrow n1 n2) n2.
 					search.
 				search.
 			% A = A2 -> B
 			T: apply tex_infAppArr_shape to t.
-				W: apply wfj_subst_tyvar to W3 W5.
-				W: apply wftm_weaken_j to W2 with J = C1 B.
+				W: apply wfjg_subst_tyvar to W3 W5 _.
+				W: apply wftm_weaken_j to W with J = C1 B.
 				W: apply wfta_weaken_j to W4 with J = C1 B.
 				J: apply IH to _ _ H5. search.
 			% A = \forall

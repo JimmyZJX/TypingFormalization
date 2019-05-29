@@ -32,6 +32,8 @@ induction on 2. intros. case H2. backchain add_zero.
 Theorem add_det : forall m n k k1, add m n k -> add m n k1 -> k = k1.
 induction on 1. intros. case H1. case H2. search.
 	case H2. apply IH to H3 H4. search.
+Theorem add_z_eq : forall m n, add m z n -> m = n.
+intros. apply add_is_nat to H1. apply add_zero to H2. backchain add_det.
 
 Theorem add_total : forall m n, is_nat m -> exists k, add m n k.
 induction on 1. intros. case H1. search. apply IH to H2 with n = n. search.

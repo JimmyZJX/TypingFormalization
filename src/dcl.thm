@@ -42,7 +42,7 @@ intros. case H1. search.
 
 Theorem wfta_subst_tyvar : forall E J m, nabla x,
 	wfj (tyvar x :: E) -> wfta (tyvar x :: E) (J x) -> wfta E m -> wfta E (J m).
-intros. apply wfta_subst to _ H2 _ with T = J, m = m.
+intros. apply wfta_subst to H2 _ with T = J, m = m.
 	backchain wfta_weaken_ty. apply wfta_strenthen_f to _. search.
 
 Theorem dcl_sound : forall E, wfj E -> dcl E -> dc E.
@@ -51,42 +51,40 @@ induction on 2. intros. case H2. search.
 	case H1. apply IH to _ H3. search.
 	apply wfj_weaken1 to H1. apply IH to _ H3. search.
 	apply wfj_weaken1 to H1. apply IH to _ H4. search.
-	W: case H1. W: case W. W: case W1.
-		W: apply wfta_weaken_j to W with J = subty A2 B2.
+	W: case H1. W: case W1. W: case W1. W: case W2.
 		W: apply wfta_weaken_j to W1 with J = subty A2 B2.
+		W: apply wfta_weaken_j to W2 with J = subty A2 B2.
 		D: apply IH to _ H3. D: case D. D: case D1. apply sub_remove_j to D. search.
-	W: case H1. W: case W. W: apply mono_wfta to H4.
-		W: apply wfta_subst_tyvar to _ W W3.
+	W: case H1. W: case W1. W: apply mono_wfta to H4.
+		W: case W1. W: apply wfta_subst_tyvar to _ W1 W3.
 		D: apply IH to _ H5. D: case D. search.
-	W: case H1. W: case W1. W: apply wfta_weaken_ty to W.
+	W: case H1. W: case W1. W: case W2. W: apply wfta_weaken_ty to W1.
 		D: apply IH to _ H3. D: case D. D: case D1. search.
-	W: apply wfj_weaken1 to H1. W: case H1. W: apply wfj_of_wfta to _ H3.
-		W: apply wfj_subst_tyvar to W2 _.
+	W: case H1. W: case W1. W: apply wfj_of_wfta to _ H3.
+		W: apply wfjg_subst_tyvar to W2 _ _.
 		D: apply IH to _ H4. search.
-	W: apply wfj_weaken1 to H1. W: case H1. W: case W1 (keep).
-		W: apply wft_wfta to W4. A: apply wfj_append_nil to W.
-		W: apply wfta_weaken_f to _ W5 with E = E1.
-		W: apply wfj_subst_tyvar to W2 _.
+	W: case H1. W: case W1. W: case W1 (keep).
+		W: apply wfjg_subst_tyvar to W2 _ _.
 		W: apply wftm_weaken_j to W3 with J = J A.
-		W: apply wfta_weaken_j to W6 with J = J A.
+		W: apply wfta_weaken_j to W4 with J = J A.
 		D: apply IH to _ H3.
 		D: case D. D: apply chk_remove_j to D. search.
 	W: case H1.
 		D: apply IH to _ H3. search.
-	W: case H1.
-		W: apply wfj_subst_tyvar to W1 _.
-		D: apply IH to _ H3. search.
 	W: case H1. W: case W1.
-		W: apply wftm_weaken_ty to W.
+		W: apply wfjg_subst_tyvar to W2 _ _.
+		D: apply IH to _ H3. search.
+	W: case H1. W: case W1. W: case W2.
+		W: apply wftm_weaken_ty to W1.
 		D: apply IH to _ H3.
 		D: case D. D: case D1. search.
-	W: case H1. W: case W1. W: apply wftm_anyA to W with A = A.
+	W: case H1. W: case W1. W: case W2. W: apply wftm_anyA to W1 with A = A.
 		W: apply wfta_weaken_of to W3 with A = A.
 		D: apply IH to _ H4.
 		D: case D. D: case D1. search.
-	W: apply wfj_weaken1 to H1. W: case H1.
+	W: case H1. W: case W1.
 		W: apply mono_wfta to H3.
-		W: apply wfj_subst_tyvar to W2 W3.
+		W: apply wfjg_subst_tyvar to W2 W3 _.
 		W: apply wfta_weaken_j to W3 with J = J (arrow M1 M2). W: case W3.
 		W: apply wftm_weaken_j to W1 with J = J (arrow M1 M2).
 		W: apply wftm_anyA to W7 with A = M1.
@@ -96,21 +94,21 @@ induction on 2. intros. case H2. search.
 			S: assert split3 (of n1 M1 :: nil) (j (J (arrow M1 M2)) :: nil) E1
 				(of n1 M1 :: j (J (arrow M1 M2)) :: E1).
 			D: apply T to S _ _ D. D: case D1. search.
-	W: apply wfj_weaken1 to H1. W: case H1. W: case W1.
+	W: case H1. W: case W1. W: case W1.
 		W: apply wftm_weaken_ty to W3.
-		W: apply wfj_insert_tyvar_raw to _ _ W2 with F = j (J n1) :: tyvar n1 :: nil.
+		W: apply wfjg_weaken_tyvar_fresh to _ _ _ W2
+			with FxE = x\ tyvar n1 :: tyvar x :: E1.
 		D: apply IH to _ H3.
 		D: case D. D: case D1. search.
-	W: case H1. W: apply wfta_weaken_ty to W1. D: apply IH to _ H5.
+	W: case H1. W: case W1. W: apply wfta_weaken_ty to W2. D: apply IH to _ H5.
 		D: case D. D: case D1. search.
-	W: apply wfj_weaken1 to H1. W: case H1.
-		W: case W1. W: apply mono_wfta to H3. W: apply wfta_subst_tyvar to _ W1 _.
+	W: case H1. W: case W1.
+		W: case W2. W: apply mono_wfta to H3. W: apply wfta_subst_tyvar to _ W2 _.
 		D: apply IH to _ H4.
 		D: case D. search.
-	W: apply wfj_weaken1 to H1. W: case H1.
-		W: case W1. W: apply wfj_subst_tyvar to W3 W4.
-		W: apply wfta_weaken_j to W1 with J = J C.
-		W: apply wftm_weaken_j to W2 with J = J C.
+	W: case H1. W: case W1. W: case W2. W: apply wfjg_subst_tyvar to W3 W4 _.
+		W: apply wfta_weaken_j to W2 with J = J C.
+		W: apply wftm_weaken_j to W1 with J = J C.
 		D: apply IH to _ H4.
 		D: case D. D: apply chk_remove_j to D. search.
 
@@ -138,92 +136,93 @@ induction on 3. intros. case H1. case H2. search. case H3 (keep).
 	case H2. case H5. apply IH to _ H8 H7 _ _. search.
 	case H2. case H5. apply IH to _ H8 H7 _ _. search.
 	case H2. case H5. apply IH to _ H9 H8 _ _.
-		apply append_mem_inv to H6 _. case H14. apply append_mem to H9 _. search.
+		apply append_mem_inv to H6 _. case H13. apply append_mem to H9 _. search.
 			apply append_mem to H9 _ with X = tyvar n1. search.
 	case H2. case H5.
 		assert append (j (subty B1 A1) :: j (subty A2 B2) :: L1) (j J :: E)
 			(j (subty B1 A1) :: j (subty A2 B2) :: L5).
-		case H9. case H10.
-		apply wfta_weaken_j to H13 with J = subty A2 B2.
-		apply wfta_weaken_j to H15 with J = subty A2 B2.
-		apply IH to _ H12 H7 _ _. search.
+		case H10. case H12. case H13.
+		apply wfta_weaken_j to H14 with J = subty A2 B2.
+		apply wfta_weaken_j to H16 with J = subty A2 B2.
+		apply IH to _ H11 H7 _ _. search.
 	case H2. case H5.
 		assert append (j (subty (A m) B) :: L1) (j J :: E) (j (subty (A m) B) :: L5).
-		apply mono_add_mid_j to H6 H10 _. case H11.
-		apply wfta_subst_tyvar to _ H16 _ with m = m. backchain mono_wfta.
-		apply IH to _ H14 H9 _ _. search.
-	case H2. case H5.
+		apply mono_add_mid_j to H6 H10 _. case H12. case H15.
+		apply wfta_subst_tyvar to _ H17 _ with m = m. backchain mono_wfta.
+		apply IH to _ H13 H9 _ _. search.
+	case H2. case H5. case H10.
 		assert append (j (subty A (B n1)) :: tyvar n1 :: L1) (j J :: E)
 			(j (subty A (B n1)) :: tyvar n1 :: L5).
-		apply wfta_weaken_ty to H9. case H10.
-		apply IH to _ H12 H7 _ _. search.
+		apply wfta_weaken_ty to H11. case H12.
+		apply IH to _ H13 H7 _ _. search.
 	case H2. W: apply wfj_weaken1 to H5. case H5.
 		assert append (j (J1 n1 A) :: L1 n1) (j (J n1) :: E n1) (j (J1 n1 A) :: L5 n1).
 		M: assert member (of n1 A) (L5 n1).
 			apply append_mem_inv to H6 _. case H13. backchain append_mem. backchain append_mem.
-		W: apply wfj_of_wfta to _ M. W: apply wfj_subst_tyvar to H11 _.
+		W: apply wfj_of_wfta to _ M.
+		W: case H11. W: apply wfjg_subst_tyvar to W3 _ _.
 		apply IH to _ H12 H8 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
+	case H2. W: case H5. W: case W1. W: case W1.
 		assert append (j (check X A) :: j (J1 A) :: L1) (j J :: E)
 			(j (check X A) :: j (J1 A) :: L5).
-		W: case H9 (keep). W: apply wfj_append_nil to W.
-		W: apply wft_wfta to W2. W: apply wfta_weaken_f to W3 W4.
-		W: apply wfj_subst_tyvar to H10 _.
+		W: case H9 (keep).
+		W: apply wfjg_subst_tyvar to W2 _ _.
 		W: apply wftm_weaken_j to W1 with J = J1 A.
-		W: apply wfta_weaken_j to W5 with J = J1 A.
-		apply IH to _ H11 H7 _ _. search.
+		W: apply wfta_weaken_j to W3 with J = J1 A.
+		apply IH to _ H9 H7 _ _. search.
 	case H2. case H5. apply IH to _ H8 H7 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
+	case H2. W: case H5. W: case W1.
 		assert append (j (J1 i) :: L1) (j J :: E) (j (J1 i) :: L5).
-		apply wfj_subst_tyvar to H10 _.
-		apply IH to _ H11 H7 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
+		apply wfjg_subst_tyvar to W2 _ _.
+		apply IH to _ H9 H7 _ _. search.
+	case H2. W: case H5. W: case W1.
 		assert append (j (check X (A n1)) :: tyvar n1 :: L1) (j J :: E)
 			(j (check X (A n1)) :: tyvar n1 :: L5).
-		W: case H10. W: apply wftm_weaken_ty to H9.
-		apply IH to _ H12 H7 _ _. search.
-	case H2. case H5.
+		W: case W2. W: apply wftm_weaken_ty to W1.
+		apply IH to _ H9 H7 _ _. search.
+	case H2. W: case H5. case W1.
 		W: apply wftm_anyA to H10 with A = A. W: case H11.
-		W: apply wfta_weaken_of to W2 with A = A.
+		W: apply wfta_weaken_of to W3 with A = A.
 		assert append (j (check (X n1) B) :: of n1 A :: L1) (j J :: E)
 			(j (check (X n1) B) :: of n1 A :: L5).
 		W: apply wft_add_mid_j to _ _ _.
-		apply IH to _ H13 H8 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
+		apply IH to _ H12 H8 _ _. search.
+	case H2. W: case H5. W: case W1.
 		M: apply mono_add_mid_j to _ _ _. W: apply mono_wfta to M.
-		W: apply wfj_subst_tyvar to H11 _.
-		W: apply wftm_weaken_j to H10 with J = J1 (arrow M1 M2).
-		W: apply wftm_anyA to W3 with A = M1.
-		W: apply wfta_weaken_j to W1 with J = J1 (arrow M1 M2).
-		W: case W5. W: apply wfta_weaken_of to W6 with A = M1.
+		W: apply wfjg_subst_tyvar to W2 _ _.
+		W: apply wftm_weaken_j to W1 with J = J1 (arrow M1 M2).
+		W: apply wftm_anyA to W5 with A = M1.
+		W: apply wfta_weaken_j to W3 with J = J1 (arrow M1 M2).
+		W: case W7. W: apply wfta_weaken_of to W8 with A = M1.
 		assert append (j (check (X n1) M2) :: of n1 M1 :: j (J1 (arrow M1 M2)) :: L1)
 			(j J :: E) (j (check (X n1) M2) :: of n1 M1 :: j (J1 (arrow M1 M2)) :: L5).
-		apply IH to _ H12 H8 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
+		apply IH to _ H10 H8 _ _. search.
+	case H2. W: case H5. W: case W1. W: case W1.
 		assert append (j (inferC X1 (r\inferAppC r X2 J1)) :: L1) (j J :: E)
 			(j (inferC X1 (r\inferAppC r X2 J1)) :: L5).
-		W: case H9. W: apply wftm_weaken_ty to W2.
-		W: apply wfj_insert_tyvar_raw to _ _ H10 with F = j (J1 n1) :: tyvar n1 :: nil.
-		apply IH to _ H11 H7 _ _. search.
-	case H2. case H5.
+		W: apply wftm_weaken_ty to W3.
+		W: apply wfjg_weaken_tyvar_fresh to _ _ _ W2
+			with FxE = x\ tyvar n1 :: tyvar x :: L5.
+		apply IH to _ H9 H7 _ _. search.
+	case H2. W: case H5. W: case W1.
 		assert append (j (inferC X (r\subty r B)) :: L1) (j J :: E)
 			(j (inferC X (r\subty r B)) :: L5).
-		W: apply wfta_weaken_ty to H12.
-		apply IH to _ H14 H9 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
+		W: apply wfta_weaken_ty to W2.
+		apply IH to _ H11 H9 _ _. search.
+	case H2. W: case H5. W: case W1. W: case W2.
 		assert append (j (inferAppC (A m) X J1) :: L1) (j J :: E)
 			(j (inferAppC (A m) X J1) :: L5).
 		M: apply mono_add_mid_j to _ _ _. W: apply mono_wfta to M.
-		W: case H10. W: apply wfta_subst_tyvar to _ W2 _.
-		apply IH to _ H13 H8 _ _. search.
-	case H2. W: apply wfj_weaken1 to H5. case H5.
-		W: case H10. W: apply wfj_subst_tyvar to H12 W2.
-		W: apply wftm_weaken_j to H11 with J = J1 C.
-		W: apply wfta_weaken_j to W1 with J = J1 C.
+		W: apply wfta_subst_tyvar to _ W2 _.
+		apply IH to _ H10 H8 _ _. search.
+	case H2. W: case H5. W: case W1. W: case W2.
+		W: apply wfjg_subst_tyvar to W3 W4 _.
+		W: apply wftm_weaken_j to W1 with J = J1 C.
+		W: apply wfta_weaken_j to W2 with J = J1 C.
 		assert append (j (check X A) :: j (J1 C) :: L1) (j J :: E)
 			(j (check X A) :: j (J1 C) :: L5).
 		W: apply wft_add_mid_j to _ _ _.
-		apply IH to _ H13 H8 _ _. search.
+		apply IH to _ H10 H8 _ _. search.
 
 Theorem dcl_comp : forall E J1 J2, dcl (j J1 :: E) -> dcl (j J2 :: E) ->
 	wfj (j J1 :: j J2 :: E) -> dcl (j J1 :: j J2 :: E).
@@ -234,16 +233,16 @@ Theorem dcl_sub : forall E A B, wfj (j (subty A B) :: E) -> sub' E A B ->
 	dcl E -> dcl (j (subty A B) :: E).
 induction on 2. intros. case H2.
 	search. search.
-	W: case H1. W: case W. W: case W1.
+	W: case H1. W: case W1. W: case W1. W: case W2.
 		apply IH to _ H4 _. apply IH to _ H5 _. unfold.
-		W: apply wfta_weaken_j to W with J = subty A2 B2.
 		W: apply wfta_weaken_j to W1 with J = subty A2 B2.
+		W: apply wfta_weaken_j to W2 with J = subty A2 B2.
 		apply dcl_comp to H6 H7 _. search.
-	W: case H1. W: case W.
-		W: apply mono_wfta to H6.  W: apply wfta_subst_tyvar to _ W W3.
+	W: case H1. W: case W1. W: case W1.
+		W: apply mono_wfta to H6.  W: apply wfta_subst_tyvar to _ W1 W3.
 		apply IH to _ H5 _. search.
-	W: case H1. W: case W1.
-		W: apply wfta_weaken_ty to W.
+	W: case H1. W: case W1. W: case W2.
+		W: apply wfta_weaken_ty to W1.
 		apply IH to _ H4 _. search.
 
 Theorem inf_app_wftm_wfta :
@@ -252,8 +251,8 @@ Theorem inf_app_wftm_wfta :
 induction on 1 1. split.
 	intros. case H1.
 		apply wfj_of_wfta to _ _. search.
-		case H3. apply wfj_append_nil to H2. backchain wfta_weaken_f. backchain wft_wfta.
-		search.
+		W: case H3. search.
+		W: case H3. search.
 		backchain mono_wfta.
 		case H3. apply IH to H4 _ _. apply IH1 to H5 _ _ _. search.
 	intros. case H1.
@@ -296,66 +295,64 @@ Theorem dcl_chkInfApp :
 induction on 3 3 3. split.
 	intros. case H3 (keep).
 		search.
-		W: case H1. W: case W1.
-			W: apply wftm_weaken_ty to W.
+		W: case H1. W: case W1. W: case W2.
+			W: apply wftm_weaken_ty to W1.
 			apply IH to _ _ H5 _. backchain exFree_tyvar. search.
-		W: case H1. W: case W1.
-			W: apply wftm_anyA to W with A = A.
+		W: case H1. W: case W1. W: case W2.
+			W: apply wftm_anyA to W1 with A = A.
 			W: apply wfta_weaken_of to W3 with A = A.
 			apply IH to _ _ H6 _. backchain exFree_of. search.
-		W: case H1.
+		W: case H1. W: case W1.
 			D: apply sub'_sound to H8. W: apply sub_wft to D.
 			W: apply wft_wfta to W3. W: apply wft_wfta to W4.
 			D: apply dcl_sub to _ H8 _.
-			W: apply wfta_weaken_ty to W1.
+			W: apply wfta_weaken_ty to W2.
 			D: apply IH1 to _ _ H7 _ with J = A\ subty A B. search.
 	intros. case H3.
 		search.
 		apply dcl_weaken to _ H4 with F = j (J A) :: nil.
-			W: apply wfj_weaken1 to H1. W: case H1. W: case W1.
-			A: apply wfj_append_nil to W. W: apply wft_wfta to W3.
-			W: apply wfta_weaken_f to A W4.
+			W: apply wfj_weaken1 to H1. W: case H1. W: case W2. W: case W2.
 			apply IH to _ _ H5 _.
-			W: apply wfj_subst_tyvar to W2 _.
-			W: apply wftm_weaken_j to W1 with J = J A.
-			W: apply wfta_weaken_j to W5 with J = J A.
+			W: apply wfjg_subst_tyvar to W3 _ _.
+			W: apply wftm_weaken_j to W2 with J = J A.
+			W: apply wfta_weaken_j to W4 with J = J A.
 			apply dcl_comp to H7 H4 _. search.
 		search.
 		apply dcl_weaken to _ H4 with F = j (J (arrow M1 M2)) :: nil.
-			W: apply wfj_weaken1 to H1. W: case H1.
-			W: apply wftm_anyA to W1 with A = M1.
-			W: apply mono_wfta to H5. W: case W4. apply wfta_weaken_of to W5 with A = M1.
+			W: apply wfj_weaken1 to H1. W: case H1. W: case W2.
+			W: apply wftm_anyA to W2 with A = M1.
+			W: apply mono_wfta to H5. W: case W5. apply wfta_weaken_of to W6 with A = M1.
 			apply IH to _ _ H6 _. backchain exFree_of.
 			apply dcl_comp_thm to _ _ H9 H4 _ with JsJE =
 				j (check (X1 n1) M2) :: of n1 M1 :: j (J (arrow M1 M2)) :: E.
-				W: apply wfj_subst_tyvar to W2 _ with m = arrow M1 M2.
-				W: apply wftm_weaken_j to W1 with J = J (arrow M1 M2).
-				W: apply wftm_anyA to W7 with A = M1.
+				W: apply wfjg_subst_tyvar to W3 _ _ with A = arrow M1 M2.
+				W: apply wftm_weaken_j to W2 with J = J (arrow M1 M2).
+				W: apply wftm_anyA to W8 with A = M1.
+				W: apply wfta_weaken_j to W6 with J = J (arrow M1 M2).
 				W: apply wfta_weaken_j to W5 with J = J (arrow M1 M2).
-				W: apply wfta_weaken_j to W4 with J = J (arrow M1 M2).
-				W: apply wfta_weaken_of to W9 with A = M1.
+				W: apply wfta_weaken_of to W10 with A = M1.
 				search.
 			search.
-		W: apply wfj_weaken1 to H1. W: case H1. W: case W1.
+		W: case H1. W: case W1. W: case W1.
 			Ts: apply chkInfApp'_sound.
 			D: apply Ts1 to _ H5. D: apply Ts2 to _ H6.
 			W: apply inf_wftm_wfta to D _ _. W: apply infApp_wftm_wfta to D1 _ _ _.
 			apply IH2 to _ _ H6 _ with J = J.
 			W: apply wftm_weaken_ty to W3.
-			w: apply wfj_insert_tyvar_raw to _ _ W2 with F = j (J n1) :: tyvar n1 :: nil.
+			w: apply wfjg_weaken_tyvar_fresh to _ _ _ W2 with FxE = x\ tyvar n1 :: tyvar x :: E.
 			apply IH1 to _ _ H5 _ with J = A1\ inferAppC A1 X2 J.
 			search.
 	intros. case H3 (keep).
-		W: apply wfj_weaken1 to H1. W: case H1. W: case W1.
-			W: apply mono_wfta to H6. W: apply wfta_subst_tyvar to _ W1 _.
+		W: apply wfj_weaken1 to H1. W: case H1. W: case W2. W: case W3.
+			W: apply mono_wfta to H6. W: apply wfta_subst_tyvar to _ W3 _.
 			apply IH2 to _ _ H5 _ with J = J. search.
-		W: apply wfj_weaken1 to H1. W: case H1. W: case W1.
+		W: case H1. W: case W1. W: case W2.
 			apply dcl_weaken to _ H4 with F = j (J C) :: nil.
 			apply IH to _ _ H5 _.
 			apply dcl_comp_thm to _ _ H8 H4 _ with JsJE = j (check X A1) :: j (J C) :: E.
-				W: apply wfj_subst_tyvar to W3 W4.
-				W: apply wftm_weaken_j to W2 with J = J C.
-				W: apply wfta_weaken_j to W1 with J = J C.
+				W: apply wfjg_subst_tyvar to W3 W4 _.
+				W: apply wftm_weaken_j to W1 with J = J C.
+				W: apply wfta_weaken_j to W2 with J = J C.
 				search.
 			search.
 
@@ -365,19 +362,19 @@ induction on 3. intros. case H3. search.
 	case H1. apply exFree_weaken to H2. unfold. backchain IH.
 	W: case H1. W: apply exFree_weaken to H2.
 		backchain dcl_sub. backchain sub'_complete. backchain IH.
-	apply dcl_chkInfApp. W: case H1. E: apply exFree_weaken to H2.
+	apply dcl_chkInfApp. W: case H1. W: case W1. E: apply exFree_weaken to H2.
 		backchain H6. backchain chk'_complete. backchain IH.
 	apply dcl_chkInfApp. E: apply exFree_weaken to H2.
-		W: apply wfj_weaken1 to H1. W: case H1.
+		W: apply wfj_weaken1 to H1. W: case H1. W: case W2.
 		D: apply inf'_complete to _ _ _ H4.
 		W: apply inf_wftm_wfta to H4 _ _.
 		backchain H7. backchain IH.
-			apply wfj_subst_tyvar to W2 _. search.
+			apply wfjg_subst_tyvar to W3 _ _. search.
 			backchain exFree_j.
 	apply dcl_chkInfApp. E: apply exFree_weaken to H2.
-		W: apply wfj_weaken1 to H1. W: case H1.
+		W: case H1. W: case W1.
 		D: apply infApp'_complete to _ _ _ H5.
 		W: apply infApp_wftm_wfta to H5 _ _ _.
 		backchain H9. backchain IH.
-			apply wfj_subst_tyvar to W3 W4. search.
+			apply wfjg_subst_tyvar to W3 W4 _. search.
 			backchain exFree_j.

@@ -52,9 +52,7 @@ Theorem unsolved_total : forall E, wfj E -> exists n, unsolved E n.
 induction on 1. intros. case H1. search.
 	apply IH to H2. search. apply IH to H2. search.
 	apply IH to H2. search.
-	apply IH to H4. search. apply IH to H4. search.
-	apply IH to H3. case H4. case H5. search.
-	apply IH to H4. case H5. case H6. search.
+	apply IH to H2. search.
 
 Theorem unsolved_is_nat : forall E n, unsolved E n -> is_nat n.
 induction on 1. intros. case H1. search.
@@ -75,15 +73,10 @@ induction on 1. intros. case H1. backchain exFree_nil.
 
 Theorem exFree_unsolved_z : forall E, wfj E -> exFree E -> unsolved E z.
 induction on 1. intros. case H1. search.
-	apply exFree_weaken to H2. unfold. backchain IH.
+	apply exFree_weaken to H2. apply IH to H3 _. search.
 	apply exFree_false to _ H2.
-	apply exFree_weaken to H2. unfold. backchain IH.
-	apply exFree_weaken to H2. unfold. backchain IH.
-	apply exFree_weaken to H2. unfold. backchain IH.
-	apply exFree_weaken to H2. apply exFree_tyvar to H5. apply exFree_j to H6 with J = J n1.
-		apply IH to H4 _. case H8. case H9. search.
-	apply exFree_weaken to H2. apply exFree_tyvar to H6. apply exFree_j to H7 with J = J n1.
-		apply IH to H5 _. case H9. case H10. search.
+	apply exFree_weaken to H2. apply IH to H3 _. search.
+	apply exFree_weaken to H2. apply IH to H3 _. search.
 
 Theorem env_unsolved_z : forall E, env E -> unsolved E z.
 induction on 1. intros. case H1. search.
@@ -96,10 +89,7 @@ induction on 1. intros. case H1. case H2.
 	case H2. apply IH to H3 H4. search.
 	case H2. search.
 	case H2. apply IH to H3 _. search.
-	case H2. apply IH to H5 _. search.
-	case H2. apply IH to H5 _. search.
-	case H2. apply IH to H4 _. case H6. case H9. search.
-	case H2. apply IH to H5 _. case H7. case H10. search.
+	case H2. apply IH to H3 _. search.
 
 Theorem unsolved_s_wfj_split_exFree : forall FxE n,
 	wfj FxE -> unsolved FxE (s n) -> exists F E x,
@@ -110,10 +100,7 @@ induction on 1. intros. case H1. case H2.
 		apply unsolved_z_exFree to H4. search.
 		apply IH to H3 _. search.
 	case H2. apply IH to H3 _. search.
-	case H2. apply IH to H5 _. search.
-	case H2. apply IH to H5 _. search.
-	case H2. apply IH to H4 _. case H6. case H9. search.
-	case H2. apply IH to H5 _. case H7. case H10. search.
+	case H2. apply IH to H3 _. search.
 
 Theorem unsolved_mid_exvar : forall F E FxE FE A N, nabla x,
 	append (F x) (exvar x :: E) (FxE x) -> append (F x) E (FE x) ->
@@ -273,6 +260,33 @@ induction on 1. intros. case H1.
 			search.
 		apply wfj_rev to H4. apply IH to H5 H6 _ _. search.
 
+Theorem wft_weaken_exvar_fresh :
+  forall F E FE FxE A T, nabla x, append (F x) E (FE x) ->
+    append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
+    wft (FE A) T -> wft (FxE x) T.
+induction on 4. intros. case H4 (keep).
+	search.
+	permute (n1 n2) H5. apply member_tyvar_nabla_subst_inv to H2 H1 H5 _.
+		apply append_mem_inv to H1 _. case H7. apply append_mem to H2 _. search.
+			apply append_mem to H2 _ with X = tyvar n2. search.
+	apply IH to H1 H2 _ H5. apply IH to H1 H2 _ H6. search.
+	permute (n1 n2) H5. A: assert append (tyvar n2 :: F n1) E (tyvar n2 :: FE n1).
+		A: assert append (tyvar n2 :: F n1) (exvar n1 :: E) (tyvar n2 :: FxE n1).
+		apply IH to A A1 _ H5. search.
+
+Theorem wfta_weaken_exvar_fresh :
+  forall F E FE FxE A T, nabla x, append (F x) E (FE x) ->
+    append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
+    wfta (FE A) T -> wfta (FxE x) T.
+intros. apply wfta_weaken_exvar_notfresh to H1 H2 H3 H4 with T = x\ T. search.
+
+Theorem wfta_weaken_tyvar_fresh :
+  forall F E FE FxE T, nabla x, append F E FE ->
+    append F (tyvar x :: E) (FxE x) -> wfj (FxE x) ->
+    wfta FE T -> wfta (FxE x) T.
+intros. assert split3 F (tyvar n1 :: nil) E (FxE n1). backchain split3_alt.
+	backchain wfta_weaken.
+
 Theorem wftm_weaken_exvar_fresh :
   forall F E FE FxE A T, nabla x, append (F x) E (FE x) ->
     append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
@@ -288,20 +302,8 @@ induction on 4. intros. case H4 (keep).
 		W: apply IH to _ _ _ H6 with FE = x\ of n2 A1 :: FE x, FxE = x\ of n2 A1 :: FxE x.
 		search.
 	W: apply IH to H1 H2 _ H5. W: apply IH to H1 H2 _ H6. search.
-	apply IH to H1 H2 _ H5. search.
-
-Theorem wfta_weaken_exvar_fresh :
-  forall F E FE FxE A T, nabla x, append (F x) E (FE x) ->
-    append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
-    wfta (FE A) T -> wfta (FxE x) T.
-intros. apply wfta_weaken_exvar_notfresh to H1 H2 H3 H4 with T = x\ T. search.
-
-Theorem wfta_weaken_tyvar_fresh :
-  forall F E FE FxE T, nabla x, append F E FE ->
-    append F (tyvar x :: E) (FxE x) -> wfj (FxE x) ->
-    wfta FE T -> wfta (FxE x) T.
-intros. assert split3 F (tyvar n1 :: nil) E (FxE n1). backchain split3_alt.
-	backchain wfta_weaken.
+	apply IH to H1 H2 _ H5.
+		apply wfta_weaken_exvar_fresh to H1 H2 _ _. search.
 
 Theorem wftm_weaken_tyvar_fresh :
   forall F E FE FxE T, nabla x, append F E FE ->
@@ -320,20 +322,6 @@ induction on 4. intros. case H4 (keep).
 		apply append_mem_inv to H1 _. case H7. apply append_mem to H2 _. search.
 			apply append_mem to H2 _ with X = tyvar n2. search.
 	apply IH to H1 H2 _ H5. apply IH to H1 H2 _ H6. search.
-
-Theorem wft_weaken_exvar_fresh :
-  forall F E FE FxE A T, nabla x, append (F x) E (FE x) ->
-    append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
-    wft (FE A) T -> wft (FxE x) T.
-induction on 4. intros. case H4 (keep).
-	search.
-	permute (n1 n2) H5. apply member_tyvar_nabla_subst_inv to H2 H1 H5 _.
-		apply append_mem_inv to H1 _. case H7. apply append_mem to H2 _. search.
-			apply append_mem to H2 _ with X = tyvar n2. search.
-	apply IH to H1 H2 _ H5. apply IH to H1 H2 _ H6. search.
-	permute (n1 n2) H5. A: assert append (tyvar n2 :: F n1) E (tyvar n2 :: FE n1).
-		A: assert append (tyvar n2 :: F n1) (exvar n1 :: E) (tyvar n2 :: FxE n1).
-		apply IH to A A1 _ H5. search.
 
 Theorem env_wfj : forall E, env E -> wfj E.
 induction on 1. intros. case H1. search.
@@ -497,8 +485,8 @@ induction on 1. intros. case H1.
 	apply mono_wfta to H9.
 		A: case H5. A: case H6.
 		W: apply wfj_remove_exvar_nabla to A A1 H2 H10.
-		W: apply wfta_strenthen_exvar_notfresh to A1 A H2 H3 H10.
-		W: apply wfta_strenthen_exvar_notfresh to A1 A H2 H4 H10.
+		W: apply wfta_strenthen_exvar_notfresh to A1 A H3 H10.
+		W: apply wfta_strenthen_exvar_notfresh to A1 A H4 H10.
 		W: apply IH to H7 _ _ _.
 	search.
 

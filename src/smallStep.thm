@@ -1,0 +1,119 @@
+Import "decidability".
+
+% Algorithmic Solver -- "Small Step" like version
+Define reduction : olist -> olist -> prop by
+
+% declarations
+	nabla x, reduction (tyvar x :: E) E;
+	nabla x, reduction (exvar x :: E) E;
+	nabla x, reduction (of x A :: E) E;
+
+% Subtyping
+	reduction (j (subty i i) :: E) E;
+	nabla x, reduction (j (subty x x) :: E x) (E x) :=
+			nabla x, member (tyvar x) (E x);
+	nabla x, reduction (j (subty x x) :: E x) (E x) :=
+			nabla x, member (exvar x) (E x);
+
+	reduction (j (subty (arrow A1 A2) (arrow B1 B2)) :: E)
+			(j (subty B1 A1) :: j (subty A2 B2) :: E);
+	nabla x, reduction (j (subty (all A) B) :: E)
+			(j (subty (A x) B) :: exvar x :: E) := notAll_ B;
+	nabla x, reduction (j (subty A (all B)) :: E)
+			(j (subty A (B x)) :: tyvar x :: E);
+
+	% inst, x \not\in FV(A) \cup FV(B)
+	nabla x y z, reduction (j (subty x (arrow A B)) :: E x)
+			(j (subty (arrow y z) (arrow A B)) :: F y z) := instJs E F;
+	nabla x y z, reduction (j (subty (arrow A B) x) :: E x)
+			(j (subty (arrow A B) (arrow y z)) :: F y z) := instJs E F;
+
+	% solve_*
+	nabla x y, reduction (j (subty x y) :: E x y) (F x x) := solveExY E F;
+	nabla x y, reduction (j (subty y x) :: E x y) (F x x) := solveExY E F;
+	nabla x y, reduction (j (subty x y) :: E x y) (F x x) := solveTyY E F;
+	nabla x y, reduction (j (subty y x) :: E x y) (F x x) := solveTyY E F;
+	nabla x, reduction (j (subty x i) :: E x) (F i) := solveX E F;
+	nabla x, reduction (j (subty i x) :: E x) (F i) := solveX E F;
+
+% Checking
+	% reduction (j (check unit i) :: E) := reduction E;
+	nabla x, reduction (j (check X (all A)) :: E)
+			(j (check X (A x)) :: tyvar x :: E);
+	nabla x, reduction (j (check (lam X) (arrow A B)) :: E)
+			(j (check (X x) B) :: of x A :: E);
+	nabla x y z t, reduction (j (check (lam (X x)) x) :: E x)
+			(j (check (X (arrow y z) t) z) :: of t y :: F y z) := instJs E F;
+	reduction (j (check X B) :: E)
+			(j (inferC X (r\ subty r B)) :: E) := notAll_ B /\ notLam_ X;
+
+% Inference
+	nabla x, reduction (j (inferC x (W x)) :: E x)
+			(j (W x A) :: E x) := nabla x, member (of x A) (E x);
+	reduction (j (inferC (anno X A) W) :: E)
+			(j (check X A) :: j (W A) :: E);
+	reduction (j (inferC unit W) :: E)
+			(j (W i) :: E);
+	nabla t x y, reduction (j (inferC (lam X) W) :: E)
+			(j (check (X t) y) :: of t x :: j (W (arrow x y)) :: exvar y :: exvar x :: E);
+	reduction (j (inferC (app X1 X2) W) :: E)
+			(j (inferC X1 (w\ inferAppC w X2 W)) :: E);
+
+% Inference for application
+	nabla x, reduction (j (inferAppC (all A) X W) :: E)
+			(j (inferAppC (A x) X W) :: exvar x :: E);
+	reduction (j (inferAppC (arrow A C) X W) :: E)
+			(j (check X A) :: j (W C) :: E);
+	nabla x y z, reduction (j (inferAppC x (X x) (W x)) :: E x)
+			(j (inferAppC (arrow y z) (X (arrow y z)) (W (arrow y z))) :: F y z) := instJs E F;
+
+% Debug only
+	reduction (j (equal A A) :: E) E.
+
+
+Define multiReduction : olist -> olist -> prop by
+	multiReduction E E;
+	multiReduction E G := exists F, reduction E F /\ multiReduction F G.
+
+Theorem judge_sound : forall E, multiReduction E nil -> judge E.
+induction on 1. intros. case H1.
+	search.
+	apply IH to H3. R: case H2.
+		search. search. search. search. search. search. search. search.
+		search. search. search. search. search. search. search. search.
+		search. search. search. search. search. search. search. search.
+		search. search. search. search. search. search.
+
+Theorem judge_complete : forall E, judge E -> multiReduction E nil.
+induction on 1. intros. case H1.
+	search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H2. search.
+	apply IH to H3. search.
+	apply IH to H2. search.
+	apply IH to H3. unfold. permute (n1 n3). search.
+	apply IH to H3. unfold. permute (n1 n3). search.
+	apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H3. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H3. search.
+	apply IH to H4. search.
+	apply IH to H3. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H2. search.
+	apply IH to H3. unfold. permute (n1 n3). search.
+	apply IH to H2. search.

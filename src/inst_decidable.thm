@@ -41,9 +41,7 @@ induction on 1. intros. case H1.
 
 Theorem nVar_total : forall E, wfj E -> exists NE, nVar E NE.
 induction on 1. intros. case H1. search. apply IH to H2. search. apply IH to H2. search.
-	apply IH to H2. search. apply IH to H4. search. apply IH to H4. search.
-	apply IH to H3. case H4. case H5. search.
-	apply IH to H4. case H5. case H6. search.
+	apply IH to H2. search. apply IH to H2. search.
 
 Theorem nVar_det : forall E N1 N2, nVar E N1 -> nVar E N2 -> N1 = N2.
 induction on 1. intros. case H1.
@@ -74,14 +72,7 @@ induction on 3. intros. case H3 (keep).
 	case H1. case H2. case H5.
 		apply append_prune_tm to H8. apply append_prune_AB_tm to H9. apply wfta_prune_tm to H4.
 		apply IH to H8 H9 H6 _ _. search.
-	case H1. case H2. case H5. apply IH to H9 H10 H8 _ _. search.
-	case H1. case H2. case H5. apply IH to H9 H10 H8 _ _. search.
-	case H1. case H2. case H5.
-		apply IH to _ _ H7 _ _ with F = x\ j (J x n2) :: tyvar n2 :: L1 x.
-		case H11. case H12. search.
-	case H1. case H2. case H5.
-		apply IH to _ _ H8 _ _ with F = x\ j (J x n2) :: tyvar n2 :: L1 x.
-		case H12. case H13. search.
+	case H1. case H2. case H5. apply IH to H8 H9 H6 _ _. search.
 
 Theorem nVar_mid_inv : forall F E FE FxE NFE A, nabla x,
 	append (F x) (exvar x :: E) (FxE x) -> append (F x) E (FE x) -> wfj (FxE x) ->
@@ -120,37 +111,56 @@ intros. apply split3_alt_inv to H1. case H3. apply append_prune_AB to H5.
 	apply split3_alt to _ H8 with C = E. search.*/
 %endregion
 
+Define orderJ : judgment -> nat -> prop by
+	orderJ (subty A B) K := exists M N, order A M /\ order B N /\ add M N K;
+	orderJ (check X A) N := order A N;
+	orderJ (inferC X Ji) N := nabla x, orderJ (Ji x) N;
+	orderJ (inferAppC A X Ji) K := nabla x, exists M N,
+		order A M /\ orderJ (Ji x) N /\ add M N K.
+
+Theorem orderJ_is_nat : forall J N, orderJ J N -> is_nat N.
+induction on 1. intros. case H1.
+	apply order_is_nat to H3. backchain add_is_nat_k.
+	backchain order_is_nat.
+	backchain IH with J = Ji n1.
+	apply IH to H3. apply add_is_nat_k to H5 H4. search.
+Theorem orderJ_prune : forall J N, nabla (x : ty),
+	orderJ (J x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1.
+	apply order_prune to H2. apply order_prune to H3.
+		apply add_prune_k[ty] to H4. search.
+	apply order_prune to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply order_prune to H2. apply IH to H3.
+		apply add_prune_k[ty] to H4. search.
+Theorem orderJ_prune_tm : forall J N, nabla (x : tm),
+	orderJ (J x) (N x) -> exists Nr, N = x\ Nr.
+induction on 1. intros. case H1.
+	apply order_prune_tm to H2. apply order_prune_tm to H3.
+		apply add_prune_k[tm] to H4. search.
+	apply order_prune_tm to H2. search.
+	apply IH to H2 with x = n1. search.
+	apply order_prune_tm to H2. apply IH to H3.
+		apply add_prune_k[tm] to H4. search.
+
 Define orderl : olist -> nat -> prop by
 	orderl nil z;
 	nabla x, orderl (tyvar x :: Exp x) N := nabla x, orderl (Exp x) N;
 	nabla x, orderl (exvar x :: Exp x) N := nabla x, orderl (Exp x) N;
 	nabla x, orderl (of x A :: Exp x) N := nabla x, orderl (Exp x) N;
-	orderl (j (subty A B) :: Exp) K := exists M N MN NE,
-		order A M /\ order B N /\ add M N MN /\ orderl Exp NE /\ add MN NE K;
-	orderl (j (check X A) :: Exp) K := exists N NE,
-		order A N /\ orderl Exp NE /\ add N NE K;
-	orderl (j (inferC X Ji) :: Exp) K := nabla x,
-		orderl (j (Ji x) :: tyvar x :: Exp) K;
-	orderl (j (inferAppC A X Ji) :: Exp) K := exists N NE, nabla x,
-		order A N /\ orderl (j (Ji x) :: tyvar x :: Exp) NE /\ add N NE K.
+	orderl (j J :: Exp) K := exists M N, orderJ J M /\ orderl Exp N /\ add M N K.
 
 Theorem orderl_is_nat : forall Exp N, orderl Exp N -> is_nat N.
 induction on 1. intros. case H1. search.
 	apply IH to H2. search. apply IH to H2. search. apply IH to H2. search.
-	apply IH to H5. backchain add_is_nat_k with n = NE.
-	apply IH to H3. backchain add_is_nat_k.
-	apply IH to H2. search. apply IH to H3. backchain add_is_nat_k.
+	apply IH to H3. backchain add_is_nat_k with n = N1.
 Theorem orderl_prune : forall Exp N, nabla (x : ty),
 	orderl (Exp x) (N x) -> exists Nr, N = x\ Nr.
 induction on 1. intros. case H1. search.
 	apply IH to H2 with x = n1. search. search.
 	apply IH to H2 with x = n1. search. search.
 	apply IH to H2 with x = n1. search.
-	apply order_prune to H2. apply order_prune to H3. apply add_prune_k[ty] to H4.
-		apply IH to H5. apply add_prune_k[ty] to H6. search.
-	apply IH to H3. apply order_prune to H2. apply add_prune_k[ty] to H4. search.
-	apply IH to H2 with x = n1. search.
-	apply IH to H3 with x = n1. apply order_prune to H2. apply add_prune_k[ty] to H4. search.
+	apply IH to H3. apply orderJ_prune to H2. apply add_prune_k[ty] to H4. search.
 
 Theorem orderl_prune_tm : forall Exp N, nabla (x : tm),
 	orderl (Exp x) (N x) -> exists Nr, N = x\ Nr.
@@ -159,12 +169,7 @@ induction on 1. intros. case H1. search.
 	apply IH to H2 with x = n1. search.
 	apply IH to H2 with x = n1. search.
 	apply IH to H2 with x = n1. search.
-	apply order_prune_tm to H2. apply order_prune_tm to H3. apply add_prune_k[tm] to H4.
-		apply IH to H5. apply add_prune_k[tm] to H6. search.
-	apply IH to H3. apply order_prune_tm to H2. apply add_prune_k[tm] to H4. search.
-	apply IH to H2 with x = n1. search.
-	apply IH to H3 with x = n1. apply order_prune_tm to H2.
-		apply add_prune_k[tm] to H4. search.
+	apply IH to H3. apply orderJ_prune_tm to H2. apply add_prune_k[tm] to H4. search.
 
 Theorem order_total_wf : forall E A, wfta E A -> exists m, order A m.
 induction on 1. intros. case H1. search. search. search.
@@ -404,16 +409,16 @@ Theorem instantiation_decidable_thm : forall E I IE NI NV NL NO NS,
 					subExp I1 /\ wfj IE1)
 			).
 induction on 9. intros. case H9.
-	case H8. case H6. apply add_comm to _ *H7. case H10. case H3. case H4. search.
+	case H8. case H6. apply add_z_eq to *H7. case H3. case H4. search.
 	I: case H1. case H8.
 		% ^x <: A, ...
 		A: case H3. L: case H6.
 			apply nvar_prune_ty to H5. apply length_prune to L. apply orderl_prune to H4.
-			O: case H4. case O. case O2. apply add_prune[ty] to O4.
+			O: case H4. O: case O. case O. case O4. apply add_prune[ty] to O2.
 			apply add_prune[ty] to H7. apply depthi_prune to H8.
 		W: case I1 (keep).
 			% A = i
-			case O1. case O4.
+			case O3. case O2.
 				A: apply single_append to I. apply wfj_prune_exvar to _ A1.
 				W: apply wfj_remove_exvar_intro to A1 _ _.
 				I: apply iexp_strenthen to _ A1 W _ _.
@@ -431,8 +436,8 @@ induction on 9. intros. case H9.
 				Eq: case Eq. left. intros. F: apply equivJ_false to Eq1 _ _.
 				Eq: apply equivJ_trans to *Eq1 _. search.
 			% A = a
-			case O1. case O4. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
-				apply depthi_prune to H8 with x = n2. apply orderl_prune to O3.
+			case O3. case O2. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
+				apply depthi_prune to H8 with x = n2. apply orderl_prune to O1.
 				D: assert depthi (Exp n2) Nr7.
 					D: case H8. case D. case D1. case D3. search.
 					case D. case D1. case D3. search.
@@ -476,8 +481,8 @@ induction on 9. intros. case H9.
 							A: apply split3_alt_inv to A1. A: case A7. apply append_prune_AB to A7.
 							apply wfj_mid_exvar_det to A6 A8 _. apply append_prune to A7.
 			% A = ^a
-			case O1. case O4. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
-				apply depthi_prune to H8 with x = n2. apply orderl_prune to O3.
+			case O3. case O2. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
+				apply depthi_prune to H8 with x = n2. apply orderl_prune to O1.
 				D: assert depthi (Exp n2) Nr7.
 					D: case H8. case D. case D1. case D3. search.
 					case D. case D1. case D3. search.
@@ -549,9 +554,9 @@ induction on 9. intros. case H9.
 				W: apply wfta_insert_exvar to A1 A4 _ _. W: case W3.
 				M: apply append_mem to A4 _. M: apply append_mem to A4 _ with X = exvar n1.
 				I: assert iexp (C1 n1 n2) (j (subty A2 n1) :: j (subty n2 A3) :: Exp).
-				O: case O1.
+				O: case O3.
 				O: assert orderl (j (subty A2 n1) :: j (subty n2 A3) :: Exp) Nr2.
-					apply order_is_nat to O. apply add_zero to *H11. apply add_assoc to O2 _. search.
+					apply order_is_nat to O. apply add_zero to *H11. apply add_assoc to O4 _. search.
 				V: apply nVar_insert_exvar to A1 A4 _.
 				L: assert length (j (subty A2 n1) :: j (subty n2 A3) :: Exp) (s (s Nr1)).
 				P: apply add_s to H7.
@@ -576,7 +581,7 @@ induction on 9. intros. case H9.
 			% A = \forall x. A
 			right. exists E n1, j (subty n1 (A2 n2)) :: tyvar n2 :: L3 n1. split.
 				unfold. intros. case H11. search. search. search.
-				right. O: case O1. P: case O4.
+				right. O: case O3. P: case O2.
 					O: assert orderl (j (subty n1 (A2 n2)) :: tyvar n2 :: Exp) K2.
 					M: apply append_mem to A _.
 					S: apply split3_alt to A _ with A = tyvar n2 :: nil.
@@ -586,11 +591,12 @@ induction on 9. intros. case H9.
 		% A <: ^x, ...
 		A: case H3. L: case H6.
 			apply nvar_prune_ty to H5. apply length_prune to L. apply orderl_prune to H4.
-			O: case H4. case O1. apply add_comm to _ *O2. case H11. apply add_prune[ty] to O4.
+			O: case H4. O: case O. O: case O3.
+			apply add_z_eq to *O4. apply add_prune[ty] to O2.
 			apply add_prune[ty] to H7. apply depthi_prune to H8.
 		W: case I1 (keep).
 			% A = i
-			case O. case O4.
+			case O. case O2.
 				A: apply single_append to I. apply wfj_prune_exvar to _ A1.
 				W: apply wfj_remove_exvar_intro to A1 _ _.
 				I: apply iexp_strenthen to _ A1 W _ _.
@@ -604,12 +610,12 @@ induction on 9. intros. case H9.
 					apply append_det to A4 A6. search.
 				W: apply iexp_wfj to I2 _ _.
 				Eq: assert equivJ (j (subty i n1) :: L3 n1) (C i). unfold.
-					intros. J: case H12. apply solveX_det to S J _. search. search.
+					intros. J: case H11. apply solveX_det to S J _. search. search.
 				Eq: case Eq. left. intros. F: apply equivJ_false to Eq1 _ _.
 				Eq: apply equivJ_trans to *Eq1 _. search.
 			% A = a
-			case O. case O4. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
-				apply depthi_prune to H8 with x = n2. apply orderl_prune to O3.
+			case O. case O2. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
+				apply depthi_prune to H8 with x = n2. apply orderl_prune to O1.
 				D: assert depthi (Exp n2) Nr7.
 					D: case H8. case D. case D1. case D3. search.
 					case D. case D1. case D3. search.
@@ -633,7 +639,7 @@ induction on 9. intros. case H9.
 							S: apply split3_alt to A1 A8. search.
 						Eq: assert equivJ (j (subty n2 n1) :: L3 n2 n1) (C1 n2 n2). unfold.
 							M: apply append_mem to A _. M: apply append_mem to A _ with X = tyvar n2.
-							intros. J: case H12 (keep).
+							intros. J: case H11 (keep).
 								A: case J. apply wfj_tyvar_exvar to _ M2 _. backchain split3_mem.
 								A: case J. apply wfj_tyvar_exvar to _ M2 _. backchain split3_mem.
 								apply solveTyY_det to S1 J _. search.
@@ -643,7 +649,7 @@ induction on 9. intros. case H9.
 						assert 2 jExt (E n2 n1) (Ext n2). search.
 					% false case
 					M: apply append_mem to A _. M: apply append_mem to A _ with X = tyvar n2.
-					left. intros. J: case H12.
+					left. intros. J: case H11.
 						A: case J. apply wfj_tyvar_exvar to _ M1 _. backchain split3_mem.
 						A: case J. apply wfj_tyvar_exvar to _ M1 _. backchain split3_mem.
 						A: case J. permute (n1 n2) A1.
@@ -653,8 +659,8 @@ induction on 9. intros. case H9.
 							apply wfj_mid_exvar_det to A6 A8 _. apply append_prune to A7.
 						A: case J. apply wfj_tyvar_exvar to _ M1 _. backchain split3_mem.
 			% A = ^a
-			case O. case O4. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
-				apply depthi_prune to H8 with x = n2. apply orderl_prune to O3.
+			case O. case O2. apply nvar_prune_ty to H5 with x = n2. apply add_prune[ty] to H7.
+				apply depthi_prune to H8 with x = n2. apply orderl_prune to O1.
 				D: assert depthi (Exp n2) Nr7.
 					D: case H8. case D. case D1. case D3. search.
 					case D. case D1. case D3. search.
@@ -678,7 +684,7 @@ induction on 9. intros. case H9.
 							S: apply split3_alt to A1 A8. search.
 						Eq: assert equivJ (j (subty n2 n1) :: L3 n2 n1) (C1 n2 n2). unfold.
 							M: apply append_mem to A _. M: apply append_mem to A _ with X = exvar n2.
-							intros. J: case H12 (keep).
+							intros. J: case H11 (keep).
 								apply solveExY_det to S1 J _. search.
 								A: case J. A: case S1. apply wfj_exvars_shape to _ A7 _.
 								A: case J. apply wfj_tyvar_exvar to _ _ M2. backchain split3_mem.
@@ -706,7 +712,7 @@ induction on 9. intros. case H9.
 							S: apply split3_alt to A1 A8. search.
 						Eq: assert equivJ (j (subty n2 n1) :: L3 n2 n1) (C1 n1 n1). unfold.
 							M: apply append_mem to A _. M: apply append_mem to A _ with X = exvar n2.
-							intros. J: case H12 (keep).
+							intros. J: case H11 (keep).
 								A: case J. A: case S1. apply wfj_exvars_shape to _ A7 _.
 								apply solveExY_det to S1 J _. search.
 								A: case J. apply wfj_tyvar_exvar to _ _ M2. backchain split3_mem.
@@ -728,7 +734,8 @@ induction on 9. intros. case H9.
 				I: assert iexp (C1 n1 n2) (j (subty n1 A2) :: j (subty A3 n2) :: Exp).
 				O: case O.
 				O: assert orderl (j (subty n1 A2) :: j (subty A3 n2) :: Exp) Nr2.
-					apply order_is_nat to O1. apply add_zero to *H12. apply add_assoc to O2 _. search.
+					apply order_is_nat to O3. apply add_zero to *H11.
+					apply add_assoc to O4 _. search.
 				V: apply nVar_insert_exvar to A1 A4 _.
 				L: assert length (j (subty n1 A2) :: j (subty A3 n2) :: Exp) (s (s Nr1)).
 				P: apply add_s to H7.
@@ -745,17 +752,17 @@ induction on 9. intros. case H9.
 					apply append_det to A8 A10. search.
 				Eq: assert equivJ (j (subty (arrow A2 A3) n3) :: L3 n3)
 					(j (subty n1 A2) :: j (subty A3 n2) :: C2 n2 n1). unfold.
-					intros. J: case H12. J: case J1.
+					intros. J: case H11. J: case J1.
 					W: apply iexp_wfj to I2 _ _. apply inst_det to S J _. search. search.
 				Eq: case Eq. left. intros. F: apply equivJ_false to Eq1 _ _.
 				Eq: apply equivJ_trans to *Eq1 _.
 				Ext: apply jExt_inst to _ A4 _ with F = A1. search.
 			% A = \forall x. A
 			right. exists E n1, j (subty (A2 n2) n1) :: exvar n2 :: L3 n1. split.
-				unfold. intros. case H12. search. search. search.
-				right. O: case O. P: case O4.
+				unfold. intros. case H11. search. search. search.
+				right. O: case O. P: case O2.
 					O: assert orderl (j (subty (A2 n2) n1) :: exvar n2 :: Exp) K2.
-						O: apply order_is_nat to O. P: apply add_zero to O1. search.
+						O: apply order_is_nat to O. P: apply add_zero to O2. search.
 					M: apply append_mem to A _.
 					S: apply split3_alt to A _ with A = exvar n2 :: nil.
 					W: apply iexp_wfj to I2 _ _.

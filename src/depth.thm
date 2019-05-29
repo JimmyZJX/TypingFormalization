@@ -107,11 +107,11 @@ induction on 1. intros. case H1 (keep). search.
 	W: case H2 (keep). apply depth_prune to H3.
 		W: apply mono_wfta to H8.
 		A: case H4. A: case H5. A: apply append_assoc_inv to _ A with C = E1.
-		W: apply wfta_weaken_f to A3 W3.
+		W: apply wfta_weaken_f to A3 W2.
 		E: apply wfj_remove_exvar_nabla to A A1 _ _.
-		W: apply wfta_strenthen_exvar_notfresh to A1 A _ _ _.
-		W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
-		D: apply depth_wfta_total to W5.
+		W: apply wfjg_strenthen_exvar_notfresh to A1 A W1 _.
+		W: case W4.
+		D: apply depth_wfta_total to W4.
 		L: apply IH to H6 _ _.
 		L: apply depth_open_ge_A to _ D with A = A.
 		apply depth_is_nat to L. apply le_trans to _ L2 L1. search.
@@ -123,11 +123,11 @@ induction on 1. intros. case H1 (keep). search.
 	W: case H2 (keep). apply depth_prune to H3.
 		W: apply mono_wfta to H8.
 		A: case H4. A: case H5. A: apply append_assoc_inv to _ A with C = E1.
-		W: apply wfta_weaken_f to A3 W3.
+		W: apply wfta_weaken_f to A3 W2.
 		E: apply wfj_remove_exvar_nabla to A A1 _ _.
-		W: apply wfta_strenthen_exvar_notfresh to A1 A _ _ _.
-		W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
-		D: apply depth_wfta_total to W6.
+		W: apply wfjg_strenthen_exvar_notfresh to A1 A W1 _.
+		W: case W4.
+		D: apply depth_wfta_total to W5.
 		L: apply IH to H6 _ _.
 		L: apply depth_open_ge_A to _ D with A = B.
 		apply depth_is_nat to L. apply le_trans to _ L2 L1. search.
@@ -158,8 +158,8 @@ intros. T: apply tex_extract_intro to H1 _ _. W: case H4.
 	T: apply tex_uncons to T3.
 	apply tex_wft_L to _ T3. backchain mono_wft. backchain tex_mono.
 	D: apply depth_wfta_total to W3.
-	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W _.
-	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A W _.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A W1 _.
 	D: apply depth_wfta_total to W5. D: apply depth_wfta_total to W6.
 	L: apply depth_open_ge_mono to M _ D1 with A = A.
 	L: case L. L: apply depth_open_ge_mono to M _ D2 with A = B. L: case L. search.
@@ -187,8 +187,8 @@ intros. T: apply tex_extract_intro to H1 _ _. W: case H4.
 	T: apply tex_uncons to T3.
 	apply tex_wft_R to _ T3. backchain mono_wft. backchain tex_mono.
 	D: apply depth_wfta_total to W3.
-	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W _.
-	W: apply wfta_strenthen_exvar_notfresh to A1 A _ W1 _.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A W _.
+	W: apply wfta_strenthen_exvar_notfresh to A1 A W1 _.
 	D: apply depth_wfta_total to W5. D: apply depth_wfta_total to W6.
 	L: apply depth_open_ge_mono to M _ D1 with A = A.
 	L: case L. L: apply depth_open_ge_mono to M _ D2 with A = B. L: case L. search.

@@ -45,12 +45,20 @@ Define wfta : olist -> ty -> prop by
 	wfta E (arrow A B) := wfta E A /\ wfta E B;
 	wfta E (all A) := nabla x, wfta (tyvar x :: E) (A x).
 
+Define notAll_ : ty -> prop by notAll_ A := forall a, A = all a -> false.
+Define notLam_ : tm -> prop by notLam_ X := forall x, X = lam x -> false.
+
+Theorem notAll_false : forall A, notAll_ (all A) -> false.
+intros. case H1. apply H2 to _.
+Theorem notLam_false : forall X, notLam_ (lam X) -> false.
+intros. case H1. apply H2 to _.
+
 Define wftm : olist -> tm -> prop by
 	wftm E unit;
 	nabla x, wftm (E x) x := exists A, nabla x, member (of x A) (E x);
 	wftm E (lam X) := exists A, nabla x, wfta E A /\ wftm (of x A :: E) (X x);
 	wftm E (app X Y) := wftm E X /\ wftm E Y;
-	wftm E (anno X A) := wftm E X /\ wft nil A.
+	wftm E (anno X A) := wftm E X /\ wfta E A.
 
 Kind judgment type.
 
@@ -66,16 +74,18 @@ Type inferC    tm -> (ty -> judgment) -> judgment.
 Type inferAppC ty -> tm -> (ty -> judgment) -> judgment.
 
 % Algorithmic well-formed judgments
+Define wfjg : olist -> judgment -> prop by
+	wfjg E (subty A B) := wfta E A /\ wfta E B;
+	wfjg E (check X A) := wftm E X /\ wfta E A;
+	wfjg E (inferC X J) := nabla x, wftm E X /\ wfjg (tyvar x :: E) (J x);
+	wfjg E (inferAppC A X J) := nabla x, wftm E X /\ wfta E A /\ wfjg (tyvar x :: E) (J x).
+
 Define wfj : olist -> prop by
 	wfj nil;
 	nabla x, wfj (tyvar x :: E) := wfj E;
 	nabla x, wfj (exvar x :: E) := wfj E;
 	nabla x, wfj (of x A :: E) := wfj E /\ wfta E A;
-	wfj (j (subty A B) :: E) := wfta E A /\ wfta E B /\ wfj E;
-	wfj (j (check X A) :: E) := wftm E X /\ wfta E A /\ wfj E;
-	wfj (j (inferC X J) :: E) := nabla x, wftm E X /\ wfj (j (J x) :: tyvar x :: E);
-	wfj (j (inferAppC A X J) :: E) := nabla x,
-		wfta E A /\ wftm E X /\ wfj (j (J x) :: tyvar x :: E).
+	wfj (j J :: E) := wfj E /\ wfjg E J.
 
 % Declarative system
 Define sub : olist -> ty -> ty -> prop by
@@ -84,9 +94,6 @@ Define sub : olist -> ty -> ty -> prop by
 	sub E (arrow A1 A2) (arrow B1 B2) := sub E B1 A1 /\ sub E A2 B2;
 	sub E (all A) B := exists m, sub E (A m) B /\ mono E m;
 	sub E A (all B) := nabla x, sub (tyvar x :: E) A (B x).
-
-Define notAll_ : ty -> prop by notAll_ A := forall a, A = all a -> false.
-Define notLam_ : tm -> prop by notLam_ X := forall x, X = lam x -> false.
 
 Define chk : olist -> tm -> ty -> prop,
        inf : olist -> tm -> ty -> prop,
@@ -204,7 +211,7 @@ Define judge : olist -> prop by
 			instJs E F /\
 				judge (j (inferAppC (arrow y z) (X (arrow y z)) (W (arrow y z))) :: F y z);
 
-% Debug feature
+% Debug only
 	judge (j (equal A A) :: E) := judge E.
 
 Set witnesses on.

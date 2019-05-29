@@ -22,20 +22,7 @@ induction on 3. intros. case H3.
 		case H2. search. apply append_prune to H5.
 		case H2. apply append_prune to H5. apply IH to H5 H6 H4. search.
 	case H1. case H2. apply IH to H6 H7 H4. search.
-	case H1. case H2. apply IH to H7 H8 H6. search.
-	case H1. case H2. apply IH to H7 H8 H6. search.
-	case H1. case H2.
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L1 n1) (exvar n1 :: E)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L2 n1) (exvar n1 :: E0)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		apply IH to A A1 H5. search.
-	case H1. case H2.
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L1 n1) (exvar n1 :: E)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L2 n1) (exvar n1 :: E0)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		apply IH to A A1 H6. search.
+	case H1. case H2. apply IH to H6 H7 H4. search.
 
 Theorem wfj_weaken : forall FE F E, append F E FE -> wfj FE -> wfj E.
 induction on 2. intros. case H2.
@@ -44,13 +31,6 @@ induction on 2. intros. case H2.
 	case H1. search. backchain IH.
 	case H1. search. backchain IH.
 	case H1. search. backchain IH.
-	case H1. search. backchain IH.
-	case H1. search.
-		A: assert append (j (J n1) :: tyvar n1 :: L1) E (j (J n1) :: tyvar n1 :: E1).
-		apply IH to A H4. search.
-	case H1. search.
-		A: assert append (j (J n1) :: tyvar n1 :: L1) E (j (J n1) :: tyvar n1 :: E1).
-		apply IH to A H5. search.
 
 Theorem wfj_weaken1 : forall J E, wfj (J :: E) -> wfj E.
 intros. apply wfj_weaken to _ H1 with F = J :: nil. search.
@@ -69,13 +49,9 @@ induction on 2. intros. case H2.
 		apply append_prune to H3.
 		apply append_prune_tm to H3. apply IH to _ H3. search.
 		apply IH to _ H3. search.
-		apply IH to _ H3. search.
-		apply wfj_weaken2 to H5. apply IH to _ H3. search.
-		apply wfj_weaken2 to H6. apply IH to _ H3. search.
 
 Theorem wfj_rev : forall X E, wfj (X :: E) -> wfj E.
-intros. case H1. search. search. search. search. search.
-	apply wfj_weaken2 to H3. search. apply wfj_weaken2 to H4. search.
+intros. case H1. search. search. search. search.
 
 Theorem wfj_member_prune : forall (E : olist) B, nabla (x : ty),
 	member (B x) E -> exists Fr, B = x\Fr.
@@ -91,10 +67,7 @@ induction on 1. intros. case H1.
 	case H2. case H3. apply wfj_member_prune to H5.
 		apply IH to H4 H5 H6.
 	case H2. case H3. apply IH to H4 H6 H7.
-	case H2. case H3. apply IH to H6 H7 H8.
-	case H2. case H3. apply IH to H6 H7 H8.
-	case H2. case H3. apply IH to H5 _ _.
-	case H2. case H3. apply IH to H6 _ _.
+	case H2. case H3. apply IH to H4 H6 H7.
 
 Theorem wfj_nabla_prune_tyvar : forall F E FxE, nabla x,
 	append (F x) (tyvar x :: E x) (FxE x) -> wfj (FxE x) ->
@@ -105,9 +78,6 @@ induction on 1. intros. case H1.
 		apply IH to H3 _. search. apply append_prune to H3.
 		apply IH to H3 _. search. apply append_prune to H3.
 		apply IH to H3 _. search. apply IH to H3 _. search.
-		apply IH to H3 _. search.
-		apply wfj_weaken2 to H5. apply IH to H3 _. search.
-		apply wfj_weaken2 to H6. apply IH to H3 _. search.
 
 Theorem wfj_nabla_prune_exvar : forall F E FxE, nabla x,
 	append (F x) (exvar x :: E x) (FxE x) -> wfj (FxE x) ->
@@ -118,9 +88,6 @@ induction on 1. intros. case H1.
 		apply IH to H3 _. search. apply append_prune to H3.
 		apply IH to H3 _. search. apply append_prune to H3.
 		apply IH to H3 _. search. apply IH to H3 _. search.
-		apply IH to H3 _. search.
-		apply wfj_weaken2 to H5. apply IH to H3 _. search.
-		apply wfj_weaken2 to H6. apply IH to H3 _. search.
 
 Theorem wfj_nabla_prune_exvars : forall G F E GxFyE, nabla x y,
 	split3 (G x y) (exvar x :: F x y) (exvar y :: E x y) (GxFyE x y) -> wfj (GxFyE x y) ->
@@ -183,8 +150,8 @@ induction on 1. intros. case H1. search.
 Theorem wfta_prune : forall E A, nabla (x:ty),
 	wfta E (A x) -> (exists Ar, A = x\Ar).
 induction on 1. intros. case H1. search.
-	search. apply env_member_prune to H2.
-	search. apply env_member_prune to H2.
+	search. apply member_prune to H2.
+	search. apply member_prune to H2.
 	apply IH to H2. apply IH to H3. search.
 	apply IH to H2. search.
 
@@ -192,6 +159,12 @@ Theorem wfta_prune_tm : forall E A, nabla (x:tm),
 	wfta (E x) (A x) -> (exists Ar, A = x\Ar).
 induction on 1. intros. case H1. search.
 	search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. search.
+
+Theorem wft_prune_tm : forall E A, nabla (x:tm),
+	wft (E x) (A x) -> (exists Ar, A = x\Ar).
+induction on 1. intros. case H1. search. search.
 	apply IH to H2. apply IH to H3. search.
 	apply IH to H2. search.
 
@@ -246,16 +219,16 @@ Theorem wfta_open_exvar : forall E A, nabla x,
 	wfj E -> wfta E (all A) -> wfta (exvar x :: E) (A x).
 intros. case H2. apply wfta_open_equiv_var to _ _ _ H3. search.
 
-Theorem wfta_subst : forall E T X m, wfj E ->
+Theorem wfta_subst : forall E T X m,
 	wfta E (T X) -> wfta E m -> wfta E (T m).
-induction on 2. intros. case H2.
-	case H4. search. search.
-	case H4. search. search.
-	case H4. search. search.
-	case H4. apply IH to _ H5 H3 with T = T1. apply IH to _ H6 H3 with T = T2.
+induction on 1. intros. case H1.
+	case H3. search. search.
+	case H3. search. search.
+	case H3. search. search.
+	case H3. apply IH to H4 H2 with T = T1. apply IH to H5 H2 with T = T2.
 		search. search.
-	case H4. unfold. assert exists T, T1 = x\y\ T y x. case H6.
-		apply IH to _ H5 _ with X = X, m = m, T = T2 n1.
+	case H3. unfold. assert exists T, T1 = x\y\ T y x. case H5.
+		apply IH to H4 _ with X = X, m = m, T = T2 n1.
 		backchain wfta_weaken_f with E = tyvar n1 :: nil.
 		search. search.
 
@@ -306,6 +279,16 @@ induction on 3. intros. case H3. search.
 	apply IH to _ _ H4 with B = B. apply IH to _ _ H5 with B = B. search.
 	apply IH to _ _ H4 with F = x\ tyvar n2 :: F x, B = B. search.
 
+Theorem wft_anyof : forall F E FAE FBE A B T, nabla x,
+	append (F x) (of x A :: E) (FAE x) -> append (F x) (of x B :: E) (FBE x) ->
+	wft (FAE x) (T x) -> wft (FBE x) (T x).
+induction on 3. intros. case H3. search.
+	apply append_mem_inv to H1 _. case H5.
+		apply append_mem to H2 _. search.
+		case H6. apply append_mem to H2 _ with X = tyvar n2. search.
+	apply IH to _ _ H4 with B = B. apply IH to _ _ H5 with B = B. search.
+	apply IH to _ _ H4 with F = x\ tyvar n2 :: F x, B = B. search.
+
 Theorem wftm_anyof : forall F E FAE FBE A B X, nabla x,
 	append (F x) (of x A :: E) (FAE x) -> append (F x) (of x B :: E) (FBE x) ->
 	wftm (FAE x) (X x) -> wftm (FBE x) (X x).
@@ -317,7 +300,7 @@ induction on 3. intros. case H3. search.
 	apply IH to _ _ H5 with F = x\ of n2 (A1 x) :: F x, B = B.
 		apply wfta_anyof to _ _ H4 with B = B. search.
 	apply IH to _ _ H4 with B = B. apply IH to _ _ H5 with B = B. search.
-	apply IH to _ _ H4 with B = B. search.
+	apply IH to _ _ H4 with B = B. apply wfta_anyof to H1 H2 H5. search.
 
 Theorem wftm_anyA : forall E A X, nabla x,
 	wftm E (lam X) -> wftm (of x A :: E) (X x).
@@ -330,21 +313,21 @@ intros. case H1. apply wftm_anyof to _ _ H3 with B = A. search.
 % A general form would be: (FE A) |- (T B) given (FE A) |- B
 Theorem wfta_strenthen_exvar_notfresh : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
-	wfj (FxE x) -> wfta (FxE x) (T x) -> wfta E A -> wfta (FE A) (T A).
-intros. apply wfta_subst to _ H4 _ with T = T, m = A.
+	wfta (FxE x) (T x) -> wfta E A -> wfta (FE A) (T A).
+intros. apply wfta_subst to H3 _ with T = T, m = A.
 	apply append_assoc_inv to _ H2 with B = exvar n1 :: nil.
 	backchain wfta_weaken_f with E = AB n1.
 	apply wfta_strenthen_exvar to H1 H2 _ _. search.
 Theorem wfta_strenthen_tyvar_notfresh : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
-	wfj (FxE x) -> wfta (FxE x) (T x) -> wfta E A -> wfta (FE A) (T A).
-intros. apply wfta_subst to _ H4 _ with T = T, m = A.
+	wfta (FxE x) (T x) -> wfta E A -> wfta (FE A) (T A).
+intros. apply wfta_subst to H3 _ with T = T, m = A.
 	apply append_assoc_inv to _ H2 with B = tyvar n1 :: nil.
 	backchain wfta_weaken_f with E = AB n1.
 	apply wfta_strenthen_tyvar to H1 H2 _ _. search.
 Theorem wfta_top_tyvar_notfresh : forall E T A, nabla x,
 	wfj E -> wfta (tyvar x :: E) (T x) -> wfta E A -> wfta E (T A).
-intros. apply wfta_strenthen_tyvar_notfresh to _ _ _ _ _. search.
+intros. apply wfta_strenthen_tyvar_notfresh to _ _ _ _. search.
 
 Theorem wfta_strenthen_f : forall E T, nabla x,
 	wfta (tyvar x :: E) T \/ wfta (exvar x :: E) T -> wfta E T.
@@ -362,8 +345,9 @@ induction on 1. intros. case H1. search.
 
 Theorem wfta_strenthen_exvar_mono : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
-	wfj (FxE x) -> wfta (FxE x) (T x) -> mono E A -> wfta (FE A) (T A).
-intros. apply mono_wfta to H5. apply wfta_strenthen_exvar_notfresh to H1 H2 H3 H4 H6. search.
+	wfta (FxE x) (T x) -> mono E A -> wfta (FE A) (T A).
+intros. apply mono_wfta to H4.
+	apply wfta_strenthen_exvar_notfresh to H1 H2 H3 H5. search.
 
 
 Theorem wftm_prune : forall E X, nabla (x : ty),
@@ -371,14 +355,23 @@ Theorem wftm_prune : forall E X, nabla (x : ty),
 induction on 1. intros. case H1. search. search.
 	apply wfta_prune to H2. apply IH to H3. search.
 	apply IH to H2. apply IH to H3. search.
-	apply IH to H2. apply wft_prune to H3. search.
+	apply IH to H2. apply wfta_prune to H3. search.
 
-Theorem wftm_prune_var : forall E X, nabla (x : ty),
-	wftm (E x) (X x) -> wfj (E x) -> exists Xr, X = x\ Xr.
-induction on 1. intros. case H1. search. search.
-	apply IH to H4 _. search.
-	apply IH to H3 _. apply IH to H4 _. search.
-	apply IH to H3 _. apply wft_prune to H4. search.
+Theorem wft_prune_exvar : forall E m, nabla x,
+	wfj (E x) -> member (exvar x) (E x) -> wft (E x) (m x) -> exists M, m = x\ M.
+induction on 3. intros. case H3. search. search.
+	apply wfj_tyvar_exvar to H1 _ _.
+	apply IH to _ _ H4. apply IH to _ _ H5. search.
+	apply IH to _ _ H4. search.
+
+/*
+Theorem wftm_prune_exvar : forall E X, nabla (x : ty),
+	wftm (E x) (X x) -> wfj (E x) -> member (exvar x) (E x) -> exists Xr, X = x\ Xr.
+induction on 1. intros. case H1 (keep). search. search.
+	apply IH to H5 _ _. search.
+	apply IH to H4 _ _. apply IH to H5 _ _. search.
+	apply wft_prune_exvar to _ _ H5. apply IH to H4 _ _ with x = n1. search.
+	apply wft_prune_exvar to _ _ H5. apply IH to H4 _ _ with x = n1. search.*/
 
 /*
 Theorem wftm_subst : forall E X x m,
@@ -402,7 +395,8 @@ induction on 3. intros. case H3.
 	case H2. assert split3 (of n1 A :: E) F G (of n1 A :: EFG).
 		apply wfta_weaken to _ _ H4. apply IH to _ H8 H5. search.
 	unfold. apply IH to _ _ H4. search. apply IH to _ _ H5. search.
-	apply IH to _ _ H4. search.
+	apply split3_cons to H2 with X = tyvar n1.
+	apply IH to _ _ H4. apply wfta_weaken to _ _ H5. search.
 
 Theorem wftm_weaken_f : forall E F EF T,
 	append E F EF -> wftm F T -> wftm EF T.
@@ -430,50 +424,145 @@ Theorem member_of_subst : forall E T A, nabla x (y:ty),
 induction on 1. intros. case H1. search.
 	apply IH to H2 with E = x\ y\ L y x, A = A. search.
 
-Theorem wftm_strenthen_exvar : forall F E FE FxE A T, nabla x,
+Theorem wft_strenthen_exvar : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
-	wftm (FxE x) T -> wfta E A -> wfj (FxE x) -> wftm (FE A) T.
+	wft (FxE x) T -> wft E A -> wft (FE A) T.
 induction on 3. intros. case H3.
 	search.
-	assert member (of n2 (A1 n1)) (FE n2 n1).
-			apply append_mem_inv to H2 H6. case H7. backchain append_mem.
-			case H8. backchain append_mem.
-		apply mem_of_subst to H7 with A = A. apply wfta_prune_tm to H4. search.
-	apply IH to _ _ H7 _ _.
-		apply wfta_strenthen_exvar_notfresh to _ _ _ H6 H4. search.
-	apply IH to H1 H2 H6 _ _. apply IH to H1 H2 H7 _ _. search.
-	apply IH to _ _ H6 _ _. apply wfta_strenthen_exvar to H1 H2 _ _. search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	assert append (tyvar n2 :: F n1) (exvar n1 :: E) (tyvar n2 :: FxE n1).
+		apply IH to _ H6 H5 _ with FE = x\ tyvar n2 :: FE x. search.
 
-Theorem wftm_strenthen_tyvar : forall F E FE FxE A T, nabla x,
+Theorem wft_strenthen_exvar_a : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
+	wft (FxE x) T -> wfta E A -> wft (FE A) T.
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	assert append (tyvar n2 :: F n1) (exvar n1 :: E) (tyvar n2 :: FxE n1).
+		apply IH to _ H6 H5 _ with FE = x\ tyvar n2 :: FE x. search.
+
+Theorem wft_wfta : forall E A, wft E A -> wfta E A.
+induction on 1. intros. case H1. search. search.
+	apply IH to H2. apply IH to H3. search.
+	apply IH to H2. search.
+
+Theorem wft_strenthen_tyvar_fresh : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
-	wftm (FxE x) T -> wfta E A -> wfj (FxE x) -> wftm (FE A) T.
+	wft (FxE x) T -> wft E A -> wft (FE A) T.
 induction on 3. intros. case H3.
 	search.
-	assert member (of n2 (A1 n1)) (FE n2 n1).
-			apply append_mem_inv to H2 H6. case H7. backchain append_mem.
-			case H8. backchain append_mem.
-		apply mem_of_subst to H7 with A = A. apply wfta_prune_tm to H4. search.
-	apply IH to _ _ H7 _ _.
-		apply append_assoc_inv to _ H2 with C = E.
-			apply wfta_weaken_f to H10 H4.
-			apply wfta_subst to _ H6 H11 with T = A1.
-			apply wfta_strenthen_tyvar to _ _ H12 _. search.
-	apply IH to H1 H2 H6 _ _. apply IH to H1 H2 H7 _ _. search.
-	apply IH to _ _ H6 _ _. apply wfta_strenthen_tyvar to H1 H2 _ _. search.
-
-Theorem wftm_strenthen_exvar_notfresh : forall F E FE FxE A X, nabla x,
-	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
-	wfj (FxE x) -> wftm (FxE x) (X x) -> wfta E A -> wftm (FE A) (X A).
-intros. apply wftm_prune_var to H4 _.
-	apply append_assoc_inv to _ H2 with B = exvar n1 :: nil.
-	apply wftm_strenthen_exvar to H1 H2 _ _ _. search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	assert append (tyvar n2 :: F n1) (tyvar n1 :: E) (tyvar n2 :: FxE n1).
+		apply IH to _ H6 H5 _ with FE = x\ tyvar n2 :: FE x. search.
 
 Theorem wftm_strenthen_tyvar_notfresh : forall F E FE FxE A X, nabla x,
 	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
-	wfj (FxE x) -> wftm (FxE x) (X x) -> wfta E A -> wftm (FE A) (X A).
-intros. apply wftm_prune_var to H4 _.
-	apply append_assoc_inv to _ H2 with B = tyvar n1 :: nil.
-	apply wftm_strenthen_tyvar to H1 H2 _ _ _. search.
+	wftm (FxE x) (X x) -> wfta E A -> wftm (FE A) (X A).
+induction on 3. intros. case H3.
+	search.
+	assert member (of n2 (A1 n1)) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_of_subst to H6 with A = A. apply wfta_prune_tm to H4. search.
+	apply IH to _ _ H6 _.
+		apply wfta_strenthen_tyvar_notfresh to _ _ H5 H4. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	apply IH to _ _ H5 _.
+		apply wfta_strenthen_tyvar_notfresh to _ _ H6 _. search.
+
+Theorem wftm_strenthen_tyvar : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	wftm (FxE x) T -> wfta E A -> wftm (FE A) T.
+intros. apply wftm_strenthen_tyvar_notfresh to H1 H2 H3 H4. search.
+
+Theorem wftm_strenthen_exvar_notfresh : forall F E FE FxE A X, nabla x,
+	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
+	wftm (FxE x) (X x) -> wfta E A -> wftm (FE A) (X A).
+induction on 3. intros. case H3.
+	search.
+	assert member (of n2 (A1 n1)) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_of_subst to H6 with A = A. apply wfta_prune_tm to H4. search.
+	apply IH to _ _ H6 _.
+		apply wfta_strenthen_exvar_notfresh to _ _ H5 H4. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	apply IH to _ _ H5 _.
+		apply wfta_strenthen_exvar_notfresh to _ _ H6 _. search.
+
+Theorem wftm_strenthen_exvar : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
+	wftm (FxE x) T -> wfta E A -> wftm (FE A) T.
+intros. apply wftm_strenthen_exvar_notfresh to H1 H2 H3 H4. search.
+
+/*
+Theorem wftm_strenthen_exvar_notfresh : forall F E FE FxE A X, nabla x,
+	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
+	wfj (FxE x) -> wftm (FxE x) (X x) -> wfta E A -> exists Xr, X = x\ Xr /\ wftm (FE A) Xr.
+intros. apply wftm_prune_exvar to H4 _ _. backchain append_mem.
+	apply append_assoc_inv to _ H2 with B = exvar n1 :: nil.
+	apply wftm_strenthen_exvar to H1 H2 _ _ _. search.
+*/
+
+Theorem wft_strenthen_tyvar_notfresh : forall F E FE FxE A T, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	wft (FxE x) (T x) -> wft E A -> wft (FE A) (T A).
+induction on 3. intros. case H3.
+	search.
+	assert member (tyvar n2) (FE n2 n1).
+			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
+			case H7. backchain append_mem.
+		apply mem_tyvar_subst to H6 with A = A. search.
+	W: apply wft_wfta to H4.
+		A: apply append_subst to H1 with A = A.
+		W: apply wft_weaken_f to A _. search.
+	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
+	apply IH to _ _ H5 _. search.
+
+Theorem wfjg_strenthen_exvar_notfresh : forall F E FE FxE A J, nabla x,
+	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
+	wfjg (FxE x) (J x) -> wfta E A -> wfjg (FE A) (J A).
+induction on 3. intros. case H3.
+	apply wfta_strenthen_exvar_notfresh to H1 H2 H5 H4.
+		apply wfta_strenthen_exvar_notfresh to H1 H2 H6 H4. search.
+	apply wfta_strenthen_exvar_notfresh to H1 H2 H6 H4.
+		apply wftm_strenthen_exvar_notfresh to H1 H2 H5 H4. search.
+	apply wftm_strenthen_exvar_notfresh to H1 H2 H5 H4.
+		apply IH to _ _ H6 _ with F = x\ tyvar n2 :: F x.
+		search.
+	apply wftm_strenthen_exvar_notfresh to H1 H2 H5 H4.
+		apply wfta_strenthen_exvar_notfresh to H1 H2 H6 H4.
+		apply IH to _ _ H7 _ with F = x\ tyvar n2 :: F x.
+		search.
+
+Theorem wfjg_strenthen_tyvar_notfresh : forall F E FE FxE A J, nabla x,
+	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
+	wfjg (FxE x) (J x) -> wfta E A -> wfjg (FE A) (J A).
+induction on 3. intros. case H3.
+	apply wfta_strenthen_tyvar_notfresh to H1 H2 H5 H4.
+		apply wfta_strenthen_tyvar_notfresh to H1 H2 H6 H4. search.
+	apply wfta_strenthen_tyvar_notfresh to H1 H2 H6 H4.
+		apply wftm_strenthen_tyvar_notfresh to H1 H2 H5 H4. search.
+	apply wftm_strenthen_tyvar_notfresh to H1 H2 H5 H4.
+		apply IH to _ _ H6 _ with F = x\ tyvar n2 :: F x.
+		search.
+	apply wftm_strenthen_tyvar_notfresh to H1 H2 H5 H4.
+		apply wfta_strenthen_tyvar_notfresh to H1 H2 H6 H4.
+		apply IH to _ _ H7 _ with F = x\ tyvar n2 :: F x.
+		search.
 
 Theorem wfj_remove_exvar : forall F E FxE FEA A, nabla x,
 	append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
@@ -490,36 +579,11 @@ induction on 2. intros. W: case H2 (keep).
 		apply append_prune_AB_tm to H6. apply IH to H5 W _ _.
 		A: apply append_total_E to H5 with B = FB1.
 		A: apply append_subst to A with A = Ar. apply append_det to H6 *A1.
-		apply wfta_strenthen_exvar_notfresh to A H5 W W1 H3. search.
+		apply wfta_strenthen_exvar_notfresh to A H5 W1 H3. search.
 	case H1. case H4.
 		A: apply append_total_E to H5 with B = E.
 		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		apply wfta_strenthen_exvar_notfresh to A H5 W2 W H3.
-		apply wfta_strenthen_exvar_notfresh to A H5 W2 W1 H3.
-		apply IH to H5 W2 _ _. search.
-	case H1. case H4.
-		A: apply append_total_E to H5 with B = E.
-		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		apply wftm_strenthen_exvar_notfresh to A H5 W2 W H3.
-		apply wfta_strenthen_exvar_notfresh to A H5 W2 W1 H3.
-		apply IH to H5 W2 _ _. search.
-	case H1. case H4.
-		A: apply append_total_E to H5 with B = E.
-		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		W: apply wfj_weaken2 to W1.
-		apply wftm_strenthen_exvar_notfresh to A H5 W2 W H3.
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L1 n1) (exvar n1 :: E)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		apply IH to A1 W1 _ _. search.
-	case H1. case H4.
-		A: apply append_total_E to H5 with B = E.
-		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		W: apply wfj_weaken2 to W2.
-		apply wfta_strenthen_exvar_notfresh to A H5 W3 W H3.
-		apply wftm_strenthen_exvar_notfresh to A H5 W3 W1 H3.
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L1 n1) (exvar n1 :: E)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		apply IH to A1 W2 _ _. search.
+		apply IH to H5 W _ _. apply wfjg_strenthen_exvar_notfresh to A H5 _ _. search.
 
 Theorem wfj_remove_tyvar : forall F E FxE FEA A, nabla x,
 	append (F x) (tyvar x :: E) (FxE x) -> wfj (FxE x) ->
@@ -536,36 +600,11 @@ induction on 2. intros. W: case H2 (keep).
 		apply append_prune_AB_tm to H6. apply IH to H5 W _ _.
 		A: apply append_total_E to H5 with B = FB1.
 		A: apply append_subst to A with A = Ar. apply append_det to H6 *A1.
-		apply wfta_strenthen_tyvar_notfresh to A H5 W W1 H3. search.
+		apply wfta_strenthen_tyvar_notfresh to A H5 W1 H3. search.
 	case H1. case H4.
 		A: apply append_total_E to H5 with B = E.
 		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		apply wfta_strenthen_tyvar_notfresh to A H5 W2 W H3.
-		apply wfta_strenthen_tyvar_notfresh to A H5 W2 W1 H3.
-		apply IH to H5 W2 _ _. search.
-	case H1. case H4.
-		A: apply append_total_E to H5 with B = E.
-		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		apply wftm_strenthen_tyvar_notfresh to A H5 W2 W H3.
-		apply wfta_strenthen_tyvar_notfresh to A H5 W2 W1 H3.
-		apply IH to H5 W2 _ _. search.
-	case H1. case H4.
-		A: apply append_total_E to H5 with B = E.
-		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		W: apply wfj_weaken2 to W1.
-		apply wftm_strenthen_tyvar_notfresh to A H5 W2 W H3.
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L1 n1) (tyvar n1 :: E)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		apply IH to A1 W1 _ _. search.
-	case H1. case H4.
-		A: apply append_total_E to H5 with B = E.
-		A: apply append_subst to A with A = A. apply append_det to H6 *A1.
-		W: apply wfj_weaken2 to W2.
-		apply wfta_strenthen_tyvar_notfresh to A H5 W3 W H3.
-		apply wftm_strenthen_tyvar_notfresh to A H5 W3 W1 H3.
-		A: assert append (j (J n1 n2) :: tyvar n2 :: L1 n1) (tyvar n1 :: E)
-			(j (J n1 n2) :: tyvar n2 :: E1 n1).
-		apply IH to A1 W2 _ _. search.
+		apply IH to H5 W _ _. apply wfjg_strenthen_tyvar_notfresh to A H5 _ _. search.
 
 Theorem wfj_remove_exvar_nabla : forall F E FxE FE A, nabla x,
 	append (F x) (exvar x :: E) (FxE x) -> append (F x) E (FE x) -> wfj (FxE x) ->
@@ -584,10 +623,10 @@ Theorem wfj_remove_tyvar_nabla : forall F E FxE FE A, nabla x,
 intros. apply append_subst to H2 with A = A.
 	apply wfj_remove_tyvar to H1 H3 _ H5. search.
 
-Theorem wfj_remove_tyvar_mono : forall F E FxE FE A, nabla x,
-	append (F x) (tyvar x :: E) (FxE x) -> append (F x) E (FE x) -> wfj (FxE x) ->
-	mono E A -> wfj (FE A).
-intros. apply mono_wfta to H4. apply wfj_remove_tyvar_nabla to H1 H2 H3 H5. search.
+% Theorem wfj_remove_tyvar_mono : forall F E FxE FE A, nabla x,
+% 	append (F x) (tyvar x :: E) (FxE x) -> append (F x) E (FE x) -> wfj (FxE x) ->
+% 	mono E A -> wfj (FE A).
+% intros. apply mono_wfta to H4. apply wfj_remove_tyvar_nabla to H1 H2 H3 H5. search.
 
 Theorem mono_strenthen_exvar : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) ->
@@ -622,9 +661,6 @@ induction on 1. intros. case H1. case H2. search.
 		apply append_prune to H5. case H4. apply IH to H5 _ _ _. search.
 		case H4. apply IH to H5 _ _ _. search.
 		case H4. apply IH to H5 _ _ _. search.
-		case H4. apply IH to H5 _ _ _. search.
-		case H4. W: apply wfj_weaken2 to H8. apply IH to H5 _ _ _. search.
-		case H4. W: apply wfj_weaken2 to H9. apply IH to H5 _ _ _. search.
 
 Theorem mono_weaken_exvar : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (exvar x :: E) (FxE x) -> wfj (FxE x) ->
@@ -641,15 +677,3 @@ Theorem mono_prune_exvar : forall E m, nabla x,
 induction on 3. intros. case H3. search. search.
 	apply wfj_tyvar_exvar to H1 _ _.
 	apply IH to _ _ H4. apply IH to _ _ H5. search.
-
-Theorem wft_prune_exvar : forall E m, nabla x,
-	wfj (E x) -> member (exvar x) (E x) -> wft (E x) (m x) -> exists M, m = x\ M.
-induction on 3. intros. case H3. search. search.
-	apply wfj_tyvar_exvar to H1 _ _.
-	apply IH to _ _ H4. apply IH to _ _ H5. search.
-	apply IH to _ _ H4. search.
-
-Theorem wft_wfta : forall E A, wft E A -> wfta E A.
-induction on 1. intros. case H1. search. search.
-	apply IH to H2. apply IH to H3. search.
-	apply IH to H2. search.

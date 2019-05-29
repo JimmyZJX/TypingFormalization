@@ -11,33 +11,6 @@ induction on 3. intros. case H3.
 		apply mem_tyvar_subst to H6 with A = A. search.
 	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
 
-Theorem wft_strenthen_tyvar_fresh : forall F E FE FxE A T, nabla x,
-	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
-	wft (FxE x) T -> wft E A -> wft (FE A) T.
-induction on 3. intros. case H3.
-	search.
-	assert member (tyvar n2) (FE n2 n1).
-			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
-			case H7. backchain append_mem.
-		apply mem_tyvar_subst to H6 with A = A. search.
-	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
-	apply IH to _ _ H5 _. search.
-
-Theorem wft_strenthen_tyvar_notfresh : forall F E FE FxE A T, nabla x,
-	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
-	wft (FxE x) (T x) -> wft E A -> wft (FE A) (T A).
-induction on 3. intros. case H3.
-	search.
-	assert member (tyvar n2) (FE n2 n1).
-			apply append_mem_inv to H2 H5. case H6. backchain append_mem.
-			case H7. backchain append_mem.
-		apply mem_tyvar_subst to H6 with A = A. search.
-	W: apply wft_wfta to H4.
-		A: apply append_subst to H1 with A = A.
-		W: apply wft_weaken_f to A _. search.
-	apply IH to H1 H2 H5 _. apply IH to H1 H2 H6 _. search.
-	apply IH to _ _ H5 _. search.
-
 Theorem mono_strenthen_tyvar_notfresh : forall F E FE FxE A T, nabla x,
 	append (F x) E (FE x) -> append (F x) (tyvar x :: E) (FxE x) ->
 	mono (FxE x) (T x) -> mono E A -> mono (FE A) (T A).
@@ -183,12 +156,7 @@ induction on 1. intros. W: case H1. search.
 	apply exFree_false to _ H2.
 	F: apply exFree_weaken to H2. W: apply wfj_exFree_wfta_wft to _ _ W1.
 		D: apply sub_refl to _. J: apply IH to W _. search.
-	F: apply exFree_weaken to H2. J: apply IH to W2 _. search.
-	F: apply exFree_weaken to H2. J: apply IH to W2 _. search.
-	F: apply exFree_weaken to H2. J: apply IH to W1 _.
-		backchain exFree_j. backchain exFree_tyvar. J: case J. J: case J. search.
-	F: apply exFree_weaken to H2. J: apply IH to W2 _.
-		backchain exFree_j. backchain exFree_tyvar. J: case J. J: case J. search.
+	F: apply exFree_weaken to H2. J: apply IH to W _. search.
 
 Theorem esub_tyvar : forall E F, nabla x,
 	esub (E x) (F x) -> member (tyvar x) (E x) -> member (tyvar x) (F x).
@@ -248,10 +216,10 @@ Theorem esub_of : forall E F A, nabla t,
 induction on 1. intros. case H1.
 	case H2.
 	case H2. apply IH to H3 H4.
-		apply env_member_prune to H4. apply env_member_prune to H5.
+		apply member_prune to H4. apply member_prune to H5.
 		D: apply sub_weaken_f to _ H6 with EF = j (J n1) :: F1 n1. search.
 	case H2. apply IH to H3 H4.
-		apply env_member_prune to H4. apply env_member_prune to H5.
+		apply member_prune to H4. apply member_prune to H5.
 		D: apply sub_weaken_ty to H6. search.
 	case H2. apply IH to H4 _.
 		apply member_prune_tm to H5. apply member_prune_tm to H6.
@@ -267,10 +235,10 @@ Theorem esub_of_inv : forall E F A, nabla t,
 induction on 1. intros. case H1.
 	case H2.
 	case H2. apply IH to H3 H4.
-		apply env_member_prune to H4. apply env_member_prune to H5.
+		apply member_prune to H4. apply member_prune to H5.
 		D: apply sub_weaken_f to _ H6 with EF = j (J n1) :: E1 n1. search.
 	case H2. apply IH to H3 H4.
-		apply env_member_prune to H4. apply env_member_prune to H5.
+		apply member_prune to H4. apply member_prune to H5.
 		D: apply sub_weaken_ty to H6. search.
 	case H2. apply IH to H4 _.
 		apply member_prune_tm to H5. apply member_prune_tm to H6.
@@ -306,7 +274,7 @@ Theorem tmSize_prune : forall X N, nabla (x : ty),
 induction on 1. intros. case H1. search. search.
 	apply IH to H2. search.
 	apply IH to H2. apply IH to H3. apply add_prune_k[ty] to H4. search.
-	apply IH to H2. search.
+	apply IH to H2 with x = n1. search.
 
 Theorem tmSize_prune_tm : forall X N, nabla (x : tm),
 	tmSize (X x) (N x) -> exists Nr, N = x\ Nr.
@@ -315,7 +283,8 @@ induction on 1. intros. case H1. search. search. search.
 	apply IH to H2. apply IH to H3. apply add_prune_k[tm] to H4. search.
 	apply IH to H2. search.
 
-Theorem tmSize_subst : forall X A N, nabla (x : ty), tmSize (X x) N -> tmSize (X A) N.
+Theorem tmSize_subst : forall X A N, nabla (x : ty),
+	tmSize (X x) N -> tmSize (X (A x)) N.
 induction on 1. intros. case H1. search. search.
 	apply IH to H2 with A = A. search.
 	apply tmSize_prune to H2. apply IH to H2 with A = A.
@@ -340,7 +309,7 @@ induction on 1. intros. case H1. search. search.
 	apply IH to H3. apply tmSize_prune_tm to H4. search.
 	apply IH to H2. apply IH to H3. apply tmSize_is_nat to H4.
 		apply add_total to H6 with n = N1. search.
-	apply IH to H2. search.
+	apply IH to H2. apply tmSize_prune to H4. search.
 
 Theorem lt_sm : forall m n, lt (s m) n -> exists N, n = s N /\ lt m N.
 induction on 1. intros. case H1. search.
@@ -468,11 +437,7 @@ induction on 1. intros. case H1. case H2.
 	case H2. case H3. apply IH to H4 H5 H6. search.
 	case H2. case H3. apply IH to H4 H7 H6. search.
 	case H2. case H3. search. apply member_prune_tm to H6. apply member_prune_tm to H6.
-	case H2. case H3. apply IH to H6 H7 H8. search.
-	case H2. case H3. apply IH to H6 H7 H8. search.
-	case H2. case H3. apply IH to H5 _ _ with A1 = A1. search.
-	case H2. case H3. apply IH to H6 _ _ with A1 = A1. search.
-
+	case H2. case H3. apply IH to H4 H6 H7. search.
 
 Theorem chkInfApp_wft :
 	(forall E X A, chk E X A -> wfj E -> exFree E -> wft E A) /\
@@ -874,7 +839,7 @@ induction on 2 2 2. IJ: induction on 4 4 4. clear IJ2. split.
 		search.
 		T: case H1. L: apply lt_sm to *H3.
 			IT: case H2.
-			W: case H7. O: apply order_total_wft to W1.
+			W: case H7. W: apply exFree_wfta_wft to _ *W1. O: apply order_total_wft to W1.
 			D: apply IH to _ IT _ _ _ _ _ _ _ D with NO = N2. search.
 		search.
 		T: case H1. L: apply lt_sm to *H3.

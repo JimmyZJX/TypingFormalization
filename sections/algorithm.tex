@@ -242,6 +242,12 @@ judgments onto the worklist.  The syntax $\Gm\redto \Gm'$ denotes multiple
 reduction steps. If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully;
 this corresponds to successful type checking.
 
+$$\inferrule*[right=$\mathtt{{\redto} id}$]
+{~}{\Gm\redto\Gm}
+\qquad
+\inferrule*[right=$\mathtt{{\redto} step}$]
+{\Gm \rto \Gm_1 \quad \Gm_1 \redto \Gm'}{\Gm \redto \Gm'}$$
+
 Let us explain the rules in more details:
 Rules 1-3 pop a variable declaration. Essentially this is garbage: variables that are
 out of scope for the remaining judgments in the worklist.

@@ -21,7 +21,12 @@ induction on 1. intros. case H1. search.
 	apply IH to H2. search.
 
 
-Theorem env_member_prune : forall (E:olist) B, nabla (x : ty),
+Theorem member_prune : forall (E : olist) B, nabla (x : ty),
+	member (B x) E -> exists Fr, B = x\Fr.
+induction on 1. intros. case H1.
+	search. apply IH to H2. search.
+
+Theorem member_prune_tm : forall (E : olist) B, nabla (x : tm),
 	member (B x) E -> exists Fr, B = x\Fr.
 induction on 1. intros. case H1.
 	search. apply IH to H2. search.
@@ -52,7 +57,7 @@ induction on 1. intros. case H1.
 	search.
 	case H2. search.
 	case H3. search. search.
-	apply env_member_prune to H2.
+	apply member_prune to H2.
 	apply IH to H2. apply IH to H3. search.
 	apply IH to H2. search.
 Theorem wft_weaken_f : forall E F EF T,
@@ -104,7 +109,7 @@ induction on 1. intros. case H1.
 	search.
 	case H2. search.
 	case H3. search. search.
-	apply env_member_prune to H2.
+	apply member_prune to H2.
 	apply IH to H2. apply IH to H3. search.
 
 Theorem mono_weaken_f : forall E F EF T,
@@ -212,11 +217,6 @@ induction on 1. intros. case H1.
 			case H2.
 		case H6. case H2. apply IH to H4 _ _. apply IH to H5 _ _. search.
 			case H2.
-
-Theorem member_prune_tm : forall (E : olist) B, nabla (x : tm),
-	member (B x) E -> exists Fr, B = x\Fr.
-induction on 1. intros. case H1.
-	search. apply IH to H2. search.
 
 Theorem sub_inv : forall E A B, nabla x,
 	sub E A (all B) -> sub (tyvar x :: E) A (B x).

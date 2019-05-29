@@ -244,7 +244,7 @@ DONE: Now there is a translation table in the last section of the appendix.
 > reductions (`judge` and `dc`) which are not binary but unary relations
 > on worklists.  Am I missing something here?
 
-TODO: Show the multi-step relation.
+DONE: Show the multi-step relation.
 
 > L881 (completeness theorem): why is the second premise (instantiation
 > of $\Gamma$ to $\Omega$) necessary here?  Isn't every declarative
@@ -426,76 +426,76 @@ DONE: These two are corrected.
 
 Reference: corrected the author's name "Schafer"
 
-
-Comment @A1
----------------------------------------------------------------------------
-
-(A remark by a non-reviewer.) The example on lines 389-403 is
-reminiscent of the manner in which Hindley-Milner type inference is
-explained in terms of constraints by Pottier and Rémy in "The Essence
-of ML Type Inference".
-
-As far as I understand, roughly speaking, to check whether the
-identity function has type "forall a. a -> a", they would begin with
-the constraint:
-```
-  [[ \x.x : forall a. a -> a ]]
-```
-
-where the notation [[ e : tau ]] intuitively denotes the constraint
-that "e must have type tau". Then they apply "constraint generation"
-rules to simplify constraints of the form [[ e : tau ]] and
-"constraint solving" rules to simplify the residual constraints. In
-the example of the identity function, the above constraint would be
-transformed into:
-
-```
-  forall a. [[ \x.x : a -> a ]]
-```
-then
-```
-  forall a. let x : a in [[ x : a ]]
-```
-then
-```
-  forall a. let x : a in x <= a
-```
-
-(The "let" constraint records the fact that the local variable x is
-bound to the type a, and the instantiation constraint "x <= a"
-requires the type of x to admit the type "a" as an instance.)
-
-Simplification can then take place. The instantiation constraint
-becomes a (trivial) equality constraint:
-
-```
-  forall a. let x : a in a = a
-```
-whence
-```
-  forall a. let x : a in True
-```
-
-and, as in your paper, the "let" binder and the "forall" binder, which
-are now redundant, can be popped off:
-
-```
-  forall a. True
-```
-and finally:
-```
-  True
-```
-
-so in the end we get `True`, which means that the identity function does admit this type.
-
-In summary, although Pottier and Rémy do not deal with higher-ranked
-types, they do propose the ideas of 1- viewing type inference and
-type-checking as constraint generation plus constraint solving, 2-
-capturing the scope of variables in the syntax of constraints, via
-"let x", "forall a" and "exists a" binders, 3- viewing a constraint
-solver as a kind of abstract machine which transforms a constraint,
-step by step, according to a predefined strategy, until a normal form
-(typically "True" or "False") is reached.
+> 
+> Comment @A1
+> ---------------------------------------------------------------------------
+> 
+> (A remark by a non-reviewer.) The example on lines 389-403 is
+> reminiscent of the manner in which Hindley-Milner type inference is
+> explained in terms of constraints by Pottier and Rémy in "The Essence
+> of ML Type Inference".
+> 
+> As far as I understand, roughly speaking, to check whether the
+> identity function has type "forall a. a -> a", they would begin with
+> the constraint:
+> ```
+>   [[ \x.x : forall a. a -> a ]]
+> ```
+> 
+> where the notation [[ e : tau ]] intuitively denotes the constraint
+> that "e must have type tau". Then they apply "constraint generation"
+> rules to simplify constraints of the form [[ e : tau ]] and
+> "constraint solving" rules to simplify the residual constraints. In
+> the example of the identity function, the above constraint would be
+> transformed into:
+> 
+> ```
+>   forall a. [[ \x.x : a -> a ]]
+> ```
+> then
+> ```
+>   forall a. let x : a in [[ x : a ]]
+> ```
+> then
+> ```
+>   forall a. let x : a in x <= a
+> ```
+> 
+> (The "let" constraint records the fact that the local variable x is
+> bound to the type a, and the instantiation constraint "x <= a"
+> requires the type of x to admit the type "a" as an instance.)
+> 
+> Simplification can then take place. The instantiation constraint
+> becomes a (trivial) equality constraint:
+> 
+> ```
+>   forall a. let x : a in a = a
+> ```
+> whence
+> ```
+>   forall a. let x : a in True
+> ```
+> 
+> and, as in your paper, the "let" binder and the "forall" binder, which
+> are now redundant, can be popped off:
+> 
+> ```
+>   forall a. True
+> ```
+> and finally:
+> ```
+>   True
+> ```
+> 
+> so in the end we get `True`, which means that the identity function does admit this type.
+> 
+> In summary, although Pottier and Rémy do not deal with higher-ranked
+> types, they do propose the ideas of 1- viewing type inference and
+> type-checking as constraint generation plus constraint solving, 2-
+> capturing the scope of variables in the syntax of constraints, via
+> "let x", "forall a" and "exists a" binders, 3- viewing a constraint
+> solver as a kind of abstract machine which transforms a constraint,
+> step by step, according to a predefined strategy, until a normal form
+> (typically "True" or "False") is reached.
 
 TODO: Add sentnces in Section 2.3 and a paragraph in Related Work.
