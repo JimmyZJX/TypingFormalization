@@ -41,27 +41,27 @@ well-scoping of variables.
 \end{aligned}
 \end{gather*}
 
-\centering \framebox{$\Gm \vdash A$}
+\centering \framebox{$\Gm \vdash A$} Well-formed algorithmic type
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf\_ unit}$]
     {~}{\Gm\vdash 1}
-\qquad
+\quad
 \inferrule*[right=$\mathtt{wf\_ var}$]
     {a\in\Gm}{\Gm\vdash a}
-\qquad
+\quad
 \inferrule*[right=$\mathtt{wf\_ exvar}$]
     {\al\in\Gm}{\Gm\vdash \al}
-\qquad
+\quad
 \inferrule*[right=$\mathtt{wf\_{\to}}$]
     {\Gm\vdash A\quad \Gm\vdash B}
     {\Gm\vdash A\to B}
-\qquad
+\quad
 \inferrule*[right=$\mathtt{wf\_\forall}$]
     {\Gm, a\vdash A}
     {\Gm\vdash \forall a. A}
 \end{gather*}
 
-\centering \framebox{$\Gm \vdash e$}
+\centering \framebox{$\Gm \vdash e$} Well-formed algorithmic expression
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf\_ tmvar}$]
     {x:A\in\Gm}{\Gm\vdash x}
