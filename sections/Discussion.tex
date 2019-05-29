@@ -155,18 +155,17 @@ we can pick any well-formed monotype as its solution.
 The unit type $1$, as the simplest type in the system, is a good choice.
 
 \subsection{Lexically-scoped type variables}
-We further extend the type system to support a simple extension,
+We fhave urther extended the type system with support for
 lexically-scoped type variables~\cite{scoped-type-variables}.
-We have a complete Abella formalization for this extension proving
-all the metatheory discussed in the paper.
+Our Abella formalization for this extension proves
+all the metatheory we discuss here.
 
 From a
-practical point of view, such extension enables the programmer to
-refer to type variables in a generic function signature when
-implementing that function.  For example,
+practical point of view, this extension allows the implementation of a function
+to refer to type variables from its type signature. For example,
 $$(\lam{\lam[y] (x:a)}) : \all[a~b] a \to b \to a$$
-has an inner annotation $(x:a)$ that refers to the outer generic type variable $a$.
-This is not a surprising feature, since the declarative system already accepts these kind of programs
+has an annotation $(x:a)$ that refers to the type variable $a$ in the type signature.
+This is not a surprising feature, since the declarative system already accepts similar programs
 $$
 \inferrule*[right=$\mathtt{DeclAnno}$]
 {
@@ -178,23 +177,22 @@ $$
     {\Psi\vdash (e: \all A)\To \all A}
 $$
 
-But there are issues about the well-formedness condition.
-Normally $\Psi \vdash (e : A)$ is defined by $\Psi \vdash e$ and $\Psi \vdash A$.
-However, when $A = \all A'$, the type variable $a$ is not introduced to the context of $e$,
+The main issue is the well-formedness condition.
+Normally $\Psi \vdash (e : A)$ follows from $\Psi \vdash e$ and $\Psi \vdash A$.
+However, when $A = \all A'$, the type variable $a$ is not in scope at $e$,
 therefore $\Psi \vdash e$ is not derivable.
 
-To address the problem,
-we add a syntax that explicitly bind the generic type variable into a function and its annotation.
-The syntax of expression is extended with one more constructor:
+To address the problem, we add a new syntactic form that explicitly binds a
+type variable simulatenously in a function and its annotation.
 $$
 \begin{array}{l@{\qquad}lcl}
-\text{Expressions}\qquad&e &::=&\quad x \mid () \mid \lam e \mid e_1~e_2 \mid (e:A) \mid \Lambda a.~e:A
+\text{Expressions}\qquad&e &::=&\quad \ldots \mid \Lambda a.~e:A
 \end{array}
 $$
 
-The new type-lambda syntax $\Lambda a.~e:A$ actually annotates the generic function $e$ with $\all A$,
+This new type-lambda syntax $\Lambda a.~e:A$ actually annotates its body $e$ with $\all A$,
 while making $a$ visible inside the body of the function.
-The well-formedness judgments are updated naturally:
+The well-formedness judgments are extended accordingly:
 $$
 \inferrule*[right=$\mathtt{wf_d}\Lambda$]
     {\Psi,a \vdash e \quad \Psi,a \vdash A}
@@ -216,10 +214,10 @@ $$\Gm \Vdash \Lambda a.~e:A \To_b \jg \algrule \Gm \Vdash [(\all A)/b]\jg, a \Vd
 In practice, programmers would not write the syntax $\Lambda a.~e : A$ directly.
 The ScopedTypeVariables extension of Haskell is effective only
 when the type signature is explicitly universally quantified
-(the compiler translates into an expression similar to $\Lambda a.~e : A$);
-otherwise the program means the normal syntax $e : \all A$,
-and one may not later refer to the type variable $a$.
+(which the compiler translates into an expression similar to $\Lambda a.~e : A$);
+otherwise the program means the normal syntax $e : \all A$
+and may not later refer to the type variable $a$.
 
-We also obtained all three desired properties for the extended system,
+We have proven all three desired properties for the extended system,
 namely soundness, completeness and decidability.
 
