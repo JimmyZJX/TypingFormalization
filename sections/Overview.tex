@@ -140,15 +140,10 @@ is known to give rise to an undecidable subtyping relation~\cite{tiuryn1996subty
 predicative instantiation in their type system.
 Both systems are adopted by several practical programming languages.
 
-\jimmy{Mention the implicit freshness conditions in the premises throughout the text}
+\jimmy{Mention the implicit freshness conditions in the premises}
 Please note that when we introduce a new binder in the premise, we implicitly pick a fresh one.
 This applies to rules such as $\mathtt{wf_d\forall}$, $\mathtt{wf_dabs}$, $\mathtt{{\le}\forall R}$,
 throughout the whole text.
-For algorithmic rules in Figure~\ref{fig:alg}, the right-hand side $\Gm'$
-is actually the premise if re-written in a big-step style.
-\bruno{Comment about big-step seems out of place. Should come later,
-  when we actually talk about the algorithm.}
-
 
 \begin{figure}[t]
 \begin{tabular}{rl}

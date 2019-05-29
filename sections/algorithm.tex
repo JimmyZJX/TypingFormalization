@@ -249,6 +249,12 @@ $$\inferrule*[right=$\mathtt{{\redto} id}$]
 
 \noindent In the case that $\Gm\redto\nil$ this corresponds to successful type checking.
 
+\jimmy{The implicit freshness conditions for algorithmic system}
+
+Please note that when a new binder is introduced in the right-hand side worklist $\Gm'$,
+we implicitly pick a fresh one,
+since the right-hand side can be seen as the premise of the reduction.
+
 Rules 1-3 pop variable declarations that are essentially garbage.
 That is variables that are
 out of scope for the remaining judgments in the worklist.

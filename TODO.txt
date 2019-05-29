@@ -254,7 +254,9 @@ DONE: Show the multi-step relation.
 > $\Gamma$ at all?  Maybe the mechanization does not allow treating the
 > languages of declarative and algorithmic worklists as a subsets?
 
-TODO: Mention something similar to the reply
+Mention something similar to the reply
+DONE: L930 We explicitly relate between an algorithmic context Γ
+  and a declarative context Ω to avoid potential confusion.
 
 > L883: same comment as above about the induction strategy used here.
 > 
@@ -426,7 +428,7 @@ DONE: These two are corrected.
 
 > L1227: "Schfer"
 
-Reference: corrected the author's name "Schafer"
+DONE: Reference: corrected the author's name "Schafer"
 
 > 
 > Comment @A1
@@ -500,4 +502,4 @@ Reference: corrected the author's name "Schafer"
 > step by step, according to a predefined strategy, until a normal form
 > (typically "True" or "False") is reached.
 
-TODO: Add sentnces in Section 2.3 and a paragraph in Related Work.
+DONE: Add sentences in Section 2.3 and a paragraph in Related Work.
