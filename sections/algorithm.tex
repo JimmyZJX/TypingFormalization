@@ -239,8 +239,7 @@ the form $\Gm \rto \Gm'$.
 The reduction process treats the worklist as a stack.  In every step it pops
 the first judgment from the worklist for processing and possibly pushes new
 judgments onto the worklist.  The syntax $\Gm\redto \Gm'$ denotes multiple
-reduction steps. If $\Gm\redto\nil$, we say that $\Gm$ reduces successfully;
-this corresponds to successful type checking.
+reduction steps. 
 
 $$\inferrule*[right=$\mathtt{{\redto} id}$]
 {~}{\Gm\redto\Gm}
@@ -248,8 +247,10 @@ $$\inferrule*[right=$\mathtt{{\redto} id}$]
 \inferrule*[right=$\mathtt{{\redto} step}$]
 {\Gm \rto \Gm_1 \quad \Gm_1 \redto \Gm'}{\Gm \redto \Gm'}$$
 
-Let us explain the rules in more details:
-Rules 1-3 pop a variable declaration. Essentially this is garbage: variables that are
+\noindent In the case that $\Gm\redto\nil$ this corresponds to successful type checking.
+
+Rules 1-3 pop variable declarations that are essentially garbage.
+That is variables that are
 out of scope for the remaining judgments in the worklist.
 All other rules concern a judgment at the front of the worklist. Logically we
 can discern 6 groups of rules.
@@ -362,9 +363,9 @@ fashion.
 In comparison,
 DK's algorithmic subsumption rule has no restriction on the expression $e$,
 and they do not have a rule that explicitly handles the case $\lam e \Lto \al$.
-Therefore their only way to check a lambda function against an existential variable
+Therefore the only way to check a lambda function against an existential variable
 is by applying the subsumption rule, which further breaks into
-a type inference of the lambda function and a subtyping judgment.
+type inference of a lambda function and a subtyping judgment.
 % A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
 % may result in a similar effect to Rule 21.
 % Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
@@ -449,10 +450,27 @@ Finally, Rules 27-29 deal with application inference judgments.
 Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}$ and $\mathtt{Decl\to App}$.
 Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
 
-
-
-
 \paragraph{Example}
+Figure~\ref{fig:alg:sample} shows a sample derivation of the algorithm.
+It checks the application $(\lam x)~()$ against the unit type.
+According to the algorithm, we apply Rule 18 (subsumption), changing to inference mode.
+Type inference of the application breaks into two steps by Rule 26:
+first we infer the type of the function,
+and then the application inference judgment helps to determine the return type.
+In the following 5 steps the type of the identity function, $\lam x$, is inferred to be $\al \to \al$:
+checking the body of the lambda function (Rule 25),
+switching from check mode to inference mode (Rule 18),
+inferring the type of a term variable (Rule 22),
+solving a subtyping between existential variables (Rule 12) and
+garbage collecting the term variable $x$ (Rule 3).
+
+After that, Rule 28 changes the application inference judgment to
+a check of the argument against the input type $\al$ and returns the output type $\al$.
+Checking $()$ against the existential variable $\al$ solves $\al$ to the unit type $1$
+through Rules 18, 24 and 16.
+Immediately after $\al$ is solved, the algorithm replaces every occurrence of $\al$ with $1$.
+Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which is finished off by Rule 4.
+Finally we get an empty worklist, indicating the success of the whole derivation.
 
 \begin{figure}
 \begin{gather*}
@@ -476,28 +494,7 @@ Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like R
 \label{fig:alg:sample}
 \end{figure}
 
-Figure~\ref{fig:alg:sample} shows a sample derivation of the algorithm.
-It checks the application $(\lam x)~()$ against the unit type.
-According to the algorithm, we apply Rule 18 (subsumption), changing to inference mode.
-Type inference of the application breaks into two steps by Rule 26:
-first we infer the type of the function,
-and then the application inference judgment helps to determine the return type.
-In the following 5 steps the type of the identity function, $\lam x$, is inferred to be $\al \to \al$:
-checking the body of the lambda function (Rule 25),
-switching from check mode to inference mode (Rule 18),
-inferring the type of a term variable (Rule 22),
-solving a subtyping between existential variables (Rule 12) and
-garbage collecting the term variable $x$ (Rule 3).
-
-After that, Rule 28 changes the application inference judgment to
-a check of the argument against the input type $\al$ and returns the output type $\al$.
-Checking $()$ against the existential variable $\al$ solves $\al$ to the unit type $1$
-through Rules 18, 24 and 16.
-Immediately after $\al$ is solved, the algorithm replaces every occurrence of $\al$ with $1$.
-Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which is finished off by Rule 4.
-Finally we get an empty worklist, indicating the success of the whole derivation.
-
-In summary, our algorithm accepts the type checking $(\lam x)~() \Lto 1$.
+In summary, our type checking algorithm accepts $(\lam x)~() \Lto 1$.
 
 \paragraph{Non-overlapping and Deterministic Reduction}
 An important feature of our algorithmic rules is that they are directly
