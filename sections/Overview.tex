@@ -102,7 +102,7 @@ and simply ensure that variables in types and terms are well-scoped.
     {\Psi\vdash A \le \all[b]B}
 \end{gather*}
 \caption{%Well-formedness of Declarative Types and 
-Declarative Subtyping}\label{fig:decl:sub}
+Declarative Well-formedness and Subtyping}\label{fig:decl:sub}
 \end{figure}
 
 %The DK subtyping relation was adopted from \citet{odersky1996putting}.
@@ -140,7 +140,7 @@ is known to give rise to an undecidable subtyping relation~\cite{tiuryn1996subty
 predicative instantiation in their type system.
 Both systems are adopted by several practical programming languages.
 
-\jimmy{Mention the implicit freshness conditions in the premises}
+% \jimmy{Mention the implicit freshness conditions in the premises}
 Please note that when we introduce a new binder in the premise, we implicitly pick a fresh one.
 This applies to rules such as $\mathtt{wf_d\forall}$, $\mathtt{wf_dabs}$, $\mathtt{{\le}\forall R}$,
 throughout the whole text.
@@ -460,7 +460,7 @@ For instance, the variable elimination rule is written as:
    x \stackrel{.}{=} t, S  ~~\rightarrowtail~~  x \stackrel{.}{=} t, [t/x]S   \qquad\qquad{if}~x \not\in t~\text{and}~{x \in S}
 \]
 Because the whole set is explicitly available, the variable $x$ can be
-simultaneously substituted everywhere.
+simultaneously substituted.
 
 In the above unification problem, all variables are implicitly bound in the same
 global scope. 
@@ -655,8 +655,8 @@ which has a term variable declaration as the top element.
 %As a result all garbage variables are collected
 %once the judgment chains refering to them are processed,
 %just as what we have mentioned above about the scope tracking.
-After removing the garbage term variable declaration from the worklist, we process the last remaining judgment chain,
-namely an inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
+After removing the garbage term variable declaration from the worklist, we process the last remaining
+inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
 Finally the last judgment becomes $1 \le 1$, a trivial base case.
 
 

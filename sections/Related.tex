@@ -109,7 +109,7 @@ Nominal techniques~\cite{urban2008nominalTech} in Isabelle/HOL have been
 developed to help programming language formalizations, and are used for a similar
 verification~\cite{urban2008nominal}. Moreover, Garrigue~\cite{garrigue2015certified}
 mechanized a type inference algorithm,
-with the help of locally nameless cofinite quantification~\cite{LocallyNameless},
+with the help of locally nameless~\cite{LocallyNameless},
 for Core ML extended with structural polymorphism and recursion.
 
 \paragraph{Ordered Contexts in Type Inference}
@@ -118,7 +118,7 @@ propose a new unification algorithm with the help of ordered contexts.
 Similar to DK's algorithm, information of meta variables flow from input contexts to output contexts.
 Not surprisingly, its information increase relation has a similar role to DK's context extension.
 Our algorithm, in contrast,
-eliminates the use of output contexts and their variable solution records ($\al = \tau$),
+eliminates output contexts and solution records ($\al = \tau$),
 simplifying the information propagation process through immediate substitution
 by collecting all the judgments in a single worklist.
 
@@ -147,11 +147,11 @@ declarations is fundamental in a dependently typed setting.
 Their algorithms simplify a collection of unification constraints progressively in a single-step style.
 In comparison, our algorithm mixes variable declarations with judgments,
 resulting in a simpler judgment form,
-while processing them in a similar way to those algorithms.
+while processing them in a similar way.
 One important difference is that contexts are
 duplicated in their unification judgments, which complicates the unification process,
 since the information of each local context needs to be synchronized.
-Instead we make use of the nature of ordered context to control the scoping of unification variables.
+Instead we make use of the nature of ordered context to control the scopes of unification variables.
 While their algorithms focus only on unification,
-our algorithm also deals with other types of judgments like type inference.
+our algorithm also deals with other types of judgments like synthesis.
 A detailed discussion is in Section~\ref{sec:overview:list}.

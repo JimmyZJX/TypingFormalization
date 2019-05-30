@@ -16,7 +16,7 @@ judgments in a worklist.
 Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness
 judgments used by the algorithm. Similarly to the declarative system 
 the well-formedness rules are unsurprising and merely ensure 
-well-scoping of variables.
+well-scopedness.
 
 \begin{figure}
 \begin{gather*}
@@ -249,8 +249,7 @@ $$\inferrule*[right=$\mathtt{{\redto} id}$]
 
 \noindent In the case that $\Gm\redto\nil$ this corresponds to successful type checking.
 
-\jimmy{The implicit freshness conditions for algorithmic system}
-
+% \jimmy{The implicit freshness conditions for algorithmic system}
 Please note that when a new variable is introduced in the right-hand side worklist $\Gm'$,
 we implicitly pick a fresh one,
 since the right-hand side can be seen as the premise of the reduction.
@@ -283,7 +282,7 @@ variable at the right time: it leaves the environment immediately
 after being unreferenced completely for sure.
 
 \paragraph{Example} The derivation of the subtyping judgment
-$(1\to 1)\to 1 \le (\all 1\to 1) \to 1$ proceeds as follows:
+$(1\to 1)\to 1 \le (\all 1\to 1) \to 1$:
 \begin{gather*}
 \begin{aligned}
   & \nil\vdash (1\to 1)\to 1 \le (\all 1 \to 1) \to 1\\
@@ -366,7 +365,7 @@ The alternative would have been to omit Rule 21 and drop the condition on $e$
 in Rule 18. The modified Rule 18 would then handle $\Gm \Vdash \lam e \Lto \al$
 and yield $\Gm \Vdash \lam e \To_a a \le \al$, which would be further processed
 by Rule 25 to $\Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$.
-As a subtyping constraint between two monotypes only succeeds when the types are equal, $\bt[1] \to \bt[2] \le \al$
+As a subtyping constraint between monotypes is simply equality, $\bt[1] \to \bt[2] \le \al$
 must end up equating $\bt[1] \to \bt[2]$ with $\al$ and thus have the same effect as Rule 21, but in a more roundabout
 fashion.
 

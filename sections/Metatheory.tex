@@ -117,7 +117,7 @@ This discrepancy makes it more difficult to relate the two systems.
 
 To simplify matters, we introduce an intermediate system that is still declarative
 in nature, but has no overlap. This intermediate system differs only in a few 
-rules from DK's declarative system. The changes are:
+rules from DK's declarative system:
 \begin{enumerate}
 \item Restrict the shape of $B$ in the rule $\mathtt{\forall L}$ subtyping rule:
 $$
@@ -233,7 +233,8 @@ our algorithm is also complete with respect to DK's declarative system.
 
 Our algorithm is sound with respect to DK's declarative system.
 For any worklist $\Gm$ that reduces successfully,
-there is a valid instantiation $\Om$ that transfers all judgments successfully to the declarative system.
+there is a valid instantiation $\Om$ that transfers all judgments
+to the declarative system.
 \begin{theorem}[Soundness]
 If \emph{wf }$\Gm$ and $\Gm \redto \nil$,
 then there exists $\Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
@@ -275,7 +276,7 @@ Given \emph{wf }$\Gm$:
 
 The completeness of our algorithm means that any derivation in the
 declarative system has an algorithmic counterpart.
-\jimmy{In response to "treat declarative and algorithmic worklists as a subsets":}
+% \jimmy{In response to "treat declarative and algorithmic worklists as a subsets":}
 We explicitly relate between an algorithmic context $\Gm$ and
 a declarative context $\Omega$ to avoid potential confusion.
 
@@ -321,7 +322,7 @@ $\|\Om\| \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
 
 The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
 \begin{corollary}[Completeness, single judgment form]
-Given \emph{wf }$\Gm$ containing no judgment chains:
+Given \emph{wf }$\Gm$ containing no judgments:
 \begin{enumerate}
     \item If $\Om \vdash A' \le B'$ and $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$
         \\then $\Gm \Vdash A \le B \redto \nil$;
@@ -340,7 +341,7 @@ Given \emph{wf }$\Gm$ containing no judgment chains:
 
 Finally, we show that our algorithm is decidable:
 \begin{theorem}[Decidability]
-Given a well-formed input $\Gm$, either $\Gm\redto\nil$ or not.
+Given \emph{wf} $\Gm$, it is decidable whether $\Gm\redto\nil$ or not.
 \end{theorem}
 Our decidability proof is based on a lexicographic group of induction measures\\
 $\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
@@ -365,7 +366,7 @@ smaller problems of the form $\al \le A$ and $A \le \al$ which we call
 
 We now show that entirely reducing these smaller problems leaves the worklist
 in a state with an overall smaller measure. Our starting point is a 
-worklist of the form $\Gm,\Gm_i$ where $\Gm_i$ are instantiation judgments.
+worklist $\Gm,\Gm_i$ where $\Gm_i$ are instantiation judgments.
 \begin{gather*}
 \begin{aligned}
 \Gm_i &:= \nil \mid \Gm_i, \al\le A \mid \Gm_i, A\le\al \quad
@@ -451,7 +452,7 @@ Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
 We have chosen the Abella (v2.0.7-dev
 \footnote{We use a development version because the developers
 just fixed a serious bug that accepts a simple proof of false,
-which also affects the completeness of one of our proofs.
+which also affects our proof.
 Specifically, our scripts compile against commit 92829a of Abella's GitHub repository.}
 ) proof assistant~\cite{AbellaDesc} to develop our formalization.
 Abella is designed to help with formalizations of programming languages,
@@ -461,20 +462,20 @@ Nominal variables, or $\nabla$-quantified variables, are used as an unlimited na
 which supports explicit freshness control and substitutions.
 Although Abella lacks packages, tactics and support for modules,
 its higher-order unification and the ease of formalizing substitution-intensive relations
-are very helpful for our formalization.
+are very helpful.
 
 While the algorithmic rules are in a small-step style,
-the proof script rewrites them into a big-step style,
-where inductions are easier to handle.
+the proof script rewrites them into a big-step style
+for easier inductions.
 In addition, we do prove the equivalence of the two representations.
 
 \paragraph{Statistics of the Proof}
 The proof script consists of 7977 lines of Abella code with a total of
-51 definitions and 596 theorems.
+60 definitions and 596 theorems.
 Figure~\ref{fig:proof_statistics} briefly summarizes the contents of each file.
 The files are linearly dependent due to limitations of Abella.
 
-\begin{figure}[ht]
+\begin{figure}[t]
 \centering\begin{tabular}{|c|c|c|l|}\hline
     File(s) & SLOC & \#Theorems & Description\\\hline
     olist.thm, nat.thm  &  311 & 57  & Basic data structures\\\hline
@@ -495,7 +496,7 @@ The files are linearly dependent due to limitations of Abella.
     inst\_decidable.thm &  837 & 45  & Other worklist measures; Lemma~\ref{lemma:inst:decidable}\\\hline
     decidability.thm    &  983 & 57  & Decidability theorem and corollary\\\hline
     smallStep.thm       &  119 &  2  & The equivalence between big-step and small-step\\\hline
-    \hline\emph{Total}               & 7977 & 596 & (51 definitions in total)\\\hline
+    \hline\emph{Total}               & 7977 & 596 & (60 definitions in total)\\\hline
 \end{tabular}
 \caption{Statistics for the proof scripts}
 \label{fig:proof_statistics}
