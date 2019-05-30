@@ -589,7 +589,7 @@ anything in front of it in the worklist. If there is nothing in front, the
 variable is no longer needed and can be popped from the worklist. This way, no
 garbage (i.e. variables out-of-scope) builds up.
 
-\jimmy{Comment A is not satisfied with the term "continuation passing style" for our definition.}
+%\jimmy{Comment A is not satisfied with the term "continuation passing style" for our definition.}
 
 $$\begin{aligned}
 \text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
@@ -630,8 +630,8 @@ This form expresses that we need to infer the type, say $A$, for expression $e$ 
 in the chain $\omega$ by substituting it for the placeholder type variable $a$.
 Notice that such $a$ binds a fresh type variable for the inner chain $\jg$,
 which behaves similarly to the variable declarations in the context.
-\bruno{Removed CPS mention here. But if we remove it here should we remove it
-everywhere? Tom, your input would be good regarding this.}
+%\bruno{Removed CPS mention here. But if we remove it here should we remove it
+%everywhere? Tom, your input would be good regarding this.}
 
 Take the following worklist as an example
 $$\al \Vdash \underline{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \underline{\al \le \bt} \Vdash \underline{\bt \le 1}$$
