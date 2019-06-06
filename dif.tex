@@ -1,0 +1,3405 @@
+%DIF 1-2c1-4
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL TypingFormalization-5264b2f1eb98207061a944d4e42e3fd79a1464df\main.tex   Sat Mar  2 19:07:03 2019
+%DIF ADD main.tex                                                                Thu May 30 13:21:05 2019
+%DIF < %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
+%DIF < \documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%DIF -------
+%% For double-blind review submission, w/o CCS and ACM Reference (max %DIF > 
+%% submission space) %DIF > 
+\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true} %DIF > 
+%%\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false} %DIF > 
+%DIF -------
+%% For double-blind review submission, w/ CCS and ACM Reference
+%\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
+%\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For single-blind review submission, w/ CCS and ACM Reference
+%\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission, w/ required CCS and ACM Reference
+%\documentclass[acmsmall]{acmart}\settopmatter{}
+
+%% Remove almost every footnotes and page numbers, for grammar check use.
+%\documentclass[acmsmall,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%\settopmatter{printacmref=false} % Removes citation information below abstract
+%\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+%\pagestyle{plain} % removes running headers
+%\pagenumbering{gobble}
+
+
+%% Journal information
+%% Supplied to authors by publisher for camera-ready submission;
+%% use defaults for review submission.
+\acmJournal{PACMPL}
+\acmVolume{1}
+\acmNumber{ICFP} % CONF = POPL or ICFP or OOPSLA
+\acmArticle{1}
+\acmYear{2018}
+\acmMonth{1}
+\acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission;
+%% use 'none' for review submission.
+\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2018}           %% If different from \acmYear
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format must update the '\documentclass' and
+%% topmatter commands above; see 'acmart-sigplanproc-template.tex'.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{enumerate}
+%\usepackage{enumitem}
+
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{color}
+
+\usepackage{xparse}
+\usepackage{listings}
+\usepackage{lstabella}
+
+\usepackage{mathpartir}
+\usepackage{comment}
+
+\usepackage{mathtools}
+\usepackage{graphicx}
+%DIF 82a84-87
+ %DIF > 
+\usepackage{pdflscape} %DIF > 
+\usepackage{afterpage} %DIF > 
+% \usepackage{rotating} %DIF > 
+%DIF -------
+
+%\usepackage{tikz}
+
+
+\newcommand\mynote[3]{\textcolor{#2}{#1: #3}}
+\newcommand\bruno[1]{\mynote{Bruno}{red}{#1}}
+\newcommand\jimmy[1]{\mynote{Jimmy}{blue}{#1}}
+\newcommand\tom[1]{\mynote{Tom}{magenta}{#1}}
+
+\newcommand\wh{\widehat}
+
+\newcommand\jg{\omega}                                 % judgment
+\newcommand\toto{\rightrightarrows}
+\newcommand\To{\Rightarrow}                            % =>
+\newcommand\Lto{\Leftarrow}                            % <=
+\newcommand\TTo{\mathrel{\mathrlap{\To}\phantom{~}\To}}  % =>>
+\newcommand\sto{\rightsquigarrow}
+\newcommand\tto{\rightarrowtail}
+
+\newcommand\Gm{\Gamma}
+\newcommand\Om{\Omega}
+
+\newcommand\nil\cdot
+
+% just to fool TexStudio
+\providecommand\inferrule{}
+
+\newcommand\rto{\longrightarrow}                % "reduce to" arrow ---`
+\newcommand\redto{\longrightarrow^*}            % ---`*
+\newcommand\rrule[1]{~\longrightarrow_{\makebox[0pt][l]{$\scriptstyle#1$}\hphantom{00}}}
+
+\newcommand\jExt{\rightharpoonup}
+
+\newcommand{\tRed}[1]{\textcolor{red}{#1}}
+
+\newcommand{\lam}{} %[2]{\lambda {#1}.~{#2}}
+\RenewDocumentCommand \lam {O{x} m} {\lambda {#1}.~{#2}}  % \lambda x.~e --- x is optional. \lam[x]{e}
+
+\newcommand{\all}{} %[2]{\forall {#1}.~{#2}}
+\RenewDocumentCommand \all {O{a} m} {\forall {#1}.~{#2}}  % \forall a.~A --- a is optional. \all[a]{A}
+
+\newcommand{\appInf}[3]{{#1}\bullet{#2}\TTo{#3}}
+\newcommand{\appInfAlg}{} %[4]{{#1}\bullet{#2}\TTo_{#3} {#4}}
+\RenewDocumentCommand \appInfAlg {m m O{a} O{\jg}} {{#1}\bullet{#2}\TTo_{#3} {#4}}
+
+\newcommand\al{}
+\newcommand\bt{}
+
+\RenewDocumentCommand \al {O{}} {\wh\alpha_{#1}}   % \widehat{\alpha} --- subscript is optional \al[1]
+\RenewDocumentCommand \bt {O{}} {\wh\beta_{#1}}    % \widehat{\beta}
+
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+
+
+
+
+
+% Appendix only
+%\usepackage[28-]{pagesel}
+% Main article with references
+%\usepackage[-27]{pagesel}
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF LISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+
+%% Title information
+\title{A Mechanical Formalization of Higher-Ranked Polymorphic
+  Type Inference}         %% [Short Title] is optional;
+                                        %% when present, will be used in
+                                        %% header instead of Full Title.
+%\titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{Subtitle}                     %% \subtitle is optional
+%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{Jinxu Zhao}
+%\authornote{with author1 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  %\position{Position1}
+  \department{Department of Computer Science}              %% \department is recommended
+  \institution{The University of Hong Kong}            %% \institution is required
+  %\streetaddress{Pokfulam}
+  \city{Hong Kong}
+  %\state{State1}
+  %\postcode{Post-Code1}
+  \country{China}                    %% \country is recommended
+}
+\email{jxzhao@cs.hku.hk}          %% \email is recommended
+
+%% Author with two affiliations and emails.
+\author{Bruno C. d. S. Oliveira}
+%\authornote{with author1 note}          %% \authornote is optional;
+%% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+	%\position{Position1}
+	\department{Department of Computer Science}              %% \department is recommended
+	\institution{The University of Hong Kong}            %% \institution is required
+	%\streetaddress{Pokfulam}
+	\city{Hong Kong}
+	%\state{State1}
+	%\postcode{Post-Code1}
+	\country{China}                    %% \country is recommended
+}
+
+%% Author with two affiliations and emails.
+\author{Tom Schrijvers}
+%\authornote{with author2 note}          %% \authornote is optional;
+%% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+	%\position{Position2a}
+	\department{Department of Computer Science}             %% \department is recommended
+	\institution{KU Leuven}           %% \institution is required
+	%\streetaddress{Street2a Address2a}
+	\city{Leuven}
+	%\state{State2a}
+	%\postcode{Post-Code2a}
+	\country{Belgium}                   %% \country is recommended
+}
+\email{tom.schrijvers@cs.kuleuven.be}
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+Modern functional programming languages, such as Haskell or OCaml,
+use sophisticated forms of type inference. While an
+important topic in the Programming Languages research, there is little
+work on the mechanization of the metatheory of type inference in
+theorem provers. In particular we are unaware of any complete
+formalization of the type inference algorithms that are the backbone of modern 
+functional languages. 
+
+This paper presents the first full mechanical formalization of the metatheory for
+higher-ranked polymorphic type inference. The system that we formalize
+is the bidirectional type system by Dunfield and
+Krishnaswami (DK). The DK type system has two variants (a declarative
+and an algorithmic one) that have been \emph{manually} proven
+\emph{sound}, \emph{complete} and \emph{decidable}. We present 
+a mechanical formalization in the Abella theorem prover 
+of DK's declarative type system with a novel algorithmic system. We have
+a few reasons to use a new algorithm. Firstly, our new algorithm
+employs \emph{worklist judgments}, which \DIFdelbegin \DIFdel{allow precise capture of }\DIFdelend \DIFaddbegin \DIFadd{precisely capture }\DIFaddend the
+scope of variables and simplify the formalization of scoping in a
+theorem prover. Secondly, while DK's original formalization comes with very
+well-written manual proofs, there are several details missing and some
+incorrect proofs,
+which complicate the task of writing a \DIFdelbegin \DIFdel{formal }\DIFdelend \DIFaddbegin \DIFadd{mechanized }\DIFaddend proof. 
+Despite the use of a different algorithm we prove the
+same results as DK, although with significantly different proofs and
+proof techniques. Since such type inference algorithms are quite
+subtle and have a complex metatheory, mechanical
+formalizations are an important advance in type-inference research.
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10011007.10011006.10011008</concept_id>
+<concept_desc>Software and its engineering~General programming languages</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003456.10003457.10003521.10003525</concept_id>
+<concept_desc>Social and professional topics~History of programming languages</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~General programming languages}
+\ccsdesc[300]{Social and professional topics~History of programming languages}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{type inference, higher-rank polymorphism, mechanization}  %% \keywords are mandatory in final camera-ready submission
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+\section{Introduction}
+
+Modern functional programming languages, such as Haskell or OCaml,
+use sophisticated forms of type inference. The type systems of these languages are
+descendants of
+Hindley-Milner~\cite{hindley1969principal,milner1978theory,damas1982principal}, 
+which was revolutionary at the
+time in allowing type-inference to proceed without any type
+annotation. The traditional Hindley-Milner type system supports
+top-level \emph{implicit (parametric) polymorphism}~\cite{reynolds1983types}. With implicit
+polymorphism, type arguments of polymorphic functions are
+automatically instantiated. Thus implicit polymorphism and the absence of
+type annotations mean that the Hindley-Milner type system 
+strikes a great balance between expressive power and usability. 
+
+As functional languages evolved the need for more expressive
+power has motivated language designers to look beyond Hindley-Milner.
+In particular one popular direction is to allow 
+\emph{higher-ranked polymorphism} where polymorphic types can
+occur anywhere in a type signature.  
+An important challenge is that full type inference for higher-ranked
+polymorphism is known to be undecidable~\cite{wells1999typability}. Therefore some type
+annotations are necessary to guide type inference. In response to this 
+challenge several decidable type systems requiring some annotations 
+have been proposed~\cite{,dunfield2013complete,jones2007practical,Serrano2018,le2003ml,leijen2008hmf,vytiniotis2008fph}.
+Two closely related type systems that 
+support \emph{predicative} higher-ranked type inference were proposed 
+by Peyton Jones et al.~\cite{jones2007practical} and Dunfield and
+Krishnaswami~\cite{dunfield2013complete} (henceforth denoted as DK). 
+These type systems are
+popular among language designers and their ideas have been adopted by
+several modern functional languages, including Haskell, PureScript~\cite{PureScript} and
+Unison~\cite{Unison} among others.
+In those type systems
+type annotations are required for polymorphic arguments of functions,
+but other type annotations can be omitted. A canonical example (here written in Haskell) is:
+\begin{verbatim}
+    hpoly = \(f :: forall a. a -> a) -> (f 1, f 'c')
+\end{verbatim}
+The function \verb|hpoly| cannot be
+type-checked in \DIFaddbegin \DIFadd{the }\DIFaddend Hindley-Milner \DIFaddbegin \DIFadd{type system}\DIFaddend . The type of \verb|hpoly| is the rank-2 type:
+\verb|(forall a. a -> a) -> (Int, Char)|. Notably (and unlike
+Hindley-Milner) the lambda argument \verb|f| requires a
+\emph{polymorphic} type annotation.
+This annotation is needed because the single universal quantifier
+does not appear at the top-level. Instead it is used to quantify a
+type variable \verb|a| used in the first argument of the
+function. 
+Despite these additional annotations, Peyton Jones et al. and DK's
+type inference algorithms preserve many of the desirable properties 
+of Hindley-Milner. For example the applications of \verb|f| implicitly 
+instantiate the polymorphic type arguments of \verb|f|.
+
+Although type inference is important in practice and receives a lot of
+attention in
+academic research, there is little work on mechanically formalizing
+such advanced forms of type inference in theorem provers.
+The remarkable exception is work done on the formalization of 
+certain parts of Hindley-Milner type inference~\cite{naraschewski1999type,
+dubois2000proving,dubois1999certification,urban2008nominal,
+garrigue2015certified}. However
+there is still no formalization of the higher-ranked type systems
+that are employed by modern languages like Haskell.
+This is at
+odds with the current trend of mechanical formalizations in
+programming language research. In particular both the POPLMark
+challenge~\cite{aydemir2005mechanized} and
+CompCert ~\cite{leroy2012compcert} have significantly promoted
+the use of theorem provers to model various aspects of programming
+languages. Today papers in various programming language venues routinely
+use theorem provers to mechanically formalize: \emph{dynamic and
+  static semantics} and their correctness properties~\cite{aydemir2008engineering},
+\emph{compiler correctness}~\cite{leroy2012compcert}, \emph{correctness of
+  optimizations}~\cite{Bertot04}, \emph{program analysis}~\cite{Chang2006}
+or proofs involving \emph{logical relations}~\cite{abel2018}. The
+main argument for mechanical formalizations is a simple one. Proofs
+for programming languages tend to be \emph{long}, \emph{tedious} and
+\emph{error-prone}. In such proofs it is very easy to make mistakes
+that may invalidate the whole development. Furthermore, readers and
+reviewers often do not have time to look at the proofs carefully to
+check their correctness. Therefore errors can go unnoticed for a
+long time.  Mechanical formalizations provide, in principle, a natural
+solution for these problems. Theorem provers can automatically check and
+validate the proofs, which removes the burden \DIFdelbegin \DIFdel{from }\DIFdelend \DIFaddbegin \DIFadd{of }\DIFaddend checking from both
+the person doing the proofs as well as readers or reviewers.
+
+This paper presents the first \DIFdelbegin \DIFdel{full mechanical }\DIFdelend \DIFaddbegin \DIFadd{fully mechanized }\DIFaddend formalization of the
+metatheory for higher-ranked polymorphic type inference.
+The system
+that we formalize is the bidirectional type system by \DIFdelbegin \DIFdel{Dunfield and
+Krishnaswami (DK)~\mbox{%DIFAUXCMD
+\cite{dunfield2013complete}}\hspace{0pt}%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citet{dunfield2013complete}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend .
+We chose DK's type system because it is
+quite elegant, well-documented and it comes with detailed manually
+written proofs. Furthermore the system is adopted in practice by a few
+real implementations of functional languages, including PureScript and
+Unison. The DK type system has two variants: a declarative
+and an algorithmic one. The two variants have been
+\emph{manually} proved to be \emph{sound}, \emph{complete} and
+\emph{decidable}.
+We present a mechanical formalization in the Abella theorem prover~\cite{AbellaDesc} for
+DK's declarative type system using a different algorithm. While our
+initial goal was to formalize both DK's declarative and algorithmic
+versions, we faced technical challenges with the latter, prompting us to find
+an alternative formulation.
+
+The first challenge that we faced were missing details as well as
+a few incorrect proofs and lemmas in DK's formalization. While DK's
+original formalization comes with very well written manual proofs,
+there are still several details missing. These complicate the task of
+writing a mechanically verified proof. Moreover some proofs and
+lemmas are wrong and, in some cases, it is not clear to us how to fix them.
+%%\footnote{
+%%Perhaps, with some additional thought, a work-around can be found, but, as our algorithm
+%%differs significantly from DK's, it would not further our mechanization goal and so we did not pursue this.}
+Despite the problems in DK's manual formalization,
+we believe that these problems do not
+invalidate their work and that their results are still true. In fact we have nothing but praise for their detailed
+and clearly written metatheory and proofs, which provided invaluable
+help to our own work.
+We expect that for most non-trivial manual
+proofs similar problems exist, so this should not be understood as a sign of sloppiness
+on their part. Instead it should be an indicator that reinforces the arguments
+for mechanical formalizations: manual formalizations are error-prone due to the multiple
+tedious details involved in them.
+There are several other examples of manual formalizations that were found to have
+similar problems. For example, Klein et al.~\cite{KleinRunYourResearch}
+mechanized formalizations
+in Redex for nine ICFP 2009 papers and all were found to have mistakes.
+
+Another challenge was variable binding. Type inference algorithms
+typically do not rely simply on local environments but instead
+propagate information across judgments. While local environments are
+well-studied in mechanical formalizations, there is little work on how
+to deal with the complex forms of binding employed by type inference algorithms
+in theorem provers. To
+keep track of variable scoping, DK's algorithmic version employs input
+and output contexts to track information that is discovered through
+type inference. However modeling output contexts in a theorem prover
+is non-trivial.
+
+Due to those two challenges, our work takes a different approach by refining and
+extending the idea of \emph{worklist judgments}~\cite{itp2018},
+proposed recently to mechanically formalize an algorithm for
+\emph{polymorphic subtyping}~\cite{odersky1996putting}. A key innovation in our work is how
+to adapt the idea of worklist judgments to
+\emph{inference judgments}, which are not needed for polymorphic
+subtyping, but are necessary for type-inference.  The idea is to use a \emph{continuation
+passing style} to enable the transfer of inferred information across
+judgments. A further refinement to the idea of worklist judgments is
+the \emph{unification between ordered
+  contexts~\cite{gundry2010type,dunfield2013complete} and worklists}.  This
+enables precise scope tracking of free variables in
+judgments. Furthermore it avoids the duplication of context
+information across judgments in worklists that occurs in other
+techniques~\cite{Reed2009,Abel2011higher}.
+Despite the use of a different algorithm we prove the
+same results as DK, although with significantly different proofs and
+proof techniques. The calculus and its metatheory
+have been fully formalized in the Abella theorem prover~\cite{AbellaDesc}.
+
+In summary, the contributions of this paper are:
+
+\begin{itemize}
+
+\item {\bf A \DIFdelbegin \DIFdel{full mechanical }\DIFdelend \DIFaddbegin \DIFadd{fully mechanized }\DIFaddend formalization of type inference with
+  higher-ranked types:} Our work presents the first \DIFdelbegin \DIFdel{full mechanical }\DIFdelend \DIFaddbegin \DIFadd{fully mechanized }\DIFaddend formalization
+  for type inference of higher ranked types. The formalization is done in the
+  Abella theorem prover~\cite{AbellaDesc} and it is available
+  online \DIFdelbegin \DIFdel{.}\footnote{%DIFDELCMD < {\bf %%%
+\DIFdel{Note to reviewers:}%DIFDELCMD < } %%%
+\DIFdel{Due to the anonymous submission process
+  it is sent as part of the supplementary materials.}}
+%DIFAUXCMD
+\addtocounter{footnote}{-1}%DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{at }\url{https://github.com/JimmyZJX/TypingFormalization}\DIFadd{.
+}\DIFaddend 
+
+\item {\bf A new algorithm for DK's type system:} Our work proposes a novel algorithm that implements
+  DK's declarative bidirectional type system. We prove
+  \emph{soundness}, \emph{completeness} and
+  \emph{decidability}. 
+
+\item {\bf Worklists with inference judgments:} One technical contribution is the
+  support for inference judgments using worklists. The idea is to
+  use a continuation passing style to enable the transfer of inferred information across
+  judgments. 
+
+\item {\bf Unification of worklists and contexts:} Another technical contribution is the unification
+  between ordered contexts and worklists. This enables precise scope tracking
+  of variables in judgments, and avoids the duplication of context information across
+  judgments in worklists.
+
+\begin{comment}
+\jimmy{Notes @20190211 4 points of novalty:\\
+1) Dealing with inference judgments and CPS-style chains\\
+2) The form of the judgment itself with a single shared context\\
+3) The way we deal with scope (which may follow from 2)\\
+4) Immediate substitution (judgment list)
+}
+\end{comment}
+
+\end{itemize}
+
+\section{Overview}
+
+This section starts by introducing DK's declarative type system. Then
+it discusses several techniques that have been used in algorithmic
+formulations, and which have influenced our own algorithmic design.
+Finally we introduce the novelties of our new algorithm.
+In particular the support for inference judgments in
+\DIFdelbegin \DIFdel{judgment worklists}\DIFdelend \DIFaddbegin \DIFadd{worklist judgments}\DIFaddend , and a new form of \DIFdelbegin \DIFdel{judgment worklist }\DIFdelend \DIFaddbegin \DIFadd{worklist judgment
+}\DIFaddend that the unifies \emph{ordered contexts} and the worklists themselves. 
+
+\subsection{DK's Declarative System}
+% Subtyping and Typing. \jimmy{Can you prepare the figures. Subtyping is already in ITP.}
+
+\begin{figure}[t]
+\[
+\begin{array}{l@{\qquad}lcl}
+\text{Type variables}\qquad&a, b
+\\
+\text{Types}\qquad&A, B, C &::=&\quad 1 \mid a \mid \all A \mid A\to B\\
+\text{Monotypes}\qquad&\tau,\sigma &::=&\quad 1 \mid a \mid \tau\to \sigma
+\\
+\text{Expressions}\qquad&e &::=&\quad x \mid () \mid \lam e \mid e_1~e_2 \mid (e:A)
+\\
+\text{Contexts}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A
+\end{array}
+\]
+\caption{Syntax of Declarative System}\label{fig:decl:syntax}
+\end{figure}
+
+\paragraph{Syntax.}
+The syntax of DK's declarative system~\cite{dunfield2013complete} is shown in Figure~\ref{fig:decl:syntax}.
+A declarative type $A$ is either the unit type $1$, a type variable $a$,
+a universal quantification $\all A$ or a function type $A \to B$.
+Nested universal quantifiers are allowed for types,
+but monotypes $\tau$ do not have any universal quantifier.
+Terms include a unit term $()$, variables $x$, lambda-functions $\lam e$,
+applications $e_1~e_2$ and annotations $(e:A)$.
+Contexts $\Psi$ are sequences of type variable declarations and
+term variables with \DIFdelbegin \DIFdel{its type }\DIFdelend \DIFaddbegin \DIFadd{their types }\DIFaddend declared $x:A$.
+
+\DIFdelbegin %DIFDELCMD < \begin{figure}[t]
+%DIFDELCMD < %\centering \framebox{$\Psi \vdash A$}
+%DIFDELCMD < %\begin{gather*}
+%DIFDELCMD < %\inferrule*[right=$\mathtt{wf_d unit}$]
+%DIFDELCMD < %    {~}{\Psi\vdash 1}
+%DIFDELCMD < %\qquad
+%DIFDELCMD < %\inferrule*[right=$\mathtt{wf_d var}$]
+%DIFDELCMD < %    {a\in\Psi}{\Psi\vdash a}
+%DIFDELCMD < %\qquad
+%DIFDELCMD < %\inferrule*[right=$\mathtt{wf_d{\to}}$]
+%DIFDELCMD < %    {\Psi\vdash A\quad \Psi\vdash B}
+%DIFDELCMD < %    {\Psi\vdash A\to B}
+%DIFDELCMD < %\qquad
+%DIFDELCMD < %\inferrule*[right=$\mathtt{wf_d\forall}$]
+%DIFDELCMD < %    {\Psi, a\vdash A}
+%DIFDELCMD < %    {\Psi\vdash \forall a. A}
+%DIFDELCMD < %\end{gather*}
+%DIFDELCMD < 
+
+%DIFDELCMD < \centering \framebox{$\Psi \vdash A \le B$}
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \inferrule*[right=$\mathtt{{\le}Var}$]
+%DIFDELCMD <     {a\in\Psi}{\Psi\vdash a\le a}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{{\le}Unit}$]
+%DIFDELCMD <     {~}{\Psi \vdash 1 \le 1}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{{\le}{\to}}$]
+%DIFDELCMD <     {\Psi \vdash B_1 \le A_1 \quad \Psi \vdash A_2 \le B_2}
+%DIFDELCMD <     {\Psi\vdash A_1\to A_2 \le B_1\to B_2}
+%DIFDELCMD < \\
+%DIFDELCMD < \inferrule*[right=$\mathtt{{\le}\forall L}$]
+%DIFDELCMD <     {\Psi\vdash \tau \quad \Psi\vdash [\tau/a] A \le B}
+%DIFDELCMD <     {\Psi\vdash \all A \le B}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{{\le}\forall R}$]
+%DIFDELCMD <     {\Psi, a\vdash A\le B}
+%DIFDELCMD <     {\Psi\vdash A \le \all[b]B}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < \caption{%Well-formedness of Declarative Types and 
+%DIFDELCMD < Declarative Subtyping}\label{fig:decl:sub}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \paragraph{\DIFadd{Well-formedness}} \DIFadd{Well-formedness of types and terms is 
+shown at the top of Figure~\ref{fig:decl:sub}. The rules are standard
+and simply ensure that variables in types and terms are well-scoped.  
+}\DIFaddend 
+
+\DIFdelbegin %DIFDELCMD < \begin{figure}[t]
+%DIFDELCMD < \begin{tabular}{rl}
+%DIFDELCMD <     \framebox{$\Psi \vdash A \Lto B$} & $e$ checks against input type $A$.\\[0.5mm]
+%DIFDELCMD <     \framebox{$\Psi \vdash A \To B$} & $e$ synthesizes output type $A$.\\[0.5mm]
+%DIFDELCMD <     \framebox{$\Psi \vdash \appInf{A}{e}{C}$} & Applying a function of type $A$ to $e$ synthesizes type $C$.
+%DIFDELCMD < \end{tabular}
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \inferrule*[right=$\mathtt{DeclVar}$]
+%DIFDELCMD <     {(x:A)\in\Psi}{\Psi\vdash x\To A}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{DeclSub}$]
+%DIFDELCMD < %e \neq \lam e' \quad B \neq \all B' \quad 
+%DIFDELCMD <     {\Psi\vdash e\To A \quad \Psi\vdash A\le B}
+%DIFDELCMD <     {\Psi \vdash e\Lto B}
+%DIFDELCMD < \\
+%DIFDELCMD < \inferrule*[right=$\mathtt{DeclAnno}$]
+%DIFDELCMD <     {\Psi \vdash A \quad \Psi\vdash e\Lto A}
+%DIFDELCMD <     {\Psi\vdash (e:A)\To A}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl1I}$]
+%DIFDELCMD <     {~}{\Psi\vdash () \Lto 1}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl1I{\To}}$]
+%DIFDELCMD <     {~}{\Psi\vdash () \To 1}
+%DIFDELCMD < \\
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl\forall I}$]
+%DIFDELCMD <     {\Psi,a \vdash e \Lto A}
+%DIFDELCMD <     {\Psi\vdash e\Lto \all A}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl\forall App}$]
+%DIFDELCMD <     {\Psi \vdash \tau \quad \Psi\vdash \appInf{[\tau/a]A}{e}{C} }
+%DIFDELCMD <     {\Psi\vdash \appInf{\all A}{e}{C}}
+%DIFDELCMD < \\
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl{\to}I}$]
+%DIFDELCMD <     {\Psi,x:A \vdash e\Lto B}
+%DIFDELCMD <     {\Psi\vdash \lam e \Lto A \to B}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl{\to}I{\To}}$]
+%DIFDELCMD <     {\Psi\vdash \sigma\to\tau \quad \Psi,x:\sigma \vdash e\Lto \tau}
+%DIFDELCMD <     {\Psi\vdash \lam e \To \sigma\to\tau}
+%DIFDELCMD < \\
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl{\to} E}$]
+%DIFDELCMD <     {\Psi\vdash e_1\To A \quad \Psi\vdash \appInf{A}{e_2}{C}}
+%DIFDELCMD <     {\Psi\vdash e_1~e_2 \To C}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{Decl{\to}App}$]
+%DIFDELCMD <     {\Psi\vdash e \Lto A}
+%DIFDELCMD <     {\Psi\vdash \appInf{A \to C}{e}{C}}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < \caption{Declarative Typing}\label{fig:decl:typing}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{figure}[t]
+\centering \framebox{$\Psi \vdash A$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf_d unit}$]
+    {~}{\Psi\vdash 1}
+\qquad
+\inferrule*[right=$\mathtt{wf_d var}$]
+    {a\in\Psi}{\Psi\vdash a}
+\qquad
+\inferrule*[right=$\mathtt{wf_d{\to}}$]
+    {\Psi\vdash A\quad \Psi\vdash B}
+    {\Psi\vdash A\to B}
+\qquad
+\inferrule*[right=$\mathtt{wf_d\forall}$]
+    {\Psi, a\vdash A}
+    {\Psi\vdash \forall a. A}
+\end{gather*}
+
+\centering \framebox{$\Psi \vdash e$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf_d tmvar}$]
+    {x:A\in\Psi}{\Psi\vdash x}
+\qquad
+\inferrule*[right=$\mathtt{wf_d tmunit}$]
+    {~}{\Psi\vdash ()}
+\qquad
+\inferrule*[right=$\mathtt{wf_d abs}$]
+    {\Psi,x:A\vdash e}
+    {\Psi\vdash \lam e}
+\\
+\inferrule*[right=$\mathtt{wf_d app}$]
+    {\Psi\vdash e_1 \quad \Psi\vdash e_2}
+    {\Psi\vdash e_1~e_2}
+\qquad
+\inferrule*[right=$\mathtt{wf_d anno}$]
+    {\Psi\vdash A \quad \Psi\vdash e}
+    {\Psi\vdash (e:A)}
+\end{gather*}
+
+\centering \framebox{$\Psi \vdash A \le B$}
+\begin{gather*}
+\inferrule*[right=$\mathtt{{\le}Var}$]
+    {a\in\Psi}{\Psi\vdash a\le a}
+\qquad
+\inferrule*[right=$\mathtt{{\le}Unit}$]
+    {~}{\Psi \vdash 1 \le 1}
+\qquad
+\inferrule*[right=$\mathtt{{\le}{\to}}$]
+    {\Psi \vdash B_1 \le A_1 \quad \Psi \vdash A_2 \le B_2}
+    {\Psi\vdash A_1\to A_2 \le B_1\to B_2}
+\\
+\inferrule*[right=$\mathtt{{\le}\forall L}$]
+    {\Psi\vdash \tau \quad \Psi\vdash [\tau/a] A \le B}
+    {\Psi\vdash \all A \le B}
+\qquad
+\inferrule*[right=$\mathtt{{\le}\forall R}$]
+    {\Psi, b\vdash A\le B}
+    {\Psi\vdash A \le \all[b]B}
+\end{gather*}
+\caption{%Well-formedness of Declarative Types and 
+Declarative Well-formedness and Subtyping}\label{fig:decl:sub}
+\end{figure}
+\DIFaddend 
+
+%The DK subtyping relation was adopted from \citet{odersky1996putting}.
+
+\paragraph{Declarative Subtyping}
+\DIFaddbegin \DIFadd{The bottom of }\DIFaddend Figure~\ref{fig:decl:sub} shows DK's declarative subtyping judgment $\Psi \vdash A \le B$,
+which was adopted from \citet{odersky1996putting}. It compares the
+degree of polymorphism between $A$ and $B$ in DK's implicit polymorphic type system. 
+Essentially, if $A$ can always be instantiated to match any instantiation of $B$,
+then A is ``at least as polymorphic as'' $B$. We also 
+say that $A$ is ``more polymorphic than'' $B$ and write $A \le B$.
+
+Subtyping rules $\mathtt{{\le}Var}$, $\mathtt{{\le}Unit}$ and $\mathtt{{\le}{\to}}$
+handle simple cases that do not involve universal quantifiers.
+The subtyping rule for function types $\mathtt{{\le}{\to}}$ is standard,
+being covariant on the return type and contravariant on the argument type.
+Rule $\mathtt{{\le}\forall R}$ states that if $A$ is a subtype of $B$
+in the context $\Psi, a$, where $a$ is fresh in $A$, then $A\le\all B$.
+Intuitively, if $A$ is more general than $\all B$ (where the universal quantifier
+already indicates that $\all B$ is a general type),
+then $A$ must instantiate to $[\tau/a]B$ for every $\tau$.
+
+The most interesting rule is $\mathtt{{\le}\forall L}$.
+If some instantiation of $\all A$, $[\tau/a]A$, is a subtype of $B$,
+then $\all A \le B$.
+The monotype $\tau$ we used to instantiate $a$ is \emph{guessed} in this
+declarative rule, but the algorithmic system does not guess and defers the
+instantiation until it can determine the monotype deterministically.
+The fact that $\tau$ is a monotype rules out the possibility of
+polymorphic (or impredicative) instantiation.
+However this restriction ensures that the subtyping relation remains
+decidable. Allowing an arbitrary type (rather than a monotype) in rule $\mathtt{{\le}\forall L}$
+is known to give rise to an undecidable subtyping relation~\cite{tiuryn1996subtyping}.
+\citet{jones2007practical} also impose the restriction of
+predicative instantiation in their type system.
+Both systems are adopted by several practical programming languages.
+
+%DIF >  \jimmy{Mention the implicit freshness conditions in the premises}
+\DIFaddbegin \DIFadd{Please note that when we introduce a new binder in the premise, we implicitly pick a fresh one.
+This applies to rules such as $\mathtt{wf_d\forall}$, $\mathtt{wf_dabs}$, $\mathtt{{\le}\forall R}$,
+throughout the whole text.
+}
+
+\begin{figure}[t]
+\begin{tabular}{rl}
+    \framebox{$\Psi \vdash e \Lto A$} & $e$ checks against input type $A$.\\[0.5mm]
+    \framebox{$\Psi \vdash e \To A$} & $e$ synthesizes output type $A$.\\[0.5mm]
+    \framebox{$\Psi \vdash \appInf{A}{e}{C}$} & Applying a function of type $A$ to $e$ synthesizes type $C$.
+\end{tabular}
+\begin{gather*}
+\inferrule*[right=$\mathtt{DeclVar}$]
+    {(x:A)\in\Psi}{\Psi\vdash x\To A}
+\qquad
+\inferrule*[right=$\mathtt{DeclSub}$]
+%e \neq \lam e' \quad B \neq \all B' \quad 
+    {\Psi\vdash e\To A \quad \Psi\vdash A\le B}
+    {\Psi \vdash e\Lto B}
+\\
+\inferrule*[right=$\mathtt{DeclAnno}$]
+    {\Psi \vdash A \quad \Psi\vdash e\Lto A}
+    {\Psi\vdash (e:A)\To A}
+\qquad
+\inferrule*[right=$\mathtt{Decl1I}$]
+    {~}{\Psi\vdash () \Lto 1}
+\qquad
+\inferrule*[right=$\mathtt{Decl1I{\To}}$]
+    {~}{\Psi\vdash () \To 1}
+\\
+\inferrule*[right=$\mathtt{Decl\forall I}$]
+    {\Psi,a \vdash e \Lto A}
+    {\Psi\vdash e\Lto \all A}
+\qquad
+\inferrule*[right=$\mathtt{Decl\forall App}$]
+    {\Psi \vdash \tau \quad \Psi\vdash \appInf{[\tau/a]A}{e}{C} }
+    {\Psi\vdash \appInf{\all A}{e}{C}}
+\\
+\inferrule*[right=$\mathtt{Decl{\to}I}$]
+    {\Psi,x:A \vdash e\Lto B}
+    {\Psi\vdash \lam e \Lto A \to B}
+\qquad
+\inferrule*[right=$\mathtt{Decl{\to}I{\To}}$]
+    {\Psi\vdash \sigma\to\tau \quad \Psi,x:\sigma \vdash e\Lto \tau}
+    {\Psi\vdash \lam e \To \sigma\to\tau}
+\\
+\inferrule*[right=$\mathtt{Decl{\to} E}$]
+    {\Psi\vdash e_1\To A \quad \Psi\vdash \appInf{A}{e_2}{C}}
+    {\Psi\vdash e_1~e_2 \To C}
+\qquad
+\inferrule*[right=$\mathtt{Decl{\to}App}$]
+    {\Psi\vdash e \Lto A}
+    {\Psi\vdash \appInf{A \to C}{e}{C}}
+\end{gather*}
+\caption{Declarative Typing}\label{fig:decl:typing}
+\end{figure}
+
+\DIFaddend \paragraph{Declarative Typing}
+The bidirectional type system, shown in Figure~\ref{fig:decl:typing}, has three judgments.
+The checking judgment $\Psi\vdash e\Lto A$ checks expression $e$ against the type $A$ in the context $\Psi$.
+The synthesis judgment $\Psi\vdash e\To A$ synthesizes the type $A$ of expression $e$ in the context $\Psi$.
+The application judgment $\Psi\vdash \appInf{A}{e}{C}$ synthesizes the type $C$ of the application of a function of type $A$
+(which could be polymorphic) to the argument $e$.
+
+Many rules are standard.
+Rule $\mathtt{DeclVar}$ looks up term variables in the context.
+Rules $\mathtt{Decl1I}$ and $\mathtt{Decl1I{\To}}$ respectively check and synthesize the unit type.
+Rule $\mathtt{DeclAnno}$ synthesizes the annotated type $A$ of the annotated expression $(e:A)$
+and checks that $e$ has type $A$.
+Checking an expression $e$ against a polymorphic type $\all A$ in the context $\Psi$ succeeds
+if $e$ checks against $A$ in the extended context $(\Psi, a)$.
+The subsumption rule $\mathtt{DeclSub}$ depends on the subtyping relation,
+and changes mode from checking to synthesis: if $e$ synthesizes type $A$ and $A\le B$
+($A$ is more polymorphic than $B$), then $e$ checks against $B$.
+If a checking problem does not match any other rules,
+this rule can be applied to synthesize a type instead and then
+check whether the synthesized type entails the checked type.
+Lambda abstractions are the hardest construct of the bidirectional
+type system to deal with. 
+Checking $\lam e$ against function type $A\to B$ is easy:
+we check the body $e$ against $B$ in the context extended with $x:A$.
+However, synthesizing a lambda-function is a lot \DIFdelbegin \DIFdel{less easy}\DIFdelend \DIFaddbegin \DIFadd{harder}\DIFaddend , and 
+this type system only synthesizes monotypes $\sigma\to\tau$.
+
+Application $e_1~e_2$ is handled by Rule $\mathtt{Decl{\to}E}$,
+which first synthesizes the type $A$ of the function $e_1$.
+If $A$ is a function type $B\to C$, Rule $\mathtt{Decl{\to}App}$ is applied;
+it checks the argument $e_2$ against $B$ and returns type $C$.
+The synthesized type of function $e_1$ can also be polymorphic, of the form $\all A$.
+In that case, we instantiate $A$ to $[\tau/a]A$ with a monotype $\tau$ % (which is also guessed)
+using according to Rule $\mathtt{Decl{\to}I{\To}}$.
+If $[\tau/a]A$ is a function type, Rule $\mathtt{Decl{\to}App}$ proceeds;
+if $[\tau/a]A$ is another universal quantified type,
+Rule $\mathtt{Decl{\to}I{\To}}$ is recursively applied.
+
+\paragraph{Overlapping Rules}
+Some of the declarative rules overlap with each other.
+Declarative subtyping rules $\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$
+both match the conclusion $\Psi\vdash \all A \le \all B$.
+In such case, choosing $\mathtt{{\le}\forall R}$ first is always better,
+since we introduce the type variable $a$ to the context earlier,
+which gives more flexibility on the choice of $\tau$.
+\DIFdelbegin \DIFdel{Declarative }\DIFdelend \DIFaddbegin \DIFadd{The declarative }\DIFaddend typing rule $\mathtt{DeclSub}$ overlaps with
+both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
+However, we argue that more specific rules are always the best choices,
+i.e. $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$ should have
+higher priority \DIFdelbegin \DIFdel{to }\DIFdelend \DIFaddbegin \DIFadd{than }\DIFaddend $\mathtt{DeclSub}$. We will come back to this
+topic in Section~\ref{sec:metatheory:non-overlapping}.
+\begin{comment}
+For example, $\Psi\vdash \lam x \Lto \all a\to a$ succeeds if derived from
+Rule $\mathtt{Decl\forall I}$, but fails when applied to $\mathtt{DeclSub}$:
+$$
+\inferrule*[right={$\mathtt{Decl\forall I}$}]
+	{\inferrule*[Right={$\mathtt{Decl\to I}$}]
+		{\Psi,a,x:a \vdash x \Lto a}
+		{\Psi,a \vdash \lam x \Lto a \to a}
+	}
+	{\Psi\vdash \lam x \Lto \all a \to a}
+$$
+$$
+\inferrule*[right={$\mathtt{DeclSub}$}]
+	{
+		\inferrule*[right=$\mathtt{Decl\to I\To}$]
+			{\Psi \vdash \blue\sigma\to \blue\tau \quad \Psi,x:\blue\sigma\vdash e \Lto \blue\tau}
+			{\Psi \vdash \lam x \To \blue\sigma\to \blue\tau}\quad
+		\inferrule*[Right=$\mathtt{{\le}\forall R}$]
+			{\inferrule*[Right=$\mathtt{{\le}{\to}}$]
+				{
+					\inferrule*[Right=$?$]
+						{\text{Impossible! }\blue\sigma \neq a}
+						{\Psi,a \vdash a \le \blue\sigma}
+					\quad \Psi,a \vdash \blue\tau \le a
+				}
+				{\Psi,a \vdash \blue\sigma\to \blue\tau \le a \to a}
+			}
+			{\Psi\vdash \blue\sigma\to \blue\tau\le \all a \to a}
+	}
+{\Psi\vdash \lam x \Lto \all a \to a}
+$$
+
+Rule $\mathtt{Decl\to I}$ is also better at handling higher-order types.
+When the lambda-expression to be inferred has a polymorphic input type,
+such as $\all a \to a$,
+$\mathtt{DeclSub}$ may not derive some judgments.
+For example, $\Psi,id:\all a\to a \vdash \lam[f] f~id~(f~()) \Lto (\all a\to a) \to 1$
+requires the argument of the lambda-expression to be a polymorphic type,
+otherwise it could not be applied to both $id$ and $()$.
+If Rule $\mathtt{DeclSub}$ was chosen for derivation,
+the type of its argument is restricted by Rule $\mathtt{Decl\to I\To}$,
+which is not a polymorphic type.
+By contrast,
+Rule $\mathtt{Decl\to I}$ keeps the polymorphic argument type $\all a\to a$,
+and will successfully derive the judgment.
+\end{comment}
+
+%-------------------------------------------------------------------------------
+\subsection{DK's Algorithm}\label{ssec:DK_Algorithm}
+
+DK's algorithm version revolves around their notion of \emph{algorithmic context}.
+\[
+\begin{array}{l@{\qquad}lcl}
+\text{Algorithmic Contexts}\qquad&\Gamma,\Delta,\Theta &::=&\quad \nil \mid
+\Gamma, a \mid \Gamma, x:A \mid \Gamma, \al \mid \Gamma, \al = \tau \mid
+\Gamma, \blacktriangleright_{\al}
+\end{array}
+\]
+In addition to the regular (universally quantified) type variables $a$, the
+algorithmic context also contains \emph{existential} type variables
+$\al$. These are placeholders for monotypes $\tau$ that are still to
+be determined by the inference algorithm. When the existential variable is
+``solved'', its entry in the context is replaced by the assignment
+$\al = \tau$.
+A context application on a type, denoted by $[\Gamma]A$,
+substitutes all solved existential type variables in $\Gamma$
+with their solutions on type $A$.
+
+All algorithmic judgments thread an algorithmic context. They have the form
+$\Gamma \vdash \ldots \dashv \Delta$, where $\Gamma$ is the input context and
+$\Delta$ is the output context:
+$\Gamma \vdash A \le B \dashv \Delta$  for subtyping, 
+$\Gamma \vdash e \Leftarrow A \dashv \Delta$  for type checking, and so on. 
+The output context is a functional update of the input context that records newly
+introduced existentials and solutions.
+
+Solutions are incrementally propagated by applying the algorithmic output
+context of a previous task as substitutions to the next task. This can be seen
+in the subsumption rule:
+\[
+\inferrule*[right=$\mathtt{DK\_Sub}$]
+  {\Gamma \vdash e \Rightarrow A \dashv \Theta \\ 
+   \Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta
+  }
+  { \Gamma \vdash e \Leftarrow B \dashv \Delta}
+\]
+The inference task yields an output context $\Theta$ which is applied as a substitution
+to the types $A$ and $B$ before performing the subtyping check to propagate any solutions
+of existential variables that appear in $A$ and $B$.
+
+\paragraph{Markers for scoping.}
+The sequential order of entries in the algorithmic context, in combination with
+the threading of contexts,  does not perfectly capture the scoping of all
+existential variables. For this reason the DK algorithm uses scope markers
+$\blacktriangleright_{\al}$ in a few places. An example is given in the following
+rule:
+\[
+\inferrule*[right=$\mathtt{DK\_{\le}\forall L}$]
+  {\Gamma,\blacktriangleright_{\al}, \al \vdash [\al/a]A \le B \dashv \Delta,\blacktriangleright_{\al},\Theta}
+  {\Gamma \vdash \all A \le B \dashv \Delta}
+\]
+To indicate that the scope of $\al$ is local to the subtyping check
+$[\al/a]A \le B$, the marker is pushed onto its input stack and popped
+from the output stack together with the subsequent part $\Theta$, which may
+refer to $\al$. 
+(Remember that later entries may refer to earlier
+ones, but not vice versa.) This way $\al$ does not escape its scope.
+\begin{comment}
+A type variable may have a similar functionality to the scoping markers.
+An example rule that checks an expression against a polymorphic type is as follows:
+$$
+\inferrule*
+{\Gm, a \vdash e \Lto A \dashv \Delta, a, \Theta}
+{\Gm \vdash e \Lto \all A \dashv \Delta}
+$$
+\end{comment}
+
+%Due to the complication of its scoping control method,
+%it is hard to argue the preciseness of scoping for each variable when designing algorithms.
+
+At first sight, the DK algorithm would seem a good basis for mechanization. After
+all it comes with a careful description and extensive manual proofs.
+Unfortunately, we ran into several obstacles that have prompted us to formulate
+a different, more mechanization-friendly algorithm.
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\paragraph{Broken Metatheory} % Talk about the lemmas that are false, show counterexample.
+While going through the manual proofs of DK's algorithm, we found several
+problems.  Indeed, two proofs of lemmas---Lemma 19 (Extension Equality
+Preservation) and Lemma 14 (Subsumption)--- wrongly apply induction hypotheses
+in several cases. Fortunately, we have found simple workarounds that fix these
+proofs without affecting the appeals to these lemmas.
+
+% The proof of Lemma 19 (Extension Equality Preservation) applies a wrong
+% induction hypothesis for the ${\longrightarrow}\mathtt{Uvar}$ case.
+% Fortunately the lemma could be proven without the well-formedness conditions
+% $\Gm\vdash A$ and $\Gm\vdash B$.
+% Similar problem happens for Lemma 14 (Subsumption), where many applications of
+% induction hypotheses are not correct.
+% For manual proofs, induction hypotheses are not automatically generated by programs,
+% thus are easily misused.
+
+More seriously, we have also found a lemma that simply does not hold\DIFdelbegin \DIFdel{, 
+}\DIFdelend \DIFaddbegin \DIFadd{:
+}\DIFaddend Lemma 29 (Parallel Admissibility)\DIFaddbegin \footnote{\DIFadd{Ningning Xie found the issue with Lemma 29 in 2016 while
+  collaborating with the second author on an earlier attempt to mechanically
+  formalize DK's algorithm. The authors acknowledged the problem after we contacted them through email.
+  Although they briefly mentioned that it should be possible to use a weaker lemma instead they did
+  not go into details.}}\DIFaddend .
+See Appendix~\ref{appendix:false_lemmas} for a detailed explanation
+and counterexample. This lemma is a cornerstone of the two metatheoretical results 
+of the algorithm, soundness and completeness with respect to the declarative system.
+In particular, both instantiation soundness (i.e. a part of subtyping
+soundness) and typing completeness directly require the broken lemma.
+Moreover, Lemma 54 (Typing Extension) also requires the broken lemma and is
+itself used 13 times in the proof of typing soundness and completeness.
+Unfortunately, we have not yet found a way to fix this problem.
+\DIFdelbegin \footnote{\DIFdel{We found the issue with Lemma 29 in 2016 in an earlier attempt to mechanically
+  formalize DK's algorithm. The authors acknowledged the problem after we contacted them through email.
+  Although they briefly mentioned that it should be possible to use a weaker lemma instead they did
+  not go into details.
+}}
+%DIFAUXCMD
+\addtocounter{footnote}{-1}%DIFAUXCMD
+\DIFdelend 
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\paragraph{Complex Scoping and Propagation}
+
+Besides the problematic lemmas in DK's metatheory, there are other reasons to
+look for an alternative algorithmic formulation of the type system that is more
+amenable to mechanization. Indeed, two aspects that are particularly
+challenging to mechanize are the scoping of universal and existential type
+variables, and the propagation of the instantiation of existential type
+variables across judgments. 
+DK is already quite disciplined on these accounts, in particular compared to
+traditional constraint-based type-inference algorithms like Algorithm $\mathcal{W}$~\cite{milner1978theory} which
+features an implicit global scope for all type variables. Indeed, DK uses its
+explicit and ordered context $\Gamma$ that tracks the relative scope of universal and
+existential variables and it is careful to only instantiate existential
+variables in a well-scoped manner.
+
+Moreover, DK's algorithm carefully propagates instantiations by recording them
+into the context and threading this context through all judgments. 
+% two This means that every judgments takes two contexts---an input and an output
+% context---rather than the conventional single context. The output context
+% records any new variable instantations; to propagate these instantiations to
+% the remaining judgments, their predecessor's output context---which is their
+% input context---is applied to them as a substitution.
+While this works well on paper, this approach is still fairly involved and thus
+hard to reason about in a mechanized setting. Indeed, the instantiations have
+to be recorded in the context and are applied incrementally to each remaining
+judgment in turn, rather than immediately to all remaining judgments at once.
+Also, as we have mentioned above, the stack discipline of the ordered contexts
+does not mesh well with the use of output contexts; explicit marker entries are
+needed in two places to demarcate the end of an existential variable's scope.
+Actually we found a scoping issue related to the subsumption rule $\mathtt{DK\_Sub}$,
+which might cause existential variables to leak across judgments.
+A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
+
+The complications of scoping and propagation are compelling reasons
+to look for \DIFdelbegin \DIFdel{a simpler }\DIFdelend \DIFaddbegin \DIFadd{another }\DIFaddend algorithm that is easier to
+reason about in a mechanized setting.
+
+
+%-------------------------------------------------------------------------------
+\subsection{Judgment Lists}\label{sec:overview:list}
+\DIFdelbegin %DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend To avoid the problem of incrementally applying a substitution to remaining
+tasks, we can find inspiration in the formulation of constraint solving
+algorithms. For instance, the well-known unification
+algorithm by \citet{unification} decomposes the problem of unifying two terms $s \stackrel{.}{=} t$ into a number
+of related unification problems between pairs of terms $s_i \stackrel{.}{=} t_i$. These smaller
+problems are not tackled independently, but kept together in a set $S$. 
+The algorithm itself is typically formulated as a small-step-style state
+transition system $S \rightarrowtail S'$ that rewrites the set of unification
+problems until it is in solved form or until a contradiction has been found.
+For instance, the variable elimination rule is written as:
+\[
+   x \stackrel{.}{=} t, S  ~~\rightarrowtail~~  x \stackrel{.}{=} t, [t/x]S   \qquad\qquad{if}~x \not\in t~\text{and}~{x \in S}
+\]
+Because the whole set is explicitly available, the variable $x$ can be
+simultaneously substituted\DIFdelbegin \DIFdel{everywhere}\DIFdelend .
+
+In the above unification problem, all variables are implicitly bound in the same
+global scope. 
+\DIFaddbegin \DIFadd{Some constraint solving algorithms for Hindley-Milner type
+  inference use similar ideas, but are more careful tracking the
+  scopes of variables~\mbox{%DIFAUXCMD
+\cite{remy-attapl}}\hspace{0pt}%DIFAUXCMD
+. However they have separate phases for 
+constraint generation and solving.
+}\DIFaddend Recent unification algorithms for dependently-typed languages
+are \DIFaddbegin \DIFadd{also }\DIFaddend more explicit about scopes. For instance, \citet{Reed2009} represents a unification
+problem as $\Delta \vdash P$ where $P$ is a set of equations to be solved and $\Delta$ is
+a (modal) context. \citet{Abel2011higher} even use multiple contexts within a unification problem.
+Such a problem is denoted $\Delta \Vdash \mathcal{K}$ where the meta-context
+$\Delta$ contains all the typings of meta-variables in the constraint set
+$\mathcal{K}$. The latter consists of constraints like $\Psi \vdash M = N : C$
+that are equipped with their individual context $\Psi$. While accurately tracking
+the scoping of regular and meta-variables, this approach is not ideal because it
+repeatedly copies contexts when decomposing a unification problem, and
+later it has to 
+substitute solutions into these copies.
+
+% %-------------------------------------------------------------------------------
+% \subsection{Small-Step Unification}
+% % Mention some algorithms for unification for 
+% % dependent types that use a small-step approach. Credit them later for some ideas that 
+% % we also employ.
+% There are literals that make use of small-step unification for dependently typed
+% inference and reconstruction algorithms~\cite{Reed2009,Abel2011higher}.
+% These approaches collect a list of constraints and process one at a time.
+% Similar to DK's algorithm, unification variables are used to represent the types to guess.
+% In order to solve unification variables to correctly scoped types
+% (typically constrained by the context when the variable is introduced),
+% the context information should be kept with the variables.
+% Judgments that represent unifications of terms might also require such a context
+% to keep the constraint collection well-formed.
+% 
+% As an example, Abel et al. defines their constraint $K$ by
+% \begin{gather*}
+% \begin{aligned}
+% K &::= {\top} \mid {\bot} &&\text{Trivial constraint and inconsistency.}\\
+%     & \ \mid \  \Psi\vdash M = N : C &&\text{Unify term $M$ with $N$.}\\
+%     & \ \mid \  \Psi\mid R:A \vdash E = E' &&\text{Unify evaluation context $E$ with $E'$.}\\
+%     & \ \mid \  \Psi\vdash u\leftarrow M: C &&\text{Solution for $u$ (metavariable) found.}
+% \end{aligned}
+% \end{gather*}
+% where the unification constraints and metavariable solutions are bound by a proper context.
+% A unification problem in their system is described by $\Delta \Vdash \overline{K}$,
+% where $\Delta$ is a collection of metavariables with their defined scopes.
+% This approach clearly states the scroping of each unification problem,
+% therefore rules out invalid instantiations to metavariables.
+% 
+% However, such ``duplicated contexts'' are not ideal for our formalization.
+% Following DK's algorithm, an existential variable $\al$ defined in the context
+% could be decomposed into a function type $\al[1] \to \al[2]$,
+% so the declaration of $\al$ should be replaced by two declarations $\al[1], \al[2]$.
+% Such operation causes all the context that contains $\al$ to change,
+% which brings difficulty on the synchronization of multiple contexts,
+% as variable declarations are not centralized.
+% 
+% We find a way of encoding multiple contexts by ``compressing'' them into a single worklist.
+% As our type inference rules applied to a judgment,
+% we typically keep the context or add variable declarations to the old context
+% before analysing its sub-judgment(s).
+%DIF <  This enables us to write the judgment worklist in such a form:
+%DIF >  This enables us to write the worklist judgment in such a form:
+% $$\Gm, \{\text{variable declarations}\}, \{\text{judgment}\},
+% \{\text{variable declarations}\}, \{\text{judgment}\}, \ldots .$$
+% Typically, we simplify the right-most judgment and push back smaller tasks,
+% where the old ``context'' automatically gets inherited.
+% When some rules solve or partially solve an existential variable,
+% we could easily propagate the solution to all the judgments,
+% and safely modify its declaration, such as remove from the worklist.
+% New judgment(s) may also introduce new \emph{local} variables by declaring
+% that variable right before the new judgment(s).
+% After the new judgments are satisfied, these local variables are properly recycled.
+% 
+% % \jimmy{TODO explain the duplicated context with some examples (their judgment form)}
+% % Some issues to point out: Duplicated contexts (rather than shared contexts), which make 
+% % the formalization harder since requires ``synchronizing'' things ...
+% 
+%-------------------------------------------------------------------------------
+\subsection{Single-Context Worklist Algorithm for Subtyping}
+
+In recent work, \citet{itp2018} have shown how to mechanize a variant of DK's
+subtyping algorithm and shown it correct with respect to DK's declarative
+subtyping judgment. This approach overcomes \DIFdelbegin \DIFdel{the }\DIFdelend some problems in DK's formulation
+by using a \emph{worklist}-based judgment of the form $$\Gamma \vdash \Omega$$
+where $\Omega$ is a worklist (or sequence) of subtyping problems of the
+form $A \leq B$.  The judgment is defined by case analysis on the first
+element of $\Omega$ and recursively processes the worklist until it is empty.
+Using both a single common ordered context $\Gamma$ and a worklist $\Omega$ greatly
+simplifies propagating the instantiation of type variables in one
+subtyping problem to the remaining ones.
+
+Unfortunately, this work does not solve all problems. In particular, it has two
+major limitations that prevent it from scaling to the whole DK system. 
+
+\paragraph{Scoping Garbage} Firstly, the single common ordered context 
+$\Gamma$ does not accurately reflect the type and unification variables
+currently in scope. Instead, it is an overapproximation that steadily accrues
+variables, and only drops those unification variables that are instantiated.
+In other words, $\Gamma$ contains ``garbage'' that is no longer in scope.
+This complicates establishing the relation with the declarative system.
+
+
+\paragraph{No Inference Judgments} 
+Secondly, and more importantly, the approach only deals with a judgment for
+\emph{checking} whether one type is the subtype of another. While this may not
+be so difficult to adapt to the \emph{checking} mode of term typing $\Gamma
+\vdash e \Leftarrow A$, it clearly lacks the functionality to support the
+\emph{inference} mode of term typing $\Gamma \vdash e \Rightarrow A$. Indeed,
+the latter requires not only the communication of unification variable
+instantiations from one typing problem to another, but also an inferred type.
+
+%-------------------------------------------------------------------------------
+\subsection{Algorithmic Type Inference for Higher-Ranked Types: Key Ideas}
+
+Our new algorithmic type system builds on the work above, but
+addresses the open problems.
+
+\paragraph{Scope Tracking}
+We avoid scoping garbage by blending the ordered context and the
+worklist into a single syntactic sort $\Gamma$, our algorithmic worklist. This
+algorithmic worklist interleaves (type and term) variables with \emph{work}
+like checking or inferring types of expressions. The interleaving keeps track
+of the variable scopes in the usual, natural way: each variable is in scope of
+anything in front of it in the worklist. If there is nothing in front, the
+variable is no longer needed and can be popped from the worklist. This way, no
+garbage (i.e. variables out-of-scope) builds up.
+
+%DIF > \jimmy{Comment A is not satisfied with the term "continuation passing style" for our definition.}
+\DIFaddbegin 
+
+\DIFaddend $$\begin{aligned}
+\text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}\\
+\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg\\
+\end{aligned}$$
+
+For example, suppose that the top judgment of the following worklist
+checks the identity function against $\all a \to a$:
+$$\Gm \Vdash \lam x \Lto \all a \to a$$
+To proceed, two auxiliary variables $a$ and $x$ are introduced to help the type checking:
+$$\Gm, a, x:a \Vdash x \Lto a$$
+which will be satisfied after several steps, and the worklist becomes
+$$\Gm, a, x:a$$
+Since the variable declarations $a, x:a$ are only used for a judgment already processed,
+they can be safely removed, leaving the remaining worklist $\Gm$ to be further reduced.
+
+Our worklist can be seen as an all-in-one stack,
+containing variable declarations and subtyping/ typing judgments.
+The stack is an enriched form of ordered context,
+and it has a similar variable scoping scheme.
+%The well-formedness condition, shown in Figure~\ref{fig:alg:syntax},
+%states that every variable must be declared prior to it usage.
+%Therefore, if any variable declaration is the top element,
+%then no usage should appear in the rest of the worklist, so it can be removed.
+
+% $$\Gm \Vdash \all a \to a \le \all a \to a$$
+% $$\Gm, a, \al \Vdash \al \to \al \le a \to a$$
+
+\paragraph{Inference Judgments}
+To express the DK's inference judgments, we use a novel form of work entries in
+the worklist: our algorithmic judgment chains $\omega$. In its simplest form,
+such a judgment chain is just a check, like a subtyping check $A \leq B$ or a
+term typecheck $e \Leftarrow A$. 
+However, the non-trivial forms of chains capture an
+inference task together with the work that depends on its outcome. For
+instance, a type inference task takes the form $e \Rightarrow_a \omega$.
+This form \DIFdelbegin \DIFdel{models a }\emph{\DIFdel{continuation passing style}}%DIFAUXCMD
+\DIFdel{:
+it
+denotes }\DIFdelend \DIFaddbegin \DIFadd{expresses }\DIFaddend that we need to infer the type, say $A$, for expression $e$ and use it
+in the chain $\omega$ by substituting it for the placeholder type variable $a$.
+\DIFaddbegin \DIFadd{Notice that such $a$ binds a fresh type variable for the inner chain $\jg$,
+which behaves similarly to the variable declarations in the context.
+%DIF > \bruno{Removed CPS mention here. But if we remove it here should we remove it
+%DIF > everywhere? Tom, your input would be good regarding this.}
+}\DIFaddend 
+
+Take the following worklist as an example
+$$\al \Vdash \underline{(\lam x)~() \To_a a \le \al} , x:\al, \bt \Vdash \underline{\al \le \bt} \Vdash \underline{\bt \le 1}$$
+There are three (underlined) judgment chains in the worklist,
+where the first and second judgment chains (from the right) are two subtyping judgments,
+and the third judgment chain, $(\lam x)~() \To_a a \le \al$,
+is a sequence of an inference judgment followed by a subtyping judgment.
+
+The algorithm first analyses the two subtyping judgments and
+will find the best solutions $\al = \bt = 1$
+(please refer to Figure~\ref{fig:alg} for detailed derivations).
+Then we substitute every instance of $\al$ and $\bt$ with $1$,
+so the variable declarations can be safely removed from the worklist.
+Now we reduce the worklist to the following state
+$$\nil \Vdash \underline{(\lam x)~() \To_a a \le 1}, x:1$$
+which has a term variable declaration as the top element.
+%Because no judgments before the declaration refer to $x$,
+%as a basic property of an ordered context
+%(Figure~\ref{fig:alg:syntax} shows its well-formedness criteria),
+%we remove all declarations before the first judgment chain to collect unused variables.
+%As a result all garbage variables are collected
+%once the judgment chains refering to them are processed,
+%just as what we have mentioned above about the scope tracking.
+After removing the garbage term variable declaration from the worklist, we process the last remaining
+\DIFdelbegin \DIFdel{judgment chain,
+namely an }\DIFdelend inference judgment $(\lam x)~()\To~?$, with the unit type $1$ as its result.
+Finally the last judgment becomes $1 \le 1$, a trivial base case.
+
+
+% Our algorithm borrows some ideas from previous work, while adding new ones. 
+% A small-step style processing worklists; \emph{Judgment Chains}; others. 
+
+% Importantly we now deal with inference judgment.
+
+
+%\input{sections/Declarative.tex}
+\section{Algorithmic System}
+
+This section introduces a novel algorithmic system that implements 
+DK's declarative specification. The new algorithm extends the idea
+of worklists proposed by \citet{itp2018} in two ways. Firstly,
+unlike \citet{itp2018}'s worklists, the scope of variables is precisely tracked
+and variables do not escape their scope. This is achieved by unifying algorithmic contexts and the worklists themselves.
+Secondly, our algorithm also
+accounts for the type system (and not just subtyping). To deal with
+inference judgments that arise in the type system we employ a \emph{continuation
+passing style} to enable the transfer of inferred information across
+judgments in a worklist.
+
+\subsection{Syntax and Well-Formedness}
+
+Figure~\ref{fig:alg:syntax} shows the syntax and well-formedness
+judgments used by the algorithm. \DIFaddbegin \DIFadd{Similarly to the declarative system 
+the well-formedness rules are unsurprising and merely ensure 
+well-scopedness.
+}\DIFaddend 
+
+\DIFdelbegin %DIFDELCMD < \begin{figure}
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \begin{aligned}
+%DIFDELCMD < % \text{Type variables}\qquad&a, b\\
+%DIFDELCMD < \text{Existential variables}\qquad&\al, \bt
+%DIFDELCMD < \\
+%DIFDELCMD < %\text{Types}\qquad&A', B', C' &::=&\quad 1 \mid a \mid \forall x. A' \mid A'\to B'\\
+%DIFDELCMD < % \text{Mono-types}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
+%DIFDELCMD < %\text{Context}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A' \color{red} \\[2mm]
+%DIFDELCMD < % \text{Declarative Judgments}\qquad&\jo &::=&\quad \nil \mid \P\vdash A' \le B' \jc \jo\\
+%DIFDELCMD < % &&&\quad \mid \P\vdash e\Leftarrow A' \jc \jo \mid \P\vdash e\To A' \jc \jo \mid \P\vdash A' \bullet e\TTo C' \jc \jo\\
+%DIFDELCMD < % \noalign{\jimmy{\text{What do the markers do: $\G \vdash,a \vdash,b\vdash \j_1;\j_2;\j_3$ means $\G,a,b\vdash \j_1 \land \G,a\vdash \j_1,\j_2 \land \G\vdash \j_3$}}} \\[2mm]
+%DIFDELCMD < \text{Algorithmic types}\qquad&A, B, C &::=& \quad 1 \mid a \mid \all A \mid A\to B \mid \al % \quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B
+%DIFDELCMD < \\
+%DIFDELCMD < % \text{Terms}\qquad&e&::=&\quad x \mid () \mid \lam{e} \mid e_1~e_2 \mid (e:A)
+%DIFDELCMD < % \\[2mm]
+%DIFDELCMD < \text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
+%DIFDELCMD < \\
+%DIFDELCMD < \text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg%\\
+%DIFDELCMD < % \text{Declarative worklist}\qquad&\Om &::=&\quad \nil \mid \Om, a \mid \Om, x: A \mid \Om \Vdash \jg
+%DIFDELCMD < \end{aligned}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < 
+
+%DIFDELCMD < \framebox{$\Gm\vdash\jg$} Well-formed algorithmic judgment
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf{\le}}$]
+%DIFDELCMD < {\Gm\vdash A \\ \Gm\vdash B}
+%DIFDELCMD < {\Gm\vdash A\le B}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf{\Lto}}$]
+%DIFDELCMD < {\Gm\vdash e \\ \Gm\vdash A}
+%DIFDELCMD < {\Gm\vdash e \Lto A}
+%DIFDELCMD < \\
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf{\To}}$]
+%DIFDELCMD < {\Gm\vdash e \\ \Gm, a\vdash \jg}
+%DIFDELCMD < {\Gm\vdash e \To_a \jg}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf{\TTo}}$]
+%DIFDELCMD < {\Gm\vdash A \\ \Gm, a\vdash \jg \\ \Gm\vdash e}
+%DIFDELCMD < {\Gm\vdash \appInfAlg{A}{e}}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < 
+
+%DIFDELCMD < \framebox{$\text{wf }\Gm$} Well-formed algorithmic worklist
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf\nil}$]
+%DIFDELCMD < {~}{\text{wf }\nil}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf_a}$]
+%DIFDELCMD < {\text{wf }\Gm}
+%DIFDELCMD < {\text{wf }\Gm, a}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf_{\al}}$]
+%DIFDELCMD < {\text{wf }\Gm}
+%DIFDELCMD < {\text{wf }\Gm, \al}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf_{of}}$]
+%DIFDELCMD < {\text{wf }\Gm \\ \Gm\vdash A}
+%DIFDELCMD < {\text{wf }\Gm, x:A}
+%DIFDELCMD < \qquad
+%DIFDELCMD < \inferrule*[right=$\mathtt{wf_{\jg}}$]
+%DIFDELCMD < {\text{wf }\Gm \\ \Gm\vdash\jg}
+%DIFDELCMD < {\text{wf }\Gm \Vdash\jg}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < \caption{Extended Syntax and Well-Formedness for the Algorithmic System}\label{fig:alg:syntax}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{figure}
+\begin{gather*}
+\begin{aligned}
+% \text{Type variables}\qquad&a, b\\
+\text{Existential variables}\qquad&\al, \bt
+\\
+%\text{Types}\qquad&A', B', C' &::=&\quad 1 \mid a \mid \forall x. A' \mid A'\to B'\\
+% \text{Mono-types}\qquad&\tau &::=&\quad 1 \mid a \mid \tau_1\to \tau_2\\
+%\text{Context}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A' \color{red} \\[2mm]
+% \text{Declarative Judgments}\qquad&\jo &::=&\quad \nil \mid \P\vdash A' \le B' \jc \jo\\
+% &&&\quad \mid \P\vdash e\Leftarrow A' \jc \jo \mid \P\vdash e\To A' \jc \jo \mid \P\vdash A' \bullet e\TTo C' \jc \jo\\
+% \noalign{\jimmy{\text{What do the markers do: $\G \vdash,a \vdash,b\vdash \j_1;\j_2;\j_3$ means $\G,a,b\vdash \j_1 \land \G,a\vdash \j_1,\j_2 \land \G\vdash \j_3$}}} \\[2mm]
+\text{Algorithmic types}\qquad&A, B, C &::=& \quad 1 \mid a \mid \all A \mid A\to B \mid \al % \quad 1 \mid a \mid \al \mid \forall a. A \mid A\to B
+\\
+% \text{Terms}\qquad&e&::=&\quad x \mid () \mid \lam{e} \mid e_1~e_2 \mid (e:A)
+% \\[2mm]
+\text{Algorithmic judgment chain}\qquad&\jg &::=&\quad A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
+\\
+\text{Algorithmic worklist}\qquad&\Gm &::=&\quad \nil \mid \Gm, a \mid \Gm, \al \mid \Gm, x: A \mid \Gm \Vdash \jg%\\
+% \text{Declarative worklist}\qquad&\Om &::=&\quad \nil \mid \Om, a \mid \Om, x: A \mid \Om \Vdash \jg
+\end{aligned}
+\end{gather*}
+
+\centering \framebox{$\Gm \vdash A$} Well-formed algorithmic type
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf\_ unit}$]
+    {~}{\Gm\vdash 1}
+\quad
+\inferrule*[right=$\mathtt{wf\_ var}$]
+    {a\in\Gm}{\Gm\vdash a}
+\quad
+\inferrule*[right=$\mathtt{wf\_ exvar}$]
+    {\al\in\Gm}{\Gm\vdash \al}
+\quad
+\inferrule*[right=$\mathtt{wf\_{\to}}$]
+    {\Gm\vdash A\quad \Gm\vdash B}
+    {\Gm\vdash A\to B}
+\quad
+\inferrule*[right=$\mathtt{wf\_\forall}$]
+    {\Gm, a\vdash A}
+    {\Gm\vdash \forall a. A}
+\end{gather*}
+
+\centering \framebox{$\Gm \vdash e$} Well-formed algorithmic expression
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf\_ tmvar}$]
+    {x:A\in\Gm}{\Gm\vdash x}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ tmunit}$]
+    {~}{\Gm\vdash ()}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ abs}$]
+    {\Gm,x:A\vdash e}
+    {\Gm\vdash \lam e}
+\\
+\inferrule*[right=$\mathtt{wf\_ app}$]
+    {\Gm\vdash e_1 \quad \Gm\vdash e_2}
+    {\Gm\vdash e_1~e_2}
+\qquad
+\inferrule*[right=$\mathtt{wf\_ anno}$]
+    {\Gm\vdash A \quad \Gm\vdash e}
+    {\Gm\vdash (e:A)}
+\end{gather*}
+
+\framebox{$\Gm\vdash\jg$} Well-formed algorithmic judgment
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf{\le}}$]
+{\Gm\vdash A \\ \Gm\vdash B}
+{\Gm\vdash A\le B}
+\qquad
+\inferrule*[right=$\mathtt{wf{\Lto}}$]
+{\Gm\vdash e \\ \Gm\vdash A}
+{\Gm\vdash e \Lto A}
+\\
+\inferrule*[right=$\mathtt{wf{\To}}$]
+{\Gm\vdash e \\ \Gm, a\vdash \jg}
+{\Gm\vdash e \To_a \jg}
+\qquad
+\inferrule*[right=$\mathtt{wf{\TTo}}$]
+{\Gm\vdash A \\ \Gm, a\vdash \jg \\ \Gm\vdash e}
+{\Gm\vdash \appInfAlg{A}{e}}
+\end{gather*}
+
+\framebox{$\text{wf }\Gm$} Well-formed algorithmic worklist
+\begin{gather*}
+\inferrule*[right=$\mathtt{wf\nil}$]
+{~}{\text{wf }\nil}
+\qquad
+\inferrule*[right=$\mathtt{wf_a}$]
+{\text{wf }\Gm}
+{\text{wf }\Gm, a}
+\qquad
+\inferrule*[right=$\mathtt{wf_{\al}}$]
+{\text{wf }\Gm}
+{\text{wf }\Gm, \al}
+\qquad
+\inferrule*[right=$\mathtt{wf_{of}}$]
+{\text{wf }\Gm \\ \Gm\vdash A}
+{\text{wf }\Gm, x:A}
+\qquad
+\inferrule*[right=$\mathtt{wf_{\jg}}$]
+{\text{wf }\Gm \\ \Gm\vdash\jg}
+{\text{wf }\Gm \Vdash\jg}
+\end{gather*}
+\caption{Extended Syntax and Well-Formedness for the Algorithmic System}\label{fig:alg:syntax}
+\end{figure}
+\DIFaddend 
+
+\paragraph{Existential Variables} 
+The algorithmic system inherits the syntax of terms and types from 
+the declarative system. It only introduces one additional feature.
+In order to find unknown types $\tau$ in the declarative system, the
+algorithmic system extends the declarative types $A$ with \emph{existential variables} $\al, \bt$.
+They behave like unification variables,
+but their scope is restricted by their position in the
+algorithmic worklist rather than being global.
+Any existential variable $\al$ should only be solved to
+a type that is well-formed with respect to the worklist to which $\al$ has been added.
+The point is that the monotype $\tau$, represented by the corresponding existential variable,
+is always well-formed under the corresponding declarative context.
+In other words, the position of $\al$'s reflects the well-formedness restriction of $\tau$'s.
+
+%% A \le B \mid e\Lto A \mid e\To_{a} \jg \mid \appInfAlg{A}{e}
+
+\paragraph{Judgment Chains} 
+Judgment chains $\jg$, or judgments for short, are the core components of our algorithmic
+type-checking. There are four kinds
+of judgments in our system: subtyping ($A \le B$), checking ($e\Lto
+A$), inference ($e\To_{a} \jg$) and
+application inference ($\appInfAlg{A}{e}$).  Subtyping and checking are relatively simple,
+since their result is only success or failure. However both inference and
+application inference return a type that is used in subsequent judgments. We use a
+continuation-passing-style encoding to accomplish this. For example, the judgment
+chain $e \To_a (a \le B)$ contains two judgments: first we want to
+infer the type of the expression $e$, and then check if that type is a
+subtype of $B$. The \emph{unknown} type of $e$ is represented by a
+type variable $a$, which is used as a placeholder in the second judgment to denote the 
+type of $e$.
+
+\paragraph{Worklist Judgments} Our algorithm has a non-standard form.
+We combine traditional contexts and judgment(s) into a single sort, the \emph{worklist} $\Gm$.
+The worklist is an \emph{ordered} collection of both variable bindings and judgments. The order captures the scope:
+only the objects that come after a variable's binding in the worklist can refer to it.
+For example, $[\nil, a, x:a \Vdash x \Lto a]$ is a valid worklist,
+but $[\nil \Vdash \underline{x} \Lto \underline{a}, x:\underline{a}, a]$ is not
+(the underlined symbols refer to out-of-scope variables).
+
+\paragraph{Hole Notation}
+We use the syntax $\Gm[\Gm_M]$ to denote the worklist $\Gm_L,\Gm_M,\Gm_R$,
+where $\Gm$ is the worklist $\Gm_L,\bullet,\Gm_R$ with a hole ($\bullet$).
+Hole notations with the same name implicitly share the same structure $\Gm_L$ and $\Gm_R$.
+A multi-hole notation splits the worklist into more parts.
+For example, $\Gm[\al][\bt]$ means $\Gm_1,\al,\Gm_2,\bt,\Gm_3$.
+
+\subsection{Algorithmic System}
+
+\newcounter{algRuleCounter}
+\newcommand \algrule {\stepcounter{algRuleCounter}\rrule{\arabic{algRuleCounter}}}
+
+% TODO rules too long
+\DIFdelbegin %DIFDELCMD < \begin{figure}[htp]
+%DIFDELCMD < \hfill \framebox{$\Gm\rto \Gm'$} \hfill $\Gm$ reduces to $\Gm'$.
+%DIFDELCMD < %\jimmy{Whenever there is a change on judgment count, marker should be properly added/removed. Decidability: all valid judgment chain should be reduced to nil.}
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \begin{aligned}
+%DIFDELCMD < \Gm, a &\algrule \Gm \qquad
+%DIFDELCMD < \Gm, \al \algrule \Gm \qquad
+%DIFDELCMD < \Gm, x:A \algrule \Gm
+%DIFDELCMD < \\[3mm]
+%DIFDELCMD < \Gm \Vdash 1\le 1 &\algrule \Gm\\
+%DIFDELCMD < \Gm \Vdash a\le a &\algrule \Gm\\
+%DIFDELCMD < \Gm \Vdash \al\le \al &\algrule \Gm\\
+%DIFDELCMD < \Gm \Vdash A_1\to A_2 \le B_1\to B_2 &\algrule \Gm \Vdash A_2 \le B_2 \Vdash B_1\le A_1\\
+%DIFDELCMD < \Gm \Vdash \all A\le B &\algrule \Gm,\al \Vdash [\al/a]A\le B \quad\text{when } B \neq \all B'\\
+%DIFDELCMD < \Gm \Vdash A\le \all[b]B &\algrule \Gm,b \Vdash A\le B
+%DIFDELCMD < \\[3mm]
+%DIFDELCMD < %\\
+%DIFDELCMD < %\text{Let } \color{red}\Gm[\al \toto B // G_M] &:= \Gm_L, G_M, [B/\al]\Gm_R, \text{ when } \Gm[\al] = \Gm_L,\al,\Gm_R \ (G_M\text{ defaults to }\nil)\\
+%DIFDELCMD < \Gm[\al] \Vdash \al \le A\to B &\algrule [\al[1]\to\al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash \al[1]\to \al[2] \le A \to B)\\
+%DIFDELCMD <  &\qquad \text{when }\al\notin FV(A)\cup FV(B)\\
+%DIFDELCMD < \Gm[\al] \Vdash A\to B \le \al &\algrule [\al[1]\to \al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash A \to B \le \al[1]\to \al[2])\\
+%DIFDELCMD <  &\qquad \text{when }\al\notin FV(A)\cup FV(B)
+%DIFDELCMD <  \\[3mm]
+%DIFDELCMD < \Gm[\al][\bt] \Vdash \al \le \bt &\algrule [\al/\bt](\Gm[\al][])\\
+%DIFDELCMD < \Gm[\al][\bt] \Vdash \bt \le \al &\algrule [\al/\bt](\Gm[\al][])\\
+%DIFDELCMD < \Gm[a][\bt] \Vdash a \le \bt &\algrule [a/\bt](\Gm[a][])\\
+%DIFDELCMD < \Gm[a][\bt] \Vdash \bt \le a &\algrule [a/\bt](\Gm[a][])\\
+%DIFDELCMD < \Gm[\bt] \Vdash 1 \le \bt &\algrule [1/\bt](\Gm[])\\
+%DIFDELCMD < \Gm[\bt] \Vdash \bt \le 1 &\algrule [1/\bt](\Gm[])
+%DIFDELCMD < \\[3mm]
+%DIFDELCMD < \Gm \Vdash e \Lto B &\algrule \Gm \Vdash e\To_a a\le B \quad
+%DIFDELCMD <     \text{when } e \neq \lam e' \text{ and } B \neq \all B'\\
+%DIFDELCMD < % \Gm \Vdash () \Lto 1 &\algrule \Gm\\
+%DIFDELCMD < \Gm \Vdash e\Lto \all A &\algrule \Gm,a \Vdash e\Lto A\\
+%DIFDELCMD < \Gm \Vdash \lam e \Lto A\to B &\algrule \Gm, x:A  \Vdash e \Lto B\\
+%DIFDELCMD < \Gm[\al] \Vdash \lam e \Lto \al &\algrule [\al[1]\to \al[2] / \al](\Gm[\al[1],\al[2]], x:\al[1] \Vdash e \Lto \al[2])
+%DIFDELCMD < % \quad\text{\jimmy{Additional}}
+%DIFDELCMD < \\[3mm]
+%DIFDELCMD < \Gm \Vdash x\To_a \jg &\algrule \Gm \Vdash [A/a] \jg \quad \text{when } (x:A)\in \Gm\\
+%DIFDELCMD < \Gm \Vdash (e:A)\To_a \jg &\algrule \Gm \Vdash [A/a]\jg \Vdash e \Lto A\\
+%DIFDELCMD < \Gm \Vdash ()\To_a \jg &\algrule \Gm \Vdash [1/a]\jg\\
+%DIFDELCMD < \Gm \Vdash \lam e \To_a \jg &\algrule
+%DIFDELCMD <     \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\\
+%DIFDELCMD < \Gm \Vdash e_1\ e_2 \To_a \jg &\algrule \Gm \Vdash e_1\To_b (\appInfAlg{b}{e_2})
+%DIFDELCMD < \\[3mm]
+%DIFDELCMD < \Gm \Vdash \appInfAlg{\all A}{e} &\algrule \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\\
+%DIFDELCMD < \Gm \Vdash \appInfAlg{A\to C}{e} &\algrule \Gm \Vdash [C/a]\jg \Vdash e \Lto A\\
+%DIFDELCMD < \Gm[\al] \Vdash \appInfAlg{\al}{e} &\algrule
+%DIFDELCMD <     [\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash \appInfAlg{\al[1]\to\al[2]}{e})
+%DIFDELCMD < %	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash [\al[2]/a]\jg \Vdash e\Lto \al[1])\\
+%DIFDELCMD < % &\color{magenta} \makebox[0pt]{\qquad or} \phantom{{}\rrule{}{}}
+%DIFDELCMD < \end{aligned}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < \caption{Algorithmic Typing}\label{fig:alg}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{figure}[htp]
+\hfill \framebox{$\Gm\rto \Gm'$} \hfill $\Gm$ reduces to $\Gm'$.
+%\jimmy{Whenever there is a change on judgment count, marker should be properly added/removed. Decidability: all valid judgment chain should be reduced to nil.}
+\begin{gather*}
+\begin{aligned}
+\Gm, a &\algrule \Gm \qquad
+\Gm, \al \algrule \Gm \qquad
+\Gm, x:A \algrule \Gm
+\\[3mm]
+\Gm \Vdash 1\le 1 &\algrule \Gm\\
+\Gm \Vdash a\le a &\algrule \Gm\\
+\Gm \Vdash \al\le \al &\algrule \Gm\\
+\Gm \Vdash A_1\to A_2 \le B_1\to B_2 &\algrule \Gm \Vdash A_2 \le B_2 \Vdash B_1\le A_1\\
+\Gm \Vdash \all A\le B &\algrule \Gm,\al \Vdash [\al/a]A\le B \quad\text{when } B \neq \all B'\\
+\Gm \Vdash A\le \all[b]B &\algrule \Gm,b \Vdash A\le B
+\\[3mm]
+%\\
+%\text{Let } \color{red}\Gm[\al \toto B // G_M] &:= \Gm_L, G_M, [B/\al]\Gm_R, \text{ when } \Gm[\al] = \Gm_L,\al,\Gm_R \ (G_M\text{ defaults to }\nil)\\
+\Gm[\al] \Vdash \al \le A\to B &\algrule [\al[1]\to\al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash \al[1]\to \al[2] \le A \to B)\\
+ &\qquad\qquad \text{when }\al\notin FV(A)\cup FV(B)\\
+\Gm[\al] \Vdash A\to B \le \al &\algrule [\al[1]\to \al[2]/\al] (\Gm[\al[1], \al[2]] \Vdash A \to B \le \al[1]\to \al[2])\\
+ &\qquad\qquad \text{when }\al\notin FV(A)\cup FV(B)
+ \\[3mm]
+\Gm[\al][\bt] \Vdash \al \le \bt &\algrule [\al/\bt](\Gm[\al][])\\
+\Gm[\al][\bt] \Vdash \bt \le \al &\algrule [\al/\bt](\Gm[\al][])\\
+\Gm[a][\bt] \Vdash a \le \bt &\algrule [a/\bt](\Gm[a][])\\
+\Gm[a][\bt] \Vdash \bt \le a &\algrule [a/\bt](\Gm[a][])\\
+\Gm[\bt] \Vdash 1 \le \bt &\algrule [1/\bt](\Gm[])\\
+\Gm[\bt] \Vdash \bt \le 1 &\algrule [1/\bt](\Gm[])
+\\[3mm]
+\Gm \Vdash e \Lto B &\algrule \Gm \Vdash e\To_a a\le B \quad
+    \text{when } e \neq \lam e' \text{ and } B \neq \all B'\\
+% \Gm \Vdash () \Lto 1 &\algrule \Gm\\
+\Gm \Vdash e\Lto \all A &\algrule \Gm,a \Vdash e\Lto A\\
+\Gm \Vdash \lam e \Lto A\to B &\algrule \Gm, x:A  \Vdash e \Lto B\\
+\Gm[\al] \Vdash \lam e \Lto \al &\algrule [\al[1]\to \al[2] / \al](\Gm[\al[1],\al[2]], x:\al[1] \Vdash e \Lto \al[2])
+% \quad\text{\jimmy{Additional}}
+\\[3mm]
+\Gm \Vdash x\To_a \jg &\algrule \Gm \Vdash [A/a] \jg \quad \text{when } (x:A)\in \Gm\\
+\Gm \Vdash (e:A)\To_a \jg &\algrule \Gm \Vdash [A/a]\jg \Vdash e \Lto A\\
+\Gm \Vdash ()\To_a \jg &\algrule \Gm \Vdash [1/a]\jg\\
+\Gm \Vdash \lam e \To_a \jg &\algrule
+    \Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\\
+\Gm \Vdash e_1\ e_2 \To_a \jg &\algrule \Gm \Vdash e_1\To_b (\appInfAlg{b}{e_2})
+\\[3mm]
+\Gm \Vdash \appInfAlg{\all A}{e} &\algrule \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\\
+\Gm \Vdash \appInfAlg{A\to C}{e} &\algrule \Gm \Vdash [C/a]\jg \Vdash e \Lto A\\
+\Gm[\al] \Vdash \appInfAlg{\al}{e} &\algrule
+    [\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash \appInfAlg{\al[1]\to\al[2]}{e})
+%	[\al[1]\to\al[2]/\al](\Gm[\al[1], \al[2]] \Vdash [\al[2]/a]\jg \Vdash e\Lto \al[1])\\
+% &\color{magenta} \makebox[0pt]{\qquad or} \phantom{{}\rrule{}{}}
+\end{aligned}
+\end{gather*}
+\caption{Algorithmic Typing}\label{fig:alg}
+\end{figure}
+\DIFaddend 
+
+The algorithmic typing reduction rules, defined in Figure~\ref{fig:alg}, have
+the form $\Gm \rto \Gm'$.
+% The worklists $\Gm, \Gm'$ contain both variable declarations and judgments.
+The reduction process treats the worklist as a stack.  In every step it pops
+the first judgment from the worklist for processing and possibly pushes new
+judgments onto the worklist.  The syntax $\Gm\redto \Gm'$ denotes multiple
+reduction steps. 
+\DIFdelbegin \DIFdel{If }\DIFdelend \DIFaddbegin 
+
+$$\inferrule*[right=$\mathtt{{\redto} id}$]
+{~}{\Gm\redto\Gm}
+\qquad
+\inferrule*[right=$\mathtt{{\redto} step}$]
+{\Gm \rto \Gm_1 \quad \Gm_1 \redto \Gm'}{\Gm \redto \Gm'}$$
+
+\noindent \DIFadd{In the case that }\DIFaddend $\Gm\redto\nil$ \DIFdelbegin \DIFdel{, we say that $\Gm$ reduces successfully;
+}\DIFdelend this corresponds to successful type checking.
+
+\DIFdelbegin \DIFdel{Let us explain the rules in more details:
+}\DIFdelend %DIF >  \jimmy{The implicit freshness conditions for algorithmic system}
+\DIFaddbegin \DIFadd{Please note that when a new variable is introduced in the right-hand side worklist $\Gm'$,
+we implicitly pick a fresh one,
+since the right-hand side can be seen as the premise of the reduction.
+}
+
+\DIFaddend Rules 1-3 pop \DIFdelbegin \DIFdel{a variable declaration.
+Essentially this is garbage: }\DIFdelend \DIFaddbegin \DIFadd{variable declarations that are essentially garbage.
+That is }\DIFaddend variables that are
+out of scope for the remaining judgments in the worklist.
+All other rules concern a judgment at the front of the worklist. Logically we
+can discern 6 groups of rules.
+
+\paragraph{{\bf 1. \DIFdelbegin \DIFdel{Declarative }\DIFdelend \DIFaddbegin \DIFadd{Algorithmic }\DIFaddend Subtyping}}
+We have six subtyping rules (Rules 4-9) that are similar to their
+declarative counterparts. For instance, Rule 7 consumes a subtyping
+judgment and pushes two back to the worklist.  Rule 8 differs from
+declarative Rule $\mathtt{{\le}{\forall}L}$ by introducing an existential
+variable $\al$ instead of guessing the monotype $\tau$
+instantiation. Each existential variable is later solved to a
+monotype $\tau$ with the same context, so the final solution $\tau$ of
+$\al$ should be well-formed under $\Gm$.
+
+\paragraph{Worklist Variable Scoping}
+Rules 8 and 9 involve variable declarations and demonstrate how our
+worklist treats variable scopes. Rule 8 introduces an existential
+variable $\al$ that is only visible to the judgment $[\al/a]A \le B$.
+Reduction continues until all the subtyping judgments in front of $\al$
+are satisfied.  Finally we can safely remove $\al$ since no occurrence
+of $\al$ could have leaked into the left part of the worklist.  Moreover,
+the algorithm garbage-collects the $\al$
+variable at the \DIFdelbegin \DIFdel{perfect }\DIFdelend \DIFaddbegin \DIFadd{right }\DIFaddend time: it leaves the environment immediately
+after being unreferenced completely for sure.
+
+\paragraph{Example} The derivation of the subtyping judgment
+$(1\to 1)\to 1 \le (\all 1\to 1) \to 1$\DIFdelbegin \DIFdel{proceeds as follows}\DIFdelend :
+\begin{gather*}
+\begin{aligned}
+  & \nil\vdash (1\to 1)\to 1 \le (\all 1 \to 1) \to 1\\
+\rrule{7}  & \nil \Vdash 1 \le 1 \Vdash \all 1 \to 1 \le 1 \to 1\\
+\rrule{8}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \to 1 \le 1 \to 1\\
+\rrule{7}  & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \le 1 \Vdash 1 \le 1\\
+\rrule{4} & \nil \Vdash 1 \le 1 ,\al \Vdash 1 \le 1\\
+\rrule{4} & \nil \Vdash 1 \le 1 ,\al\\
+\rrule{2} & \nil \Vdash 1 \le 1\\
+\rrule{4} & \nil
+\end{aligned}
+\end{gather*}
+First, the subtyping of two function types is split into two judgments by Rule 7:
+a covariant subtyping on the return type and a contravariant subtyping on the argument type.
+Then we apply Rule 8 to reduce the $\forall$ quantifier on the left side.
+The rule introduces an existential variable $\al$ to the context (even though 
+the type $\all 1 \to 1$ does not actually refer to the quantified type
+variable $a$).
+In the following 3 steps we satisfy the judgment $1 \to 1 \le 1 \to 1$ by Rules 7, 4 and 4.
+
+Now the existential variable $\al$, introduced before but still unsolved,
+is at the top of the worklist and Rule 2 garbage-collects it.
+The process is carefully designed within the algorithmic rules:
+when $\al$ is introduced earlier by Rule 8,
+we foresee the recycling of $\al$ after all the judgments (potentially)
+requiring $\al$ have been processed.
+Finally Rule 4 reduces one of the base cases and finishes the subtyping derivation.
+
+\paragraph{\bf 2. Existential decomposition.}
+Rules 10 and 11 are algorithmic versions of Rule $\mathtt{{\le}{\to}}$; they
+both partially instantiate $\al$ to function types.
+The domain $\al[1]$ and range $\al[2]$ of the new function type are not determined:
+they are fresh existential variables with the same scope as $\al$.
+We replace $\al$ in the worklist with  $\al[1], \al[2]$.
+To propagate the instantiation to the rest of the worklist and maintain well-formedness,
+every reference to $\al$ is replaced by $\al[1] \to \al[2]$.
+The \emph{occurs-check} condition prevents divergence as usual.
+For example, without it $\al \le 1 \to \al$ would diverge.
+
+\paragraph{\bf 3. Solving existentials} Rules 12-17 are base cases where an existential variable is solved.
+They all remove an existential variable and substitute the
+variable with its solution in the remaining worklist. Importantly the rules
+respect the scope of existential variables. For example, Rule 12 
+states that an existential variable $\al$ can be solved with another
+existential variable $\bt$ only if $\bt$ occurs after $\al$.
+
+\DIFaddbegin \DIFadd{One may notice that the subtyping relation for simple types is just equivalence,
+which is true according to the declarative system.
+The DK's system works in a similar way.
+}
+
+\DIFaddend \paragraph{\bf 4. Checking judgments.}
+Rules 18-21 deal with checking judgments.
+Rule 18 is similar to $\mathtt{DeclSub}$, but rewritten in the
+continuation-passing-style.
+The side conditions $e \neq \lam e'$ and $B \neq \all B'$ 
+prevent overlap with Rules 19, 20 and 21;
+this is further discussed at the end of this section.
+% \bruno{The side condition needs to be explained, and some mention of
+%   the overlapping is probably needed here.}
+Rules 19 and 20 adapt their declarative counterparts to the worklist style.
+Rule 21 is a special case of $\mathtt{Decl\to I}$,
+dealing with the case when the input type is an existential variable,
+representing a monotype \emph{function} as in the declarative system
+(it must be a function type, since the expression $\lam e$ is a function).
+% \bruno{Rule 21
+%   deserves some more explanation. What is the motivation for this
+%   rule? You may want to give some concrete example to motivate it.}
+The same instantiation technique as in Rules 10 and 11 applies.
+The declarative checking rule $\mathtt{Decl1I}$ does not have a direct counterpart in the algorithm, 
+because Rules 18 and 24 can be combined to give the same result.
+
+\paragraph{Rule 21 Design Choice}
+The addition of Rule 21 is a design choice we have made to simplify the side
+condition of Rule 18 (which avoids overlap). It also streamlines the algorithm
+and the metatheory as we now treat all cases
+where we can see that an existential variable should be instantiated to a
+function type  (i.e., Rules 10, 11, 21 and 29) uniformly.
+
+The alternative would have been to omit Rule 21 and drop the condition on $e$
+in Rule 18. The modified Rule 18 would then handle $\Gm \Vdash \lam e \Lto \al$
+and yield $\Gm \Vdash \lam e \To_a a \le \al$, which would be further processed
+by Rule 25 to $\Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$.
+As a subtyping constraint between \DIFdelbegin \DIFdel{two monotypes only succeeds when the types are equal}\DIFdelend \DIFaddbegin \DIFadd{monotypes is simply equality}\DIFaddend , $\bt[1] \to \bt[2] \le \al$
+must end up equating $\bt[1] \to \bt[2]$ with $\al$ and thus have the same effect as Rule 21, but in a more roundabout
+fashion.
+
+In comparison,
+DK's algorithmic subsumption rule has no restriction on the expression $e$,
+and they do not have a rule that explicitly handles the case $\lam e \Lto \al$.
+Therefore \DIFdelbegin \DIFdel{their }\DIFdelend \DIFaddbegin \DIFadd{the }\DIFaddend only way to check a lambda function against an existential variable
+is by applying the subsumption rule, which further breaks into
+\DIFdelbegin \DIFdel{a }\DIFdelend type inference of \DIFdelbegin \DIFdel{the }\DIFdelend \DIFaddbegin \DIFadd{a }\DIFaddend lambda function and a subtyping judgment.
+% A combination of Rules $18'$ (Rule 18 without the restriction on $e$) and 25 and further derivations
+% may result in a similar effect to Rule 21.
+% Rule 21 guesses a monotype for the lambda function $\lam e$, so as Rule 25.
+% The only difference is that a subtyping relation is introduced by Rule $18'$,
+% and is to be processed after the type inference:
+% $$\Gm \Vdash \lam e \Lto \al \rrule{18'} \Gm \Vdash \lam e \To_a a \le \al
+% \rrule{25} \Gm, \bt[1], \bt[2] \Vdash \bt[1] \to \bt[2] \le \al, x:\bt[1] \Vdash e \Lto \bt[2]$$
+% Since two monotypes with a valid subtyping relation indicates equality,
+% eventually $\bt[1] \to \bt[2]$ and $\al$ should be unified with each other.
+% DK's algorithm takes a similar approach to such variant,
+% and we believe that they are equivalent.
+% 
+% Choosing Rule 21 simplifies the side condition on Rule 18,
+% the metatheory and the design: whenever an input type could be a function type,
+% the algorithmic rule should always take care of
+% the possibility when the type being a single existential variable.
+% This pattern applies to all the possible cases, including Rules 10, 11, 21 and 29.
+
+\paragraph{\bf 5. Inference judgments.}
+Inference judgments behave differently compared with subtyping and checking judgments:
+they \emph{return} a type instead of only accepting or rejecting.
+For the algorithmic system, where guesses are involved,
+it may happen that the output type of an inference judgment refers to new existential variables,
+such as Rule 25.
+In comparison to Rule 8 and 9, where new variables are only referred by the sub-derivation,
+Rule 25 introduces variables $\al, \bt$ that affect the remaining judgment chain.
+This rule is carefully designed so that the output variables are bound by earlier declarations,
+thus the well-formedness of the worklist is preserved,
+and the garbage will be collected at the correct time.
+By making use of the continuation-passing-style judgment chain,
+inner judgments always share the context with their parent judgment.
+
+\begin{comment}
+Old text:
+The design of our judgment chain is closely related to the shape of
+the judgments
+\jimmy{requires further clarification}
+\bruno{What property? Not very clear}.
+Subtyping and checking do not return anything, so variables cannot
+leak anyway, as applied to Rules 8 and 9.
+\bruno{Is the discussion that follows in the right place? We just jump
+  to
+  rule 26. Perhaps we can wait until we talk about inference to
+  discuss those issues?}
+However, inference and application inference may return a type that contains new variables.
+Take Rule 26 as an example, if it simply returns $\al \to \bt$,
+passes that to the next judgment and continues the type-checking process,
+variables $\al$ and $\bt$ in the next judgment are out of scope
+and will break the well-formedness of the worklist.
+\end{comment}
+
+Rules 22-26 deal with type inference judgments, written in continuation-passing-style.
+When an inference judgment succeeds with type $A$,
+the algorithm continues to work on the inner-chain $\jg$ by
+assigning $A$ to its placeholder variable $a$.
+Rule 23 infers an annotated expression by changing into checking mode,
+therefore another judgment chain is created.
+Rule 24 is a base case,
+where the unit type $1$ is inferred and thus passed to its child judgment chain.
+Rule 26 infers the type of an application by
+firstly inferring the type of the function $e_1$,
+and then leaving the rest work to an application inference judgment,
+which passes $a$, representing the return type of the application,
+to the remainder of the judgment chain $\jg$.
+
+Rule 25 infers the type of a lambda expression by introducing $\al, \bt$
+as the input and output types of the function, respectively.
+After checking the body $e$ under the assumption $x:\al$,
+the return type might reflect more information than simply $\al \to \bt$
+through propagation when existential variables are solved or partially solved.
+The variable scopes are maintained during the process:
+the assumption of argument type ($x:\al$) is recycled after checking against the function body;
+the existential variables used by the function type ($\al,\bt$) are only visible in the remaining chain $[\al\to\bt/a]\jg$.
+The recycling process of Rule 25 differs from DK's corresponding rule significantly,
+and we further discuss the differences in Section~\ref{sec:discussion:scoping}.
+
+% \bruno{You have some note ``differs'' on the rules. Should that
+%   deserve an explanation here?}
+
+\paragraph{\bf 6. Application inference judgments}
+Finally, Rules 27-29 deal with application inference judgments.
+Rules 27 and 28 behaves similarly to declarative rules $\mathtt{Decl\forall App}$ and $\mathtt{Decl\to App}$.
+Rule 29 instantiates $\al$ to the function type $\al[1] \to \al[2]$, just like Rules 10, 11 and 21.
+
+\paragraph{Example}
+\DIFdelbegin %DIFDELCMD < 
+
+%DIFDELCMD < \begin{figure}
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD < \begin{aligned}
+%DIFDELCMD <            & \nil \Vdash (\lam x)~() \Lto 1\\
+%DIFDELCMD < \rrule{18} & \nil \Vdash (\lam x)~() \To_a a\le 1\\
+%DIFDELCMD < \rrule{26} & \nil \Vdash (\lam x) \To_b (\appInfAlg{b}{()}[a][a\le 1])\\
+%DIFDELCMD < \rrule{25} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash x\Lto \bt\\
+%DIFDELCMD < \rrule{18} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash x\To_b b\le \bt\\
+%DIFDELCMD < \rrule{22} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash \al\le \bt\\
+%DIFDELCMD < \rrule{12} & \nil,\al \Vdash \appInfAlg{\al\to\al}{()}[a][a\le 1], x:\al\\
+%DIFDELCMD < \rrule{3}  & \nil,\al \Vdash \appInfAlg{\al\to\al}{()}[a][a\le 1]\\
+%DIFDELCMD < \rrule{28} & \nil,\al \Vdash \al\le 1 \Vdash () \Lto \al\\
+%DIFDELCMD < \rrule{18} & \nil,\al \Vdash \al\le 1 \Vdash () \To_a a\le \al\\
+%DIFDELCMD < \rrule{24} & \nil,\al \Vdash \al\le 1 \Vdash 1\le \al\\
+%DIFDELCMD < \rrule{16} & \nil \Vdash 1\le 1\\
+%DIFDELCMD < \rrule{4}  & \nil
+%DIFDELCMD < \end{aligned}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < \caption{A Sample Derivation for Algorithmic Typing}
+%DIFDELCMD < \label{fig:alg:sample}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend Figure~\ref{fig:alg:sample} shows a sample derivation of the algorithm.
+It checks the application $(\lam x)~()$ against the unit type.
+According to the algorithm, we apply Rule 18 (subsumption), changing to inference mode.
+Type inference of the application breaks into two steps by Rule 26:
+first we infer the type of the function,
+and then the application inference judgment helps to determine the return type.
+In the following 5 steps the type of the identity function, $\lam x$, is inferred to be $\al \to \al$:
+checking the body of the lambda function (Rule 25),
+switching from check mode to inference mode (Rule 18),
+inferring the type of a term variable (Rule 22),
+solving a subtyping between existential variables (Rule 12) and
+garbage collecting the term variable $x$ (Rule 3).
+
+After that, Rule 28 changes the application inference judgment to
+a check of the argument against the input type $\al$ and returns the output type $\al$.
+Checking $()$ against the existential variable $\al$ solves $\al$ to the unit type $1$
+through Rules 18, 24 and 16.
+Immediately after $\al$ is solved, the algorithm replaces every occurrence of $\al$ with $1$.
+Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which is finished off by Rule 4.
+Finally we get an empty worklist, indicating the success of the whole derivation.
+
+\DIFaddbegin \begin{figure}
+\begin{gather*}
+\begin{aligned}
+           & \nil \Vdash (\lam x)~() \Lto 1\\
+\rrule{18} & \nil \Vdash (\lam x)~() \To_a a\le 1\\
+\rrule{26} & \nil \Vdash (\lam x) \To_b (\appInfAlg{b}{()}[a][a\le 1])\\
+\rrule{25} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash x\Lto \bt\\
+\rrule{18} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash x\To_b b\le \bt\\
+\rrule{22} & \nil,\al,\bt \Vdash \appInfAlg{\al\to\bt}{()}[a][a\le 1], x:\al \Vdash \al\le \bt\\
+\rrule{12} & \nil,\al \Vdash \appInfAlg{\al\to\al}{()}[a][a\le 1], x:\al\\
+\rrule{3}  & \nil,\al \Vdash \appInfAlg{\al\to\al}{()}[a][a\le 1]\\
+\rrule{28} & \nil,\al \Vdash \al\le 1 \Vdash () \Lto \al\\
+\rrule{18} & \nil,\al \Vdash \al\le 1 \Vdash () \To_a a\le \al\\
+\rrule{24} & \nil,\al \Vdash \al\le 1 \Vdash 1\le \al\\
+\rrule{16} & \nil \Vdash 1\le 1\\
+\rrule{4}  & \nil
+\end{aligned}
+\end{gather*}
+\caption{A Sample Derivation for Algorithmic Typing}
+\label{fig:alg:sample}
+\end{figure}
+
+\DIFaddend In summary, our \DIFdelbegin \DIFdel{algorithm accepts the type checking }\DIFdelend \DIFaddbegin \DIFadd{type checking algorithm accepts }\DIFaddend $(\lam x)~() \Lto 1$.
+
+\paragraph{Non-overlapping and Deterministic Reduction}
+An important feature of our algorithmic rules is that they are directly
+implementable. Indeed, although written in the form of reduction rules, they do
+not overlap and are thus deterministic.
+\DIFdelbegin \DIFdel{This has the added benefit that our
+algorithm runs in polynomial time, which makes it suitable for practical use.
+}\DIFdelend %DIF > This has the added benefit that our % INCORRECT!
+%DIF > algorithm runs in polynomial time, which makes it suitable for practical use.
+
+Consider in particular Rules 8 and 9, which correspond to the declarative rules
+$\mathtt{{\le}\forall L}$ and $\mathtt{{\le}\forall R}$. While those
+declarative rules both match the goal $\all A\le \all[b]B$,
+we have eliminated this overlap in the algorithm by restricting Rule 8
+($B\neq\all B'$) and thus always applying Rule 9 to $\all A\le \all[b]B$.
+
+Similarly, the declarative rule $\mathtt{DeclSub}$ overlaps highly with the
+other checking rules. Its algorithmic counterpart is Rule 18. Yet, we have
+avoided the overlap with other algorithmic checking rules by adding
+side-conditions to Rule 18, namely $e\neq\lam e'$ and $B\neq\all B'$.
+
+These restrictions have not been imposed arbitrarily:
+we formally prove that the restricted algorithm is still complete.
+In Section~\ref{sec:metatheory:non-overlapping} we discuss the relevant metatheory,
+with the help of a non-overlapping version of the declarative system.
+
+
+\section{Metatheory}\label{sec:metatheory}
+
+This section presents the metatheory of the algorithmic system
+presented in the previous section. We show that three main results hold: 
+\emph{soundness}, \emph{completeness} and \emph{decidability}.
+These three results have been mechanically formalized and proved in the 
+Abella theorem prover~\cite{AbellaDesc}.
+
+%-------------------------------------------------------------------------------
+\subsection{Declarative Worklist and Transfer}
+%\jimmy{The transfer rule outputs declarative judgment chains, which are later processed by another declarative relation, handling all the guessing.}
+
+\begin{figure}[t]
+\begin{gather*}
+\begin{aligned}
+\text{Declarative worklist}\qquad&\Om &::=&\quad \nil \mid \Om, a \mid \Om, x: A \mid \Om \Vdash \jg
+\end{aligned}
+\end{gather*}
+\hfill \framebox{$\Gm \sto \Om$} \hfill $\Gm$ instantiates to $\Om$.
+\begin{gather*}
+\inferrule*[right=$\mathtt{{\sto}}\Om$]
+{~}
+{\Om \sto \Om}
+\quad
+\inferrule*[right=$\mathtt{{\sto}\al}$]
+{\Om\vdash\tau \\ \Om,[\tau/\al]\Gm \sto \Om}
+{\Om,\al,\Gm \sto \Om}
+\end{gather*}
+\caption{Declarative Worklists and Instantiation}
+\label{fig:trans}
+\end{figure}
+
+To aid formalizing the correspondence between the declarative and algorithmic
+systems, we introduce the notion of a declarative worklist $\Om$, defined in
+Figure~\ref{fig:trans}. A declarative worklist $\Om$ has the same structure as an
+algorithmic worklist $\Gm$, but does not contain any existential variables $\al$.
+
+\paragraph{Worklist instantiation.}
+The relation $\Gm \sto \Om$ expresses that the algorithmic worklist $\Gm$ can 
+be instantiated to the declarative worklist $\Om$, by appropriately instantiating
+all existential variables $\al$ in $\Gm$ with well-scoped monotypes $\tau$.
+The rules of this instantiation relation are shown in Figure~\ref{fig:trans} too.
+Rule $\mathtt{{\sto}\al}$ replaces the first existential variable with a well-scoped monotype and
+repeats the process on the resulting worklist until no existential variable remains
+and thus the algorithmic worklist has become a declarative one.
+In order to maintain well-scopedness,
+the substitution is applied to all the judgments and term variable bindings in the scope of $\al$.
+
+Observe that the instantiation $\Gm\sto\Om$ is not deterministic.
+% \bruno{Do you mean here
+%   ``is not deterministic''? Would that be more appropriate?}
+From left to right, there are infinitely many possibilities to instantiate an existential variable and
+thus infinitely many declarative worklists that one can get from an algorithmic one.
+In the other direction, any valid monotype in $\Om$ can be abstracted to an
+existential variable in $\Gm$. Thus different $\Gm$'s can be instantiated to the same
+$\Om$.
+
+Lemmas~\ref{lem:insert} and \ref{lem:extract}
+generalize Rule $\mathtt{{\sto}\al}$ from substituting the first existential variable
+to substituting any existential variable.
+
+\begin{lemma}[Insert]\label{lem:insert}
+If $\Gm_L, [\tau/\al]\Gm_R \sto \Om$ and $\Gm_L\vdash \tau$
+, then $\Gm_L, \al, \Gm_R \sto \Om$.
+\end{lemma}
+\begin{lemma}[Extract]\label{lem:extract}
+If $\Gm_L, \al, \Gm_R \sto \Om$
+, then there exists $\tau$ s.t. $\Gm_L\vdash\tau$ and $\Gm_L, [\tau/\al]\Gm_R \sto \Om$.
+\end{lemma}
+
+\begin{figure}[t]
+\hfill \framebox{$\|\Om\|$} \hfill Judgment erasure.
+\begin{gather*}
+\begin{aligned}
+\|\nil\| &= \nil\\
+\|\Om,a\| &= \|\Om\|, a\\
+\|\Om,x:A\| &= \|\Om\|, x:A\\
+\|\Om\Vdash\jg\| &= \|\Om\|
+\end{aligned}
+\end{gather*}
+
+\hfill \framebox{$\Om \rto \Om'$} \hfill Declarative transfer.
+\begin{gather*}
+\begin{aligned}
+\Om,a &\rto \Om \\  \Om,x:A & \rto \Om\\
+\Om\Vdash A\le B &\rto \Om &\text{ when } \|\Om\| \vdash A\le B\\
+\Om\Vdash e\Lto A &\rto \Om & \text{ when } \|\Om\| \vdash e\Lto A\\
+\Om\Vdash e\To_a \jg &\rto \Om\Vdash[A/a]\jg & \text{ when } \|\Om\| \vdash e\To A\\
+\Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg & \text{ when } \|\Om\| \vdash \appInf{A}{e}{C}\\
+\end{aligned}
+\end{gather*}
+\caption{Declarative Transfer.}
+\label{fig:decl:worklist}
+\end{figure}
+
+\paragraph{Declarative transfer.}
+Figure~\ref{fig:decl:worklist} defines a relation $\Om \rto \Om'$,
+which transfers all judgments in the declarative worklists to the
+declarative type system. This relation checks that every judgment entry in the worklist
+holds using a corresponding conventional declarative judgment. 
+The typing contexts of declarative judgments are recovered using an
+auxiliary erasure function $\|\Om\|$
+\footnote{In the proof script we do not use the erasure function,
+for the declarative system and well-formedness judgments automatically fit
+the non-erased declarative worklist just as declarative contexts.}.
+The erasure function simply drops all judgment entries from the worklist,
+keeping only variable and type variable declarations.
+
+%-------------------------------------------------------------------------------
+\subsection{Non-Overlapping Declarative System}
+\label{sec:metatheory:non-overlapping}
+
+DK's declarative system, shown in Figures \ref{fig:decl:sub} and
+\ref{fig:decl:typing}, has a few overlapping rules. In contrast, our algorithm
+has removed all overlap; at most one rule applies in any given situation.
+This discrepancy makes it more difficult to relate the two systems.
+
+To simplify matters, we introduce an intermediate system that is still declarative
+in nature, but has no overlap. This intermediate system differs only in a few 
+rules from DK's declarative system\DIFdelbegin \DIFdel{; these are the changes}\DIFdelend :
+\begin{enumerate}
+\item Restrict the shape of $B$ in the rule $\mathtt{\forall L}$ subtyping rule:
+$$
+\inferrule*[right=$\mathtt{\forall L'}$]
+{B \neq \all[b]B' \\ \Psi \vdash \tau \\ \Psi \vdash [\tau/a]A \le B}
+{\Psi \vdash \all A \le B}
+$$
+\item Drop the redundant rule $\mathtt{Decl1I}$,
+which can be easily derived by a combination of
+$\mathtt{DeclSub}$, $\mathtt{Decl1I{\To}}$ and $\mathtt{{\le}Unit}$:
+$$
+\inferrule*[right=$\mathtt{DeclSub}$]
+{
+    \inferrule*[right=$\mathtt{Decl1I{\To}}$]
+    {~}
+    {\Psi \vdash () \To 1}
+    \\
+    \inferrule*[right=$\mathtt{{\le}Unit}$]
+    {~}
+    {\Psi \vdash 1 \le 1}
+}
+{\Psi \vdash () \Lto 1}
+$$
+\item Restrict the shapes of $e$ and $A$ in the subsumption rule $\mathtt{DeclSub}$:
+$$
+\inferrule*[right=$\mathtt{DeclSub'}$]
+{e \neq \lam e' \\ A \neq \all A' \\ \Psi \vdash e \To A \\ \Psi \vdash A \le B}
+{\Psi \vdash e \Lto B}
+$$
+\end{enumerate}
+The resulting declarative system has no overlapping rules
+and more closely resembles the algorithmic system,
+which contains constraints of the same shape.
+
+We have proven soundness and completeness of the non-overlapping declarative
+system with respect to the overlapping one to establish their equivalence.
+Thus the restrictions do not change the expressive power of the system.
+Modification (2) is relatively easy to justify, with the derivation given above:
+the rule is redundant and can be replaced by a combination of three other rules.
+Modifications (1) and (3) require inversion lemmas for the rules that overlap.
+Firstly, Rule $\mathtt{\forall L}$ overlaps with Rule $\mathtt{\forall R}$ for the judgment
+$\Psi \vdash \all A \le \all[b]B$.
+The following inversion lemma for Rule $\mathtt{\forall R}$ resolves the overlap:
+\begin{lemma}[Invertibility of $\mathtt{\forall R}$]\label{lem:inv_allR}
+If $\Psi \vdash A \le \all B$ then $\Psi, a \vdash A \le B$.
+\end{lemma}
+The lemma implies that preferring Rule $\mathtt{\forall R}$ does not affect the derivability of the judgment.
+Therefore the restriction $B \neq \all[b]B'$ in $\mathtt{\forall L'}$ is valid.
+
+Secondly, Rule $\mathtt{DeclSub}$ overlaps with both $\mathtt{Decl\forall I}$ and $\mathtt{Decl{\to}I}$.
+We have proven two inversion lemmas for these overlaps:
+\begin{lemma}[Invertibility of $\mathtt{Decl\forall I}$]\label{lem:inv_chkAll}
+If $\Psi \vdash e \Lto \all A$ then $\Psi, a \vdash e \Lto A$.
+\end{lemma}
+\begin{lemma}[Invertibility of $\mathtt{Decl{\to}I}$]\label{lem:inv_chkLam}
+If $\Psi \vdash \lam e \Lto A \to B$ then $\Psi, x:A \vdash e \Lto B$.
+\end{lemma}
+These lemmas express that applying the more specific rules, rather than the more general rule $\mathtt{DeclSub}$, does not reduce the expressive power.
+
+The proofs of the above two lemmas rely on an important property of the
+declarative system, the \emph{subsumption lemma}. To be able to formulate this
+lemma, Figure~\ref{fig:context_subtyping} introduces the \emph{context
+subtyping relation} $\Psi \le \Psi'$. Context $\Psi$ subsumes context $\Psi'$ if they
+bind the same variables in the same order, but the types $A$ of the term variables $x$
+in the former are subtypes of types $A'$ assigned to those term variables in the latter.
+Now we can state the subsumption lemma:
+
+\begin{figure}[t]
+\framebox{$\Psi' \le \Psi$}
+$$\begin{aligned}
+\inferrule*[right=$\mathtt{CtxSubEmpty}$]
+{~}{\nil \le \nil}\qquad
+\inferrule*[right=$\mathtt{CtxSubTyVar}$]
+{\Psi' \le \Psi}{\Psi', a \le \Psi, a}\qquad
+\inferrule*[right=$\mathtt{CtxSubTmVar}$]
+{\Psi' \le \Psi \\ \Psi \vdash A' \le A}{\Psi', x:A' \le \Psi, x:A}\qquad
+\end{aligned}$$
+\caption{Context Subtyping}
+\label{fig:context_subtyping}
+\end{figure}
+
+\begin{lemma}[Subsumption]\label{lem:subsumption}
+Given $\Psi' \le \Psi$:
+\begin{enumerate}
+    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A'$;
+    \item If $\Psi \vdash e \To B$ then there exists
+        $B'$ s.t. $\Psi \vdash B' \le B$ and $\Psi' \vdash e \To B'$;
+    \item If $\Psi \vdash \appInf{A}{e}{C}$ and $\Psi \vdash A' \le A$,
+        then there exists $C'$ s.t. $\Psi \vdash C' \le C$ and $\Psi' \vdash \appInf{A'}{e}{C'}$.
+\end{enumerate}
+\end{lemma}
+This lemma expresses that any derivation in a context $\Psi$ has a corresponding derivation in any context
+$\Psi'$ that it subsumes.
+
+We have tried to follow DK's manual proof of this lemma,
+but we discovered several problems in their reasoning that we have been unable to address.
+Fortunately we have found a different way to prove the lemma.
+The details of this issue can be found in Appendix~\ref{appendix:subsumption}.
+
+\paragraph{Three-Way Soundness and Completeness Theorems}
+We now have three systems that can be related: DK's overlapping declarative system,
+our non-overlapping declarative system, and our algorithmic system.
+We have already established the first relation, that the two declarative
+systems are equivalent.
+In what follows, we will establish the soundness of our algorithm directly
+against the original overlapping declarative system. However, we have found
+that showing completeness of the algorithm is easier against the
+non-overlapping declarative system. Of course, as a corollary, it follows that
+our algorithm is also complete with respect to DK's declarative system.
+
+%-------------------------------------------------------------------------------
+\subsection{Soundness}
+
+Our algorithm is sound with respect to DK's declarative system.
+For any worklist $\Gm$ that reduces successfully,
+there is a valid instantiation $\Om$ that transfers all judgments
+\DIFdelbegin \DIFdel{successfully }\DIFdelend to the declarative system.
+\begin{theorem}[Soundness]
+If \emph{wf }$\Gm$ and $\Gm \redto \nil$,
+then there exists $\Om$ s.t. $\Gm\sto\Om$ and $\Om\redto\nil$.
+\end{theorem}
+
+The proof proceeds by induction on the derivation of $\Gm\redto\nil$.
+Interesting cases are those involving existential variable instantiations,
+including Rules 10, 11, 21 and 29.
+Applications of Lemmas \ref{lem:insert} and \ref{lem:extract}
+help analyse the full instantiation of those existential variables.
+For example, when $\al$ is solved to $\al[1] \to \al[2]$ in the algorithm,
+applying the Extract lemma gives two instantiations $\al[1] = \sigma$ and $\al[2] = \tau$.
+It follows that $\al = \sigma \to \tau$, which enables the induction hypothesis
+and finishes the corresponding case. Some immediate corollaries which
+show the soundness for specific judgment forms are: 
+
+
+\begin{corollary}[Soundness, single judgment form]
+Given \emph{wf }$\Gm$:
+\begin{enumerate}
+    \item If $\Gm \Vdash A \le B \redto \nil$\\
+        then there exist $A', B', \Om$ s.t.
+        $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$ and $\|\Om\| \vdash A' \le B'$;
+    \item If $\Gm \Vdash e \Lto A \redto \nil$\\
+        then there exist $ A', \Om$ s.t.
+        $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$ and $\|\Om\| \vdash e \Lto A'$;
+    \item If $\Gm \Vdash e \To_a \jg \redto \nil$ for any $\jg$\\
+        then there exists $\Om, \jg', A$ s.t.
+        $\Gm \sto \Om$ and $\|\Om\| \vdash e \To A$;
+    \item If $\Gm \Vdash \appInfAlg{A}{e} \redto \nil$ for any $\jg$\\
+        then there exists $\Om, \jg', A', C$ s.t.
+        $\Gm \Vdash \appInfAlg{A}{e} \sto \Om \Vdash \appInfAlg{A'}{e}[a][\jg']$
+            and $\|\Om\| \vdash \appInf{A'}{e}{C}$.
+\end{enumerate}
+\end{corollary}
+
+%-------------------------------------------------------------------------------
+\subsection{Completeness}
+
+The completeness of our algorithm means that any derivation in the
+declarative system has an algorithmic counterpart.
+%DIF >  \jimmy{In response to "treat declarative and algorithmic worklists as a subsets":}
+\DIFaddbegin \DIFadd{We explicitly relate between an algorithmic context $\Gm$ and
+a declarative context $\Omega$ to avoid potential confusion.
+}\DIFaddend 
+
+\begin{theorem}[Completeness]
+If \emph{wf }$\Gm$ and $\Gm\sto\Om$ and $\Om\redto\nil$, then $\Gm \redto \nil$.
+\label{thm:completeness}
+\end{theorem}
+
+We prove completeness by induction on the derivation of $\Om\redto\nil$
+and use the non-overlapping declarative system.
+Since the declarative worklist is reduced judgment by judgment
+(shown in Figure~\ref{fig:decl:worklist}),
+the induction always analyses the first judgment by a small step.
+As the algorithmic system introduces existential variables,
+a declarative rule may correspond to multiple algorithmic rules,
+and thus we analyse each of the possible cases.
+% \jimmy{Cite DK's proof as the sketch.}
+% I later think it might not be needed; the induction is not that hard to think of
+
+Most cases are relatively easy to prove.
+The Insert and Extract lemmas are applied when the algorithm uses existential variables,
+but transferred to a monotype for the declarative system,
+such as Rules 6, 8, 10, 11, 12-17, 21, 25, 27 and 29.
+
+Algorithmic Rules 10 and 11 require special treatment.
+When the induction reaches the $\mathtt{{\le}{\to}}$ case,
+the first judgment is of shape $A_1 \to A_2 \le B_1 \to B_2$.
+One of the corresponding algorithmic judgments is $\al \le A \to B$.
+However, the case analysis does not imply that $\al$ is fresh in $A$ and $B$,
+therefore Rule~10 cannot be applied and the proof gets stuck.
+The following lemma helps us out in those cases:
+the success in declarative subtyping indicates the freshness of $\al$ in $A$ and $B$
+in its corresponding algorithmic judgment.
+In other words, the declarative system does not accept infinite types.
+A symmetric lemma holds for $A\to B \le \al$.
+%thus, as an example, we cannot find a monotype $\tau$ such that $\tau\le 1\to \tau$,
+%which could be transferred by $\al\le 1\to\al$.
+
+\begin{lemma}[Prune Transfer for Instantiation]\label{lem:prune_inst}
+If $(\Gm \Vdash \al \le A \to B) \sto (\Om \Vdash C \le A_1 \to B_1)$ and
+$\|\Om\| \vdash C \le A_1 \to B_1$, then $\al\notin FV(A) \cup FV(B)$.
+\end{lemma}
+
+The following corollary is derived immediately from Theorem~\ref{thm:completeness}.
+\DIFdelbegin %DIFDELCMD < \begin{corollary}[Completeness, single judgment form]
+%DIFDELCMD < Given \emph{wf }$\Gm$ containing no judgment chains:
+%DIFDELCMD < \begin{enumerate}
+%\begin{enumerate}%DIFAUXCMD
+%DIFDELCMD <     \item If $\Om \vdash A' \le B'$ and $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$
+%DIFDELCMD <         \\then $\Gm \Vdash A \le B \redto \nil$;
+%DIFDELCMD <     \item If $\Om \vdash e \Lto A'$ and $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$
+%DIFDELCMD <         \\then $\Gm \Vdash e \Lto A \redto \nil$;
+%DIFDELCMD <     \item If $\Om \vdash e \To A$ and $\Gm \Vdash e \To_a 1 \le 1 \sto \Om \Vdash e \To_a 1 \le 1$
+%DIFDELCMD <         \\then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
+%DIFDELCMD <     \item If $\Om \vdash \appInf{A'}{e}{C}$ and
+%DIFDELCMD <         $\Gm \Vdash \appInfAlg{A}{e}[a][1 \to 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \to 1]$
+%DIFDELCMD <         \\then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
+
+%\end{enumerate}%DIFAUXCMD
+%DIFDELCMD < \end{enumerate}
+%DIFDELCMD < \end{corollary}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{corollary}[Completeness, single judgment form]
+Given \emph{wf }$\Gm$ containing no judgments:
+\begin{enumerate}
+    \item If $\Om \vdash A' \le B'$ and $\Gm \Vdash A \le B \sto \Om \Vdash A' \le B'$
+        \\then $\Gm \Vdash A \le B \redto \nil$;
+    \item If $\Om \vdash e \Lto A'$ and $\Gm \Vdash e \Lto A \sto \Om \Vdash e \Lto A'$
+        \\then $\Gm \Vdash e \Lto A \redto \nil$;
+    \item If $\Om \vdash e \To A$ and $\Gm \Vdash e \To_a 1 \le 1 \sto \Om \Vdash e \To_a 1 \le 1$
+        \\then $\Gm \Vdash e \To_a 1 \le 1 \redto \nil$;
+    \item If $\Om \vdash \appInf{A'}{e}{C}$ and
+        $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \sto \Om \Vdash \appInfAlg{A'}{e}[a][1 \le 1]$
+        \\then $\Gm \Vdash \appInfAlg{A}{e}[a][1 \le 1] \redto \nil$.
+\end{enumerate}
+\end{corollary}
+\DIFaddend 
+
+%-------------------------------------------------------------------------------
+\subsection{\textcolor{red}{Termination and } Decidability}
+
+Finally, we show that our algorithm \DIFdelbegin \DIFdel{terminates. In other words:
+}%DIFDELCMD < \begin{theorem}[Termination]
+%DIFDELCMD < %%%
+\DIFdel{Given a well-formed input }\DIFdelend \DIFaddbegin \DIFadd{is decidable:
+}\begin{theorem}[Decidability]
+\DIFadd{Given }\emph{\DIFadd{wf}} \DIFaddend $\Gm$, \DIFdelbegin \DIFdel{the algorithm terminates}\DIFdelend \DIFaddbegin \DIFadd{it is decidable whether $\Gm\redto\nil$ or not}\DIFaddend .
+\end{theorem}
+Our \DIFdelbegin \DIFdel{termination }\DIFdelend \DIFaddbegin \DIFadd{decidability }\DIFaddend proof is based on a lexicographic group of induction measures\\
+$\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
+on the worklist $\Gm$. Formal definitions of these measures can be found in
+Figure~\ref{fig:measures} in the Appendix. The first two, 
+$|\cdot|_e$ and $|\cdot|_\Leftrightarrow$, measure the total size of terms
+and the total difficulty of judgments, respectively. In the latter, check judgments
+count for 2, inference judgments for 1 and function inference judgments for 3.
+\DIFdelbegin \DIFdel{Other }\DIFdelend \DIFaddbegin \DIFadd{Another }\DIFaddend two measures, $|\cdot|_\forall$ and $|\cdot|_\to$, count the total number of
+universal quantifiers and function types, respectively. Finally,
+$|\cdot|_{\al}$ counts the number of existential variables in the worklist,
+and $|\cdot|$ is simply the length of the worklist.
+
+It is not difficult to see that all but two algorithmic reduction rules
+decrease the group of measures.  (The result of Rule 29 could be directly
+reduced by Rule 28, which decreases the measures.) The two exceptions are Rules
+10 and 11. Both rules increase the number of existential variables without
+decreasing the number of universal quantifiers. However, they are both
+immediately followed by Rule 7, which breaks the subtyping problem into two
+smaller problems of the form $\al \le A$ and $A \le \al$ which we call
+\emph{instantiation judgments}.
+
+We now show that entirely reducing these smaller problems leaves the worklist
+in a state with an overall smaller measure. Our starting point is a 
+worklist \DIFdelbegin \DIFdel{of the form }\DIFdelend $\Gm,\Gm_i$ where $\Gm_i$ are instantiation judgments.
+\begin{gather*}
+\begin{aligned}
+\Gm_i &:= \nil \mid \Gm_i, \al\le A \mid \Gm_i, A\le\al \quad
+    \text{where } \al\notin FV(A) \cup FV(\Gm_i)
+\end{aligned}
+\end{gather*}
+Fully reducing these instantiation judgments at the top of the worklist
+has a twofold impact. Firstly, new entries may be pushed onto the worklist which
+are not instantiation judgments. This only happens when $\Gm_i$ contains a universal quantifier
+that is reduced by Rule 8 or 9. The new entries then are of the form $\Gm_\le$:
+\begin{gather*}
+\begin{aligned}
+\Gm_\le &:= \nil \mid \Gm_\le, a \mid \Gm_\le, \al \mid \Gm_\le, A\le B
+\end{aligned}
+\end{gather*}
+Secondly, reducing the instantiation judgments may also affect the remainder of the worklist $\Gm$,
+by solving existing existentials and introducing new ones. This worklist update is captured in the 
+update judgment $\Gm \jExt \Gm'$ defined in Figure~\ref{fig:worklist_ext}.
+For instance, an existential variable instantiation, 
+$\Gm_L,\al,\Gm_R \jExt \Gm_L, \al[1], \al[2], [\al[1] \to \al[2] / \al]\Gm_R$,
+can be derived as a combination of the three rules that define the update relation.
+
+\begin{figure}
+\hfill \framebox{$\Gm\jExt\Gm'$} \hfill \llap{$\Gm$ updates to $\Gm'$}.
+\begin{gather*}
+\inferrule*[right=$\mathtt{\jExt id}$]
+    {~}{\Gm\jExt\Gm}
+\qquad
+\inferrule*[right=$\mathtt{\jExt solve}$]
+    {|A|_\forall = 0 \quad \Gm_L,[A/\al]\Gm_R \jExt \Gm'}{\Gm_L,\al,\Gm_R \jExt \Gm'}
+\qquad
+\inferrule*[right=$\mathtt{\jExt \al}$]
+    {\Gm_L,\al,\Gm_R \jExt \Gm'}{\Gm_L,\Gm_R \jExt \Gm'}
+\end{gather*}
+\caption{Worklist Update}\label{fig:worklist_ext}
+\end{figure}
+
+The good news is that worklist updates do not affect the three main worklist measures:
+\newcommand{\equivGm}[1]{|\Gm|_{#1} = |\Gm'|_{#1}}
+\begin{lemma}[Measure Invariants of Worklist Extension]\label{lemma:inst:invariant}
+If $\Gm\jExt\Gm'$ then $\equivGm{e}$ and $\equivGm\Leftrightarrow$ and $\equivGm\forall$.
+\end{lemma}
+
+Moreover, we can characterise the reduction of the instantiation judgments as follows.
+\begin{lemma}[Instantiation Decidability]\label{lemma:inst:decidable}
+For any well-formed algorithmic worklist $(\Gm, \Gm_i)$:
+\begin{enumerate}[1)]
+    \item If $|\Gm_i|_\forall = 0$,
+        then there exists $\Gm'$\\
+        s.t. $(\Gm, \Gm_i) \redto \Gm'$ and $|\Gm'|_{\al} = |\Gm|_{\al} - |\Gm_i|$ and $\Gm\jExt\Gm'$.
+    \item If $|\Gm_i|_\forall > 0$,
+        then there exist $\Gm', \Gm_\le$\\
+        s.t. $(\Gm, \Gm_i) \redto (\Gm', \Gm_\le)$ and $|\Gm_\le|_\forall = |\Gm_i|_\forall - 1$ and $\Gm\jExt\Gm'$.
+\end{enumerate}
+\end{lemma}
+Hence, reducing the instantiation judgment prefix $\Gm_i$ either
+decreases the number of universal quantifiers or 
+eliminates one existential variable per instantiation judgment.
+The proof of this lemma proceeds by induction on the measure $2*|\Gm_i|_\to + |\Gm_i|$
+of the instantiation judgment list $\Gm_i$.
+
+Let us go back to the whole algorithm and summarize our findings.
+The \DIFdelbegin \DIFdel{termination }\DIFdelend \DIFaddbegin \DIFadd{decidability }\DIFaddend theorem is shown through a lexicographic group of induction measures
+$\langle |\Gm|_e, |\Gm|_\Leftrightarrow, |\Gm|_\forall, |\Gm|_{\al}, |\Gm|_\to + |\Gm| \rangle$
+which is decreased by nearly all rules.
+In the exceptional case that the measure does not decrease immediately, 
+we encounter an instantiation judgment at the top of the worklist. We can then
+make use of Lemma~\ref{lemma:inst:decidable} to show that $|\Gm|_{\al}$ or $|\Gm|_\forall$ decreases
+when that instantiation judgment is consumed or partially reduced.
+Moreover, Lemma~\ref{lemma:inst:invariant} establishes
+that no higher-priority measure component increases.
+Hence, in the exceptional case we have an overall measure decrease too.
+
+Combining all three main results (soundness, completeness and \DIFdelbegin \DIFdel{termination}\DIFdelend \DIFaddbegin \DIFadd{decidability}\DIFaddend ), we conclude that the declarative system is decidable
+by means of our algorithm.
+\begin{corollary}[Decidability of Declarative Typing]
+Given \emph{wf }$\Om$, it is decidable whether $\Om\redto\nil$ or not.
+\end{corollary}
+
+% ---------------------------------------------
+\subsection{Abella and Proof Statistics}
+\DIFaddbegin 
+
+\DIFaddend We have chosen the Abella (v2.0.7-dev
+\footnote{We use a development version because the developers
+just fixed a serious bug that accepts a simple proof of false,
+which also affects \DIFdelbegin \DIFdel{the completeness of one of }\DIFdelend our \DIFdelbegin \DIFdel{proofs}\DIFdelend \DIFaddbegin \DIFadd{proof}\DIFaddend .
+Specifically, our scripts compile against commit 92829a of Abella's GitHub repository.}
+) proof assistant~\cite{AbellaDesc} to develop our formalization.
+Abella is designed to help with formalizations of programming languages,
+due to its built-in support for variable binding and
+the $\lambda$-tree syntax~\cite{miller2000abstract}, which is a form of HOAS.
+Nominal variables, or $\nabla$-quantified variables, are used as an unlimited name supply,
+which supports explicit freshness control and substitutions.
+Although Abella lacks packages, tactics and support for modules,
+its higher-order unification and the ease of formalizing substitution-intensive relations
+are very helpful\DIFdelbegin \DIFdel{for our formalization.
+}\DIFdelend \DIFaddbegin \DIFadd{.
+}\DIFaddend 
+
+\DIFaddbegin \DIFadd{While the algorithmic rules are in a small-step style,
+the proof script rewrites them into a big-step style
+for easier inductions.
+In addition, we do prove the equivalence of the two representations.
+}
+
+\DIFaddend \paragraph{Statistics of the Proof}
+The proof script consists of \DIFdelbegin \DIFdel{7683 }\DIFdelend \DIFaddbegin \DIFadd{7977 }\DIFaddend lines of Abella code with a total of
+\DIFdelbegin \DIFdel{51 definitions and 567 }\DIFdelend \DIFaddbegin \DIFadd{60 definitions and 596 }\DIFaddend theorems.
+Figure~\ref{fig:proof_statistics} briefly summarizes the contents of each file.
+The files are linearly dependent due to \DIFdelbegin \DIFdel{the limitation }\DIFdelend \DIFaddbegin \DIFadd{limitations }\DIFaddend of Abella.
+
+\DIFdelbegin %DIFDELCMD < \begin{figure}[ht]
+%DIFDELCMD < \centering\begin{tabular}{|c|c|c|l|}\hline
+%DIFDELCMD <     File(s) & SLOC & \#Theorems & Description\\\hline
+%DIFDELCMD <     olist.thm, nat.thm  &  309 & 56  & Basic data structures\\\hline
+%DIFDELCMD <     typing.thm          &  238 & 5   & Declarative \& algorithmic system, debug examples\\\hline
+%DIFDELCMD <     decl.thm            &  226 & 33  & Basic declarative properties\\\hline
+%DIFDELCMD <     order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strengthening\\\hline
+%DIFDELCMD <     alg.thm             &  655 & 72  & Basic algorithmic properties\\\hline
+%DIFDELCMD <     trans.thm           &  628 & 53  & \makecell[l]{Worklist instantiation and declarative transfer\\
+%DIFDELCMD <                             Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
+%DIFDELCMD <     declTyping.thm      &  944 & 72  & \makecell[l]{Non-overlapping declarative system \\
+%DIFDELCMD <                             Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll},
+%DIFDELCMD <                                 \ref{lem:inv_chkLam}, \ref{lem:subsumption}}\\\hline
+%DIFDELCMD <     soundness.thm       & 1086 & 70  & Soundness theorem; aux. lemmas on transfer\\\hline
+%DIFDELCMD <     depth.thm           &  206 & 14  & The $|\cdot|_\to$ measure; Lemma~\ref{lem:prune_inst}\\\hline
+%DIFDELCMD <     dcl.thm             &  383 & 12  & Non-overlapping declarative worklist \\\hline
+%DIFDELCMD <     completeness.thm    & 1075 & 61  &
+%DIFDELCMD <                             Completeness theorem; aux. lemmas and relations\\\hline
+%DIFDELCMD <     inst\_decidable.thm &  830 & 42  & Other worklist measures; Lemma~\ref{lemma:inst:decidable}\\\hline
+%DIFDELCMD <     decidability.thm    &  885 & 50  & Termination theorem and decidability corollary\\\hline
+%DIFDELCMD <     \hline\emph{Total}               & 7700 & 567 & (51 definitions in total)\\\hline
+%DIFDELCMD < \end{tabular}
+%DIFDELCMD < \caption{Statistics for the proof scripts}
+%DIFDELCMD < \label{fig:proof_statistics}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{figure}[t]
+\centering\begin{tabular}{|c|c|c|l|}\hline
+    File(s) & SLOC & \#Theorems & Description\\\hline
+    olist.thm, nat.thm  &  311 & 57  & Basic data structures\\\hline
+    typing.thm          &  245 & 7   & Declarative \& algorithmic system, debug examples\\\hline
+    decl.thm            &  226 & 33  & Basic declarative properties\\\hline
+    order.thm           &  235 & 27  & The $|\cdot|_\forall$ measure; decl. subtyping strengthening\\\hline
+    alg.thm             &  679 & 80  & Basic algorithmic properties\\\hline
+    trans.thm           &  616 & 53  & \makecell[l]{Worklist instantiation and declarative transfer\\
+                            Lemmas~\ref{lem:insert}, \ref{lem:extract}}\\\hline
+    declTyping.thm      &  909 & 70  & \makecell[l]{Non-overlapping declarative system \\
+                            Lemmas~\ref{lem:inv_allR}, \ref{lem:inv_chkAll},
+                                \ref{lem:inv_chkLam}, \ref{lem:subsumption}}\\\hline
+    soundness.thm       & 1107 & 78  & Soundness theorem; aux. lemmas on transfer\\\hline
+    depth.thm           &  206 & 14  & The $|\cdot|_\to$ measure; Lemma~\ref{lem:prune_inst}\\\hline
+    dcl.thm             &  380 & 12  & Non-overlapping declarative worklist \\\hline
+    completeness.thm    & 1124 & 61  &
+                            Completeness theorem; aux. lemmas and relations\\\hline
+    inst\_decidable.thm &  837 & 45  & Other worklist measures; Lemma~\ref{lemma:inst:decidable}\\\hline
+    decidability.thm    &  983 & 57  & Decidability theorem and corollary\\\hline
+    smallStep.thm       &  119 &  2  & The equivalence between big-step and small-step\\\hline
+    \hline\emph{Total}               & 7977 & 596 & (60 definitions in total)\\\hline
+\end{tabular}
+\caption{Statistics for the proof scripts}
+\label{fig:proof_statistics}
+\end{figure}
+\DIFaddend 
+
+\section{Discussion}
+
+% \subsection{Overlapping Rules} Already discussed in previous sections
+
+This section discusses some insights that we gained from our work and contrasts
+the scoping mechanisms we have employed with those in DK's algorithm.
+We also discuss a way to improve the precision of their scope tracking.
+Furthermore we discuss and sketch an extension of our algorithm with
+an elaboration to a target calculus\DIFaddbegin \DIFadd{, and discuss an extension of our algorithm
+with scoped type variables~\mbox{%DIFAUXCMD
+\cite{scoped-type-variables}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend .
+
+\begin{comment}
+\subsection{Implementation}
+Anything to say about the implementation? Do we have one?
+\end{comment}
+
+\subsection{Contrasting our scoping mechanisms with DK's scoping}\label{sec:discussion:scoping}
+
+A nice feature of our worklists is that, simply by interleaving variable declarations and
+judgment chains, they make the scope of variables
+precise.  DK's algorithm deals with garbage collecting variables in a
+different way: through type variable or existential variable
+markers (as discussed in Section~\ref{ssec:DK_Algorithm}).  Despite
+the sophistication employed in DK's algorithm to keep scoping precise,
+there is still a chance that unused existential variables leak their
+scope to an output context and accumulate indefinitely.
+For example, the derivation of the judgment $(\lam x)~() \Lto 1$ is as follows
+$$
+\inferrule*
+{
+    \inferrule*
+    {
+        \inferrule*
+        {
+            \inferrule*
+            {\ldots x \To \al \ldots \\ \ldots \al \le \bt \ldots}
+            {\Gm, \al, \bt, x:\al \vdash x \Lto \bt \dashv \Gm_1, x:\al}
+        }
+        {\Gm \vdash \lam x \To \al \to \bt \dashv \Gm_1}
+        \\
+        \inferrule*
+        {\ldots () \Lto \al \ldots}
+        {\Gm_1 \vdash \appInf{\al \to \al}{()}{\al} \dashv \Gm_2}
+    }
+    {\Gm \vdash (\lam x)~() \To \al \dashv \Gm_2}
+    \\
+    \inferrule*
+    {~}
+    {\Gm_2 \vdash 1 \le 1 \dashv \Gm_2}
+}
+{\Gm \vdash (\lam x)~() \Lto 1 \dashv \Gm, \al = 1, \bt = \al}
+$$
+where $\Gm_1 := (\Gm, \al, \bt = \al$) solves $\bt$,
+and $\Gm_2 := (\Gm, \al = 1, \bt = \al$) solves both $\al$ and $\bt$.
+
+If the reader is not familiar with DK's algorithm,
+he/she might be confused about the inconsistent types across judgment.
+As an example, $(\lam x)~()$ synthesizes $\al$,
+but the second premise of the subsumption rule uses $1$ for the result.
+This is because a context application $[\Gm,\al=1,\bt=\al]\al = 1$ happens between the premises.
+
+The existential variables $\al$ and $\bt$ are clearly not used after the subsumption rule,
+but according to the algorithm, they are kept in the context
+until some parent judgment recycles a block of variables,
+or to the very end of a type inference task.
+In that sense, DK's algorithm does not control the scoping of variables precisely.
+%However, it is a minor issue that does not affect the soundness and completeness properties.
+
+Two rules we may blame for not garbage collecting correctly are the inference rule for lambda
+functions and an application inference rule:
+$$
+\inferrule*[right=$\mathtt{DK\_{\to}I{\To}}$]
+{\Gamma, \al, \bt, x:\al \vdash e \Lto \bt \dashv \Delta, x:\al, \Theta}
+{\Gamma \vdash \lam e \To \al \to \bt \dashv \Delta}
+\qquad
+\inferrule*[right=$\mathtt{DK\_\forall App}$]
+{\Gamma, \al \vdash [\al/a] \appInf{A}{e}{C} \dashv \Delta}
+{\Gamma \vdash \appInf{\all A}{e}{C} \dashv \Delta}
+$$
+In contrast, Rule 25 of our algorithm collects the existential variables
+right after the second judgment chain,
+and Rule 27 collects one existential variable similarly:
+\[\Gm \Vdash \lam e \To_a \jg \rrule{25}
+\Gm,\al,\bt \Vdash [\al\to\bt/a]\jg, x:\al \Vdash e\Lto \bt\]
+\[\Gm \Vdash \appInfAlg{\all A}{e} \rrule{27} \Gm,\al \Vdash \appInfAlg{[\al/a]A}{e}\]
+It seems impossible to achieve a similar outcome in DK's system by only modifying these two rules.
+Taking $\mathtt{DK\_{\to}I{\To}}$ as an example,
+the declaration or solution for $\al$ and $\bt$ may be referred to by subsequent judgments.
+Therefore leaving $\al$ and $\bt$ in the output context is the only choice,
+when the subsequent judgments cannot be consulted.
+
+To fix the problem, one possible modification is on the algorithmic subsumption rule,
+as garbage collection for a checking judgment is always safe:
+$$
+\inferrule*[right=$\mathtt{DK\_Sub}$]
+{\Gamma, \blacktriangleright_{\al} \vdash e \To A \dashv \Theta \\
+\Theta \vdash [\Theta]A \le [\Theta]B \dashv \Delta, \blacktriangleright_{\al}, \Delta'}
+{\Gamma \vdash e \Lto B \dashv \Delta}
+$$
+Here we employ the markers in a way they were originally not intended for.
+We create a dummy fresh existential $\al$ and add a marker to the input context of the inference judgment.
+After the subtyping judgment is processed we look for the marker and drop everything afterwards.
+We pick this rule because it is the only one where a checking judgment calls an inference judgment.
+That is the point where our algorithm recycles variables---right after a judgment chain is satisfied.
+After applying this patch, to the best of our knowledge,
+DK's algorithm behaves equivalently to our algorithm in terms of variable scoping.
+However, this exploits markers in a way they were not intended to be used and seems ad-hoc.
+
+% \subsection{Scoped type variables} Not discussed for this paper
+
+%-------------------------------------------------------------------------------
+\subsection{Elaboration}
+
+Type-inference algorithms are often extended with an
+associated elaboration. For example, for languages with implicit
+polymorphism, it is common to have an elaboration to a variant of
+System F~\cite{reynolds1983types}, which recovers type information and explicit type
+applications. Therefore a natural question is whether our algorithm
+can also accommodate such elaboration.
+While our algorithmic reduction does not elaborate to System F,
+we believe that it is not difficult to extend the algorithm with a (type-directed) elaboration.
+We explain the rough idea as follows.
+
+Since the judgment form of our algorithmic worklist contains a collection of judgments,
+elaboration expressions are also generated as a list of equal length to
+the number of judgments (\emph{not judgment chains}) in the worklist.
+As usual, subtyping judgments translate to coercions (denoted by $f$ and
+represented by System F functions),
+all three other types of judgments translate to terms in System F (denoted by $t$).
+
+Let $\Phi$ be the elaboration list, containing translated type coercions and terms:
+$$\Phi ::= \nil \mid \Phi, f \mid \Phi, t$$
+
+Then the form of our algorithmic judgment becomes:
+$$\Gamma \hookrightarrow \Phi$$
+
+We take Rule 18 as an example, rewriting small-step reduction in a relational style,
+$$
+\inferrule*[right=$\mathtt{Translation\_18}$]
+{\Gamma \Vdash e \To_a a \le B \hookrightarrow \Phi, f, t}
+{\Gamma \Vdash e \Lto B \hookrightarrow \Phi, f t}
+$$
+As is shown in the conclusion of the rule,
+a checking judgment at the top of the worklist corresponds to a top element for elaboration.
+The premise shows that one judgment chain may relate to more than one elaboration elements,
+and that the outer judgment, being processed before inner ones,
+elaborates to the top element in the elaboration list.
+
+Moreover, existential variables need special treatment, since they may be solved at any point,
+or be recycled if not solved within \DIFdelbegin \DIFdel{its scope}\DIFdelend \DIFaddbegin \DIFadd{their scopes}\DIFaddend .
+If an existential variable is solved, we not only propagate the solution to the other judgments,
+but also replace occurrences in the elaboration list.
+If an existential variable is recycled, meaning that it is not constrained,
+we can pick any well-formed monotype as its solution.
+The unit type $1$, as the simplest type in the system, is a good choice.
+
+\DIFaddbegin \subsection{Lexically-scoped type variables}
+\DIFadd{We have further extended the type system with support for
+lexically-scoped type variables~\mbox{%DIFAUXCMD
+\cite{scoped-type-variables}}\hspace{0pt}%DIFAUXCMD
+.
+Our Abella formalization for this extension proves
+all the metatheory we discuss in Section~\ref{sec:metatheory}.
+}
+
+\DIFadd{From a
+practical point of view, this extension allows the implementation of a function
+to refer to type variables from its type signature. For example,
+}$$(\lam{\lam[y] (x:a)}) : \all[a~b] a \to b \to a$$
+\DIFadd{has an annotation $(x:a)$ that refers to the type variable $a$ in the type signature.
+This is not a surprising feature, since the declarative system already accepts similar programs
+}$$
+\inferrule*[right=$\mathtt{DeclAnno}$]
+{
+    \Psi \vdash \all A \quad
+    \inferrule*[right=$\mathtt{Decl\forall I}$]
+    {\Psi,a \vdash e \Lto A}
+    {\Psi\vdash e\Lto \all A}
+}
+    {\Psi\vdash (e: \all A)\To \all A}
+$$
+
+\DIFadd{The main issue is the well-formedness condition.
+Normally $\Psi \vdash (e : A)$ follows from $\Psi \vdash e$ and $\Psi \vdash A$.
+However, when $A = \all A'$, the type variable $a$ is not in scope at $e$,
+therefore $\Psi \vdash e$ is not derivable.
+}
+
+\DIFadd{To address the problem, we add a new syntactic form that explicitly binds a
+type variable simulatenously in a function and its annotation.
+}$$
+\begin{array}{l@{\qquad}lcl}
+\text{Expressions}\qquad&e &::=&\quad \ldots \mid \Lambda a.~e:A
+\end{array}
+$$
+
+\DIFadd{This new type-lambda syntax $\Lambda a.~e:A$ actually annotates its body $e$ with $\all A$,
+while making $a$ visible inside the body of the function.
+The well-formedness judgments are extended accordingly:
+}$$
+\inferrule*[right=$\mathtt{wf_d}\Lambda$]
+    {\Psi,a \vdash e \quad \Psi,a \vdash A}
+    {\Psi \vdash \Lambda a.~e:A}
+\qquad
+\inferrule*[right=$\mathtt{wf\_}\Lambda$]
+    {\Gm,a \vdash e \quad \Gm,a \vdash A}
+    {\Gm \vdash \Lambda a.~e:A}
+$$
+
+\DIFadd{Corresponding rules are introduced for both the declarative system and the algorithmic system:
+}$$
+\inferrule*[right=$\mathtt{Decl}\Lambda$]
+    {\Psi,a \vdash A \quad \Psi,a \vdash e\Lto A}
+    {\Psi\vdash \Lambda a.~e:A \To \all A}
+$$
+$$\Gm \Vdash \Lambda a.~e:A \To_b \jg \algrule \Gm \Vdash [(\all A)/b]\jg, a \Vdash e \Lto A$$
+
+\DIFadd{In practice, programmers would not write the syntax $\Lambda a.~e : A$ directly.
+The ScopedTypeVariables extension of Haskell is effective only
+when the type signature is explicitly universally quantified
+(which the compiler translates into an expression similar to $\Lambda a.~e : A$);
+otherwise the program means the normal syntax $e : \all A$
+and may not later refer to the type variable $a$.
+}
+
+\DIFadd{We have proven all three desired properties for the extended system,
+namely soundness, completeness and decidability.
+}
+
+
+\DIFaddend \section{Related Work}
+
+Throughout the paper we have already discussed much of the closest related work.
+In this section we summarize the key differences and novelties, and we discuss some other
+related work.
+
+\paragraph{Predicative Higher-Ranked Polymorphism Type Inference Algorithms}
+Higher-ranked polymorphism is a convenient and practical feature of
+programming languages.  Since full type-inference for System F is
+undecidable~\cite{wells1999typability}, various decidable partial
+type-inference algorithms were developed.
+% No need to cite here: the following text is describing the point ~\cite{}.
+The declarative system of this paper,
+proposed by \citet{dunfield2013complete}, is \emph{predicative}: 
+$\forall$'s only instantiate to monotypes.  The monotype restriction
+on instantiation is considered reasonable and practical for most
+programs, except for those that require sophisticated forms of
+higher-order polymorphism.  In those cases, the bidirectional system
+accepts guidance through type annotations, which allow polymorphic types.
+Such annotations also improve
+readability of the program, and are not much of a burden in practice.
+
+DK's algorithm is shown to be sound, complete and decidable in 70 pages of manual proofs.
+Though carefully written, some of the proofs are incorrect
+(see discussion in Appendix~\ref{appendix:false_lemmas} and \ref{appendix:subsumption}),
+which creates difficulties when formalizing them in a proof assistant.
+In their follow-up work \citet{DunfieldIndexed} enrich the bidirectional higher-rank system with
+existentials and indexed types.
+With a more complex declarative system, they developed a proof of over 150 pages.
+It is even more difficult to argue its correctness for every single detail within such a big development.
+Unfortunately, we find that their Lemma 26 (Parallel Admissibility) appears to have the same issue 
+as lemma 29 in \citet{dunfield2013complete}: the conclusion is false. We also discuss
+the issue in more detail in Appendix~\ref{appendix:false_lemmas}.
+
+\citet{jones2007practical} developed another higher-rank predicative bidirectional type system.
+Their subtyping relation is enriched with \emph{deep skolemisation},
+which is more general than ours and allows more valid relations.
+In comparison to DK's system, they do not use the application inference judgment,
+resulting in a complicated mechanism for implicit instantiation taken care by the unification process for the algorithm.
+A manual proof is given, showing that the algorithm is sound and
+complete with respect to their declarative specification.
+
+In a more recent work, \citet{xie2018letarguments} proposed a variant of a
+bidirectional type inference system for a predicative system with higher-ranked types.
+Type information flows from arguments to
+functions with an additional \emph{application} mode. This variant 
+allows more higher-order typed programs to be inferred without additional annotations.
+Following the new mode, the let-generalization of the Hindley-Milner system
+is well supported as a syntactic sugar. The formalization includes some
+mechanized proofs for the declarative type system, but all proofs regarding
+the algorithmic type system are manual.
+
+\paragraph{Impredicative Higher-Ranked Polymorphism Type Inference Algorithms}
+Impredicative System F allows instantiation with polymorphic types,
+but unfortunately its subtyping system is already undecidable~\cite{tiuryn1996subtyping}.
+Works on partial impredicative type-inference algorithms~\cite{le2003ml,leijen2008hmf,vytiniotis2008fph}
+navigate a variety of design tradeoffs for a decidable algorithm.
+As a result, such algorithms tend to be more complicated, and thus less adopted in practice.
+Recent work proposed \emph{Guarded Impredicative Polymorphism}~\cite{Serrano2018},
+as an improvement on GHC's type inference algorithm with impredicative instantiation.
+They make use of local information in $n$-ary applications to
+infer polymorphic instantiations with a relatively simple specification and unification algorithm.
+Although not all impredicative instantiations can be handled well,
+their algorithm is already quite useful in practice.
+
+\paragraph{Mechanical Formalization of Polymorphic Subtyping}
+In all previous work on type inference for higher-ranked polymorphism
+(predicative and impredicative) discussed above, proofs and
+metatheory for the algorithmic aspects are manual. The only partial effort on mechanizing algorithmic
+aspects of type inference
+for higher-ranked types is
+the Abella formalization of \emph{polymorphic subtyping} by \citet{itp2018}.
+The judgment form of worklist $\Gm \vdash \Omega$ used in the formalization simplifies
+the propagation of existential variable instantiations.
+However, the approach has two main drawbacks:
+it does not collect unused variable declarations effectively;
+and the simple form of judgment cannot handle inference modes, which output types.
+The new worklist introduced in this paper inherits the simplicity of propagating instantiations,
+but overcomes both of the issues by mixing judgments with declarations
+and using the continuation-passing-style judgment chains. Furthermore,
+we formalize the complete bidirectional type system by
+\citet{dunfield2013complete}, whereas Zhao et al. only formalize
+the subtyping relation. 
+
+\paragraph{Mechanical Formalizations of Other Type-Inference Algorithms}
+Since the publication of the {\sc POPLMark} challenge~\cite{aydemir2005mechanized},
+many theorem provers and packages provide new methods for dealing
+with variable binding~\cite{aydemir2008engineering,urban2008nominalTech,chlipala2008parametric}.
+More and more type systems are formalized with these tools.
+However, mechanizing certain algorithmic aspects, like unification and
+constraint solving, has received very little attention and is still challenging.
+Moreover, while most tools support local (input) contexts in a neat way,
+many practical type-inference algorithms require
+more complex binding structures with output contexts or various forms of constraint solving procedures.
+
+Algorithm $\mathcal{W}$,
+as one of the classic type inference algorithms for polymorphic type systems,
+has been manually proven to be sound and complete
+with respect to the Hindley-Milner type system~\cite{hindley1969principal,milner1978theory,damas1982principal}.
+After around 15 years, the algorithm was formally verified by
+\citet{naraschewski1999type} in Isabelle/HOL~\cite{nipkow2002isabelle}.
+The treatment of new variables was tricky at that time, while the overall structure follows the
+structure of Damas's manual proof closely.
+%Another complication is the encoding of substitutions,
+%which they chose to formalize as a function instead of an association list.
+Later on, other researchers~\cite{dubois2000proving,dubois1999certification}
+formalized algorithm $\mathcal{W}$ in Coq~\cite{Coq}.
+Nominal techniques~\cite{urban2008nominalTech} in Isabelle/HOL have been
+developed to help programming language formalizations, and are used for a similar
+verification~\cite{urban2008nominal}. Moreover, Garrigue~\cite{garrigue2015certified}
+mechanized a type inference algorithm,
+with the help of locally nameless\DIFdelbegin \DIFdel{cofinite quantification}\DIFdelend ~\cite{LocallyNameless},
+for Core ML extended with structural polymorphism and recursion.
+
+\paragraph{Ordered Contexts in Type Inference}
+Gundry et al.~\cite{gundry2010type} revisit algorithm $\mathcal{W}$ and
+propose a new unification algorithm with the help of ordered contexts.
+Similar to DK's algorithm, information of meta variables flow from input contexts to output contexts.
+Not surprisingly, its information increase relation has a similar role to DK's context extension.
+Our algorithm, in contrast,
+eliminates \DIFdelbegin \DIFdel{the use of }\DIFdelend output contexts and \DIFdelbegin \DIFdel{their variable }\DIFdelend solution records ($\al = \tau$),
+simplifying the information propagation process through immediate substitution
+by collecting all the judgments in a single worklist.
+
+\DIFaddbegin \paragraph{\DIFadd{The Essence of ML Type Inference}}
+\DIFadd{Constraint-based type inference is adopted by \mbox{%DIFAUXCMD
+\citet{remy-attapl} }\hspace{0pt}%DIFAUXCMD
+for
+ML type systems, which do not employ higher-ranked polymorphism. An
+interesting feature of their algorithm is that it keeps precise
+scoping of variables, similarly to our approach.  Their algorithm is
+divided into constraint generation and solving phases (which are
+typical of constraint-based algorithms). Furthermore an intermediate
+language is used to describe constraints and their constraint solver
+utilizes a stack to track the state of the solving process.  In
+contrast, our algorithm has a single phase, where the judgment chains
+themselves act as constraints, thus no separate constraint language is
+needed.
+}
+
+%DIF > A possible advantage of a separate constraint language is to provide
+%DIF > a general and reuseable interface
+%DIF > that interprets the desired properties for type inference.
+
+\DIFaddend \paragraph{Lists of Judgments in Unification}
+Some work~\cite{Reed2009,Abel2011higher} adopts a similar idea to this paper
+in work on unification for dependently typed languages. Similarly to our work
+the algorithms need to be very careful about scoping, since the order of variable
+declarations is fundamental in a dependently typed setting. 
+Their algorithms simplify a collection of unification constraints progressively in a single-step style.
+In comparison, our algorithm mixes variable declarations with judgments,
+resulting in a simpler judgment form,
+while processing them in a similar way\DIFdelbegin \DIFdel{to those algorithms}\DIFdelend .
+One important difference is that contexts are
+duplicated in their unification judgments, which complicates the unification process,
+since the information of each local context needs to be synchronized.
+Instead we make use of the nature of ordered context to control the \DIFdelbegin \DIFdel{scoping }\DIFdelend \DIFaddbegin \DIFadd{scopes }\DIFaddend of unification variables.
+While their algorithms focus only on unification,
+our algorithm also deals with other types of judgments like \DIFdelbegin \DIFdel{type inference}\DIFdelend \DIFaddbegin \DIFadd{synthesis}\DIFaddend .
+A detailed discussion is in Section~\ref{sec:overview:list}.
+
+\section{Conclusion}
+
+In this paper we have provided the first mechanized formalization of type
+inference for higher-ranked polymorphism. This contribution is made possible by
+a new type inference algorithm for DK's declarative type system that
+incorporates two novel mechanization-friendly ideas. Firstly, we merge the
+traditional type context with the recently proposed concept of judgment chains,
+to accurately track variable scopes and to easily propagate substitutions.
+Secondly, we use \DIFaddbegin \DIFadd{a }\DIFaddend continuation-passing style to return types from the
+\DIFdelbegin \DIFdel{bidirectional }\DIFdelend synthesis mode to \DIFdelbegin \DIFdel{further }\DIFdelend \DIFaddbegin \DIFadd{subsequent }\DIFaddend tasks.
+
+We leave extending our algorithm with elaboration to future work, as well as
+investigating whether the problems we have found in DK's manual proofs for
+their algorithm can be addressed.
+
+% % \jimmy{Discuss the efficient algorithm and its equivalence}
+% % The algorithm is already efficient
+% 
+% Outline:
+% \begin{itemize}
+%     \item difficulties following DK's formalization
+%     \item a blend of ideas from various, including sources DK's ordered contexts
+%     \item list of judgments + some novel ideas
+%     \item lessons learned: problems identified in proofs and scoping
+%     \item Future work
+% \end{itemize}
+% 
+% Our judgment form, the worklist, is shown to be an elegant way to
+% formalize higher-order type infernce algorithms.
+% By mixing judgment chains with variable declarations in a single sort,
+% variable scopings are easily controlled by the ordered context in a natural way.
+% 
+% The formal proof in Abella convinces us of the correctness of our algorithm,
+% which further indicates that DK's algorithm, sharing a similar solving procedure as ours,
+% should be a correct one.
+% 
+% \paragraph{Future work}
+% \begin{itemize}
+%     \item Scoped type variables?
+%     \item Go beyond predicative instantiations
+%     \item More complicated features, such as dependent type
+% \end{itemize}
+% 
+% We have not yet explore lexically-scoped type variables~\cite{jones2003lexically}
+% as a practical extension to our system.
+% Formalization of a different variable scoping scheme is also
+% a challenging task for formal proofs via proof assistants.
+% 
+% Moreover, the garbage collection process for type variables and
+% existential variables do worth further attention:
+% the inference of $\lam x$ leaves an unsolved $\al$ in the context,
+% which we simply remove the variable after it is no longer referred to.
+% Is it possible that we infer better types by making better use of that piece of information?
+% How do we deal with, at least some ``trivial'' impredicative instantiations?
+% 
+% Last but not least, a further expectation is that our system would
+% adapt to various complicated type inference algorithms,
+% such as ones for dependent types.
+
+
+
+%% Acknowledgments
+\begin{acks}                            %% acks environment is optional
+                                        %% contents suppressed with 'anonymous'
+  %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
+  %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
+  %% acknowledge financial support and will be used by metadata
+  %% extraction tools.
+\DIFdelbegin \DIFdel{This material is based upon work supported by the }%DIFDELCMD < \grantsponsor{GS100000001}{National Science
+%DIFDELCMD <     Foundation}{http://dx.doi.org/10.13039/100000001} %%%
+\DIFdel{under Grant No.
+~}%DIFDELCMD < \grantnum{GS100000001}{nnnnnnn} %%%
+\DIFdel{and Grant
+  No.
+~}%DIFDELCMD < \grantnum{GS100000001}{mmmmmmm}%%%
+\DIFdel{.
+Any opinions, findings,
+  and
+  conclusions or recommendations expressed in this material are those
+  of the author and do not necessarily reflect the views of the
+  National Science Foundation.
+}\DIFdelend \DIFaddbegin 
+
+\DIFadd{We sincerely thank the anonymous reviewers for their insightful
+comments. Ningning Xie found the issue with Lemma 29 in DK's formalization that we reported 
+on this article. This work has been sponsored by the Hong Kong Research
+Grant Council projects number 17210617 and 17258816, and by the
+Research Foundation - Flanders.
+}\DIFaddend
+\end{acks}
+
+
+%% Bibliography
+\DIFdelbegin %DIFDELCMD < \bibliography{main}
+%DIFDELCMD < %%%
+\DIFdelend %DIF > %% -*-BibTeX-*-
+%DIF > %% Do NOT edit. File created by BibTeX with style
+%DIF > %% ACM-Reference-Format-Journals [18-Jan-2012].
+
+
+\DIFaddend %% Appendix
+\newpage
+\appendix
+
+\section{Appendix}
+
+\subsection{Formal Definitions for Worklist Measures}
+
+\DIFdelbegin %DIFDELCMD < \begin{figure}[h!]
+%DIFDELCMD < \hfill \framebox{$|\Gm|_e$} \hfill  \llap{Size measure.}
+%DIFDELCMD < \begin{gather*}
+%DIFDELCMD <     \begin{aligned}
+%DIFDELCMD <     |\Gm|_e &= \sum_{e\Lto A\in\Gm}|e|_e + \sum_{e\To_a \jg\in\Gm}|e|_e +
+%DIFDELCMD <         \sum_{\appInfAlg{A}{e}\in\Gm}|e|_e\\
+%DIFDELCMD <     \text{where } |x|_e &= |()|_e = 1\\
+%DIFDELCMD <         \qquad |\lam e|_e &= |e|_e + 1\\
+%DIFDELCMD <         |e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1\\
+%DIFDELCMD <         |e:A|_e &= |e| + 1
+%DIFDELCMD <     \end{aligned}
+%DIFDELCMD <     \end{gather*}
+%DIFDELCMD <     \hfill \framebox{$|\Gm|_\Leftrightarrow$} \hfill  \llap{Judgment measure.}
+%DIFDELCMD <     \begin{gather*}
+%DIFDELCMD <     \begin{aligned}
+%DIFDELCMD <     |\Gm|_\Leftrightarrow &= 2\cdot\#_{e\Lto A\in\Gm} +
+%DIFDELCMD <         \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
+%DIFDELCMD <     \end{aligned}
+%DIFDELCMD <     \end{gather*}
+%DIFDELCMD <     \hfill \framebox{$|\Gm|_\forall$} \hfill  \llap{Polymorphism measure.}
+%DIFDELCMD <     \begin{gather*}
+%DIFDELCMD <     \begin{aligned}
+%DIFDELCMD <     |\Gm|_\forall &= \sum_{e\Lto A\in\Gm}|A|_\forall + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\forall +
+%DIFDELCMD <         \sum_{A\le B\in\Gm} |A|_\forall + |B|_\forall\\
+%DIFDELCMD <     \text{where } |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
+%DIFDELCMD <         |A\to B|_\forall &= |A|_\forall + |B|_\forall\\
+%DIFDELCMD <         |\all A|_\forall &= |A|_\forall + 1
+%DIFDELCMD <     \end{aligned}
+%DIFDELCMD <     \end{gather*}
+%DIFDELCMD <     \hfill \framebox{$|\Gm|_\to$} \hfill  \llap{Function measure.}
+%DIFDELCMD <     \begin{gather*}
+%DIFDELCMD <     \begin{aligned}
+%DIFDELCMD <     |\Gm|_\to &= \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
+%DIFDELCMD <         \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
+%DIFDELCMD <     \text{where } |1|_\to &= |a|_\to = |\al|_\to = 1\\
+%DIFDELCMD <         |A\to B|_\to &= |A|_\to + |B|_\to + 1\\
+%DIFDELCMD <         |\all A|_\to &= |A|_\to
+%DIFDELCMD <     \end{aligned}
+%DIFDELCMD <     \end{gather*}
+%DIFDELCMD <     \hfill \framebox{$|\Gm|_{\al}$} \hfill  \llap{Existential measure.}
+%DIFDELCMD <     \begin{gather*}
+%DIFDELCMD <     \begin{aligned}
+%DIFDELCMD <     |\Gm|_{\al} &= \#_{\al\in\Gm}\\
+%DIFDELCMD <     \end{aligned}
+%DIFDELCMD < \end{gather*}
+%DIFDELCMD < \caption{Worklist measures}
+%DIFDELCMD < \label{fig:measures}
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{figure}[h!]
+    \begin{minipage}[t]{.5\textwidth}
+        \centering\framebox{$|\Gm|_e$, $|\jg|_e$, $|e|_e$} {Size measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_e &= \sum_{\jg \in \Gm} |\jg|_e\\[2mm]
+            |A \le B|_e &= 0\\
+            |e \Lto A|_e &= |e|_e\\
+            |e \To \jg|_e &= |e|_e + |\jg|_e\\
+            |\appInfAlg{A}{e}|_e &= |e|_e + |\jg|_e\\[2mm]
+            |x|_e &= |()|_e = 1\\
+            \qquad |\lam e|_e &= |e|_e + 1\\
+            |e_1~e_2|_e &= |e_1|_e + |e_2|_e + 1\\
+            |e:A|_e &= |e|_e + 1
+            \end{aligned}
+        \end{gather*}
+
+        \centering\framebox{$|\Gm|_\Leftrightarrow$, $|\jg|_\Leftrightarrow$} {Judgment measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_\Leftrightarrow &= \sum_{\jg \in \Gm} |\jg|_e\\[2mm]
+            % 2\cdot\#_{e\Lto A\in\Gm} +
+            %    \#_{e\To_a \jg\in\Gm} + 3\cdot\#_{\appInfAlg{A}{e}\in\Gm}
+            |A \le B|_\Leftrightarrow &= 0\\
+            |e \Lto A|_\Leftrightarrow &= 2\\
+            |e \To \jg|_\Leftrightarrow &= |\jg|_\Leftrightarrow + 1\\
+            |\appInfAlg{A}{e}|_\Leftrightarrow &= |\jg|_\Leftrightarrow + 3
+            \end{aligned}
+        \end{gather*}
+        \centering\framebox{$|\Gm|_{\al}$} {Existential measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_{\al} &= \#_{\al\in\Gm}\\
+            \end{aligned}
+        \end{gather*}
+    \end{minipage}%
+    \begin{minipage}[t]{.5\textwidth}
+        \centering\framebox{$|\Gm|_\forall$, $|\jg|_\forall$, $|A|_\forall$} {Polymorphism measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_\Leftrightarrow &= \sum_{\jg \in \Gm} |\jg|_\forall\\[2mm]
+            |A \le B|_\forall &= |A|_\forall + |B|_\forall\\
+            |e \Lto A|_\forall &= |A|_\forall\\
+            |e \To \jg|_\forall &= |\jg|_\forall\\
+            |\appInfAlg{A}{e}|_\forall &= |A|_\forall + |\jg|_\forall\\[2mm]
+            |1|_\forall &= |a|_\forall = |\al|_\forall = 1\\
+            |A\to B|_\forall &= |A|_\forall + |B|_\forall\\
+            |\all A|_\forall &= |A|_\forall + 1
+            \end{aligned}
+        \end{gather*}
+
+        \centering\framebox{$|\Gm|_\to$, $|\jg|_\to$, $|A|_\to$} {Function measure.}
+        \begin{gather*}
+            \begin{aligned}
+            |\Gm|_\to &= \sum_{\jg \in \Gm} |\jg|_\forall\\[2mm]
+            |A \le B|_\forall &= |A|_\forall + |B|_\forall\\
+            |e \Lto A|_\forall &= |A|_\forall\\
+            |e \To \jg|_\forall &= |\jg|_\forall\\
+            |\appInfAlg{A}{e}|_\forall &= |A|_\forall + |\jg|_\forall\\[2mm]
+            |1|_\to &= |a|_\to = |\al|_\to = 1\\
+            |A\to B|_\to &= |A|_\to + |B|_\to + 1\\
+            |\all A|_\to &= |A|_\to
+            % \sum_{e\Lto A\in\Gm}|A|_\to + \sum_{\appInfAlg{A}{e}\in\Gm}|A|_\to +
+            %     \sum_{A\le B\in\Gm} |A|_\to + |B|_\to\\
+            \end{aligned}
+        \end{gather*}
+    \end{minipage}
+\caption{Worklist measures}
+\label{fig:measures}
+\end{figure}
+\DIFaddend 
+
+\subsection{Broken Lemmas in DK's papers}
+\label{appendix:false_lemmas}
+
+We found false lemmas in the manual proofs of DK' two papers
+\cite{dunfield2013complete} and \cite{DunfieldIndexed}.
+\begin{itemize}
+    \item
+        In the first paper, Lemma 29 on page 9 of its appendix says:
+        \begin{lemma}[Parallel Admissibility of~\cite{dunfield2013complete}]~\\
+        If $\Gamma_L \longrightarrow \Delta_L$ and
+        $\Gamma_L, \Gamma_R \longrightarrow \Delta_L, \Delta_R$ then:
+        \begin{enumerate}
+            \item $\Gamma_L,\al,\Gamma_R \longrightarrow \Delta_L, \al, \Delta_R$
+            \item If $\Delta_L \vdash \tau'$ then
+                $\Gamma_L,\al,\Gamma_R \longrightarrow \Delta_L, \al = \tau', \Delta_R$.
+            \item If $\Gamma_L \vdash \tau$ and $\Delta_L \vdash \tau'$ and
+                $[\Delta_L]\tau = [\Delta_L]\tau'$, then
+                $\Gamma_L, \al = \tau, \Gamma_R \longrightarrow \Delta_L, \al = \tau', \Delta_R$.
+        \end{enumerate}
+        \end{lemma}
+
+        We give a counter-example to this lemma:\\
+        Pick $\Gm_L = \nil, \Gm_R = \bt, \Delta_L = \bt, \Delta_R = \nil$, then both conditions
+        $\nil\longrightarrow \bt$ and $\bt\longrightarrow \bt$ hold, but the first conclusion
+        $\al,\bt \longrightarrow \bt,\al$ does not hold.
+    \item
+        In the second paper, as an extended work to the first paper, Lemma 26 on page 22 of its appendix says:
+        \begin{lemma}[Parallel Admissibility of~\cite{DunfieldIndexed}]~\\
+        If $\Gamma_L \longrightarrow \Delta_L$ and
+        $\Gamma_L, \Gamma_R \longrightarrow \Delta_L, \Delta_R$ then:
+        \begin{enumerate}
+            \item $\Gamma_L,\al:\kappa,\Gamma_R \longrightarrow \Delta_L, \al:\kappa, \Delta_R$
+            \item If $\Delta_L \vdash \tau' : \kappa$ then
+                $\Gamma_L,\al:\kappa,\Gamma_R \longrightarrow \Delta_L, \al:\kappa = \tau', \Delta_R$.
+            \item If $\Gamma_L \vdash \tau : \kappa$ and $\Delta_L \vdash \tau' types$ and
+                $[\Delta_L]\tau = [\Delta_L]\tau'$, then
+                $\Gamma_L, \al:\kappa = \tau, \Gamma_R \longrightarrow \Delta_L, \al:\kappa = \tau', \Delta_R$.
+        \end{enumerate}
+        \end{lemma}
+
+        A similar counter-example is given:\\
+        Pick $\Gm_L = \nil, \Gm_R = \bt:\star, \Delta_L = \bt:\star, \Delta_R = \nil$, then both conditions
+        $\nil\longrightarrow \bt:\star$ and $\bt:\star\longrightarrow \bt:\star$ hold, but the first conclusion
+        $\al:\kappa,\bt:\star \longrightarrow \bt:\star,\al:\kappa$ does not hold.
+\end{itemize}
+
+\subsection{A Fix to DK's Subsumption Lemma}
+\label{appendix:subsumption}
+
+Let's first recall the lemma:
+\begin{lemma}[Subsumption]
+Given $\Psi' \le \Psi$:
+\begin{enumerate}
+    \item If $\Psi \vdash e \Lto A$ and $\Psi \vdash A \le A'$ then $\Psi' \vdash e \Lto A'$;
+    \item If $\Psi \vdash e \To B$ then there exists
+        $B'$ s.t. $\Psi \vdash B' \le B$ and $\Psi' \vdash e \To B'$;
+    \item If $\Psi \vdash \appInf{A}{e}{C}$ and $\Psi \vdash A' \le A$,
+        then there exists $C'$ s.t. $\Psi \vdash C' \le C$ and $\Psi' \vdash \appInf{A'}{e}{C'}$.
+\end{enumerate}
+\end{lemma}
+
+\paragraph{Problems in DK's Manual Proof}
+We tried to follow DK's manual proof for this lemma.
+While being written in a clear format and providing enough details,
+the proof is not fully accepted by the proof assistant.
+Specifically, the first two applications of induction hypotheses on page 22 are not accepted.
+Either of them seems to use a slightly different ``induction hypothesis'' than the true one.
+
+\paragraph{A Fix to the Proof}
+We make use of our worklist measures for the induction.
+Recall that $|e|_e$ measures term size;
+and the judgment measure counts checking as 2, inference as 1 and application inference as 3;
+and $|A|_\forall$ counts the number of $\forall$'s in a type.
+
+The proof is by a nested mutual induction on the lexicographical order of the measures
+$$\langle |e|_e, |\cdot|_\Leftrightarrow, |A|_\forall + |A'|_\forall \rangle,$$
+where the second measure is 2 for checking (1), 1 for inference (2) and 3 for application inference (3);
+and the third measure does not apply to case (2) since no $A$ is used.
+
+All but two cases can be finished easily following the declarative typing derivation,
+and the proof shares a similar structure to DK's.
+One tricky case related to Rule $\mathtt{Decl\forall I}$ indicates that $A$ has the shape $\all A_0$,
+thus the subtyping relation derives from either $\mathtt{{\le}\forall L}$ or $\mathtt{{\le}\forall R}$.
+For each of the case, the third measure $|A|_\forall + |A'|_\forall$ decreases
+(the $\mathtt{{\le}\forall L}$ case requires a type substitution lemma obtaining
+$\Psi \vdash e \Lto [\tau/a]A_0$ from the typing derivation).
+
+Another tricky case is $\mathtt{Decl{\to}I}$.
+When the subtyping relation is derived from $\mathtt{{\le}{\to}}$,
+a simple application of induction hypothesis finishes the proof.
+When the subtyping relation is derived from $\mathtt{{\le}\forall R}$,
+$|A'|_\forall$ decreases, and thus the induction hypothesis finishes this case.
+\DIFaddbegin 
+
+\subsection{Translation Table for the Proof Scripts}
+\DIFadd{In the proof scripts, we use textual relational definitions
+rather than the symbolic ones used in the paper.
+The mapping should be helpful for anyone who reads the script.
+}
+
+\afterpage{%
+\clearpage% Flush earlier floats (otherwise order might not be correct)
+\begin{landscape}% Landscape page
+
+\begin{figure}[ht]
+\centering
+\begin{tabular}{|c|c|c|c|}\hline
+Symbol & Abella textual relation & File (.thm) & Description\\\hline
+\hline
+$A$    & {\tt ty, wft, wfta} & typing &
+    The "type" type, decl./alg. well-formedness\\\hline
+$e$    & {\tt tm, wftm} & typing &
+    The "term" type, (alg.) well-formedness\\\hline
+$\Psi, \Gm$ & {\tt olist, wfj} & typing &
+    {\tt olist} is Abella's built-in list type, i.e. {\tt [o]}\\\hline
+$\jg$  & {\tt judgment, wfjg} & typing &
+    Judgment chain and its well-formedness\\\hline
+\hline
+$\Gm\rto\Gm'$ & {\tt reduction} & smallStep &
+    Algorithmic reduction: paper version\\\hline
+$\Gm\redto\nil$ & {\tt judge} & typing &
+    ({\tt judge} $\Gm$): a success reduction on $\Gm$\\\hline
+\hline
+$\Gm \sto \Om$ & {\tt tex} & trans &
+    "transfer existential variables"\\\hline
+$\Om\redto\nil$ & {\tt dc, dcl} & trans, dcl &
+    Declarative chain representation\\\hline
+\hline
+$\Psi'\le\Psi$ & {\tt esub} & declTyping & Declarative context subtyping\\\hline
+\hline
+$\Gm\jExt\Gm'$ & {\tt jExt} & inst\_decidable & "Judgment extension"\\\hline
+$\Gm_i$ & {\tt iexp} & inst\_decidable & instantiation judgments ($\Gm \vdash_{wf} \Gm_i$)\\\hline
+$\Gm_\le$ & {\tt subExp} & inst\_decidable & subtyping judgments\\\hline
+\hline
+$|\cdot|_e$ & {\tt tmSize, tmSizeJ, tmSizel} & declTyping, decidability &
+    Size measure for term, judgment chain or context\\\hline
+$|\cdot|_\Leftrightarrow$ & {\tt m\_judgeJ, m\_judge} & decidability &
+    Judgment measure for judgment chain or context\\\hline
+$|\cdot|_{\al}$ & {\tt nVar} & inst\_decidable &
+    Existential measure for context\\\hline
+$|\cdot|_\forall$ & {\tt order, orderJ, orderl} & order, inst\_decidable &
+    Polymorphism measure for type, judgment chain or context\\\hline
+$|\cdot|_\to$ & {\tt depth, depthJ, depthl} & order, decidability &
+    Function measure for type, judgment chain or context\\\hline
+\end{tabular}
+\caption{Translation Table for the Proof Scripts}
+\label{fig:translation_table}
+\end{figure}
+
+\end{landscape}
+\clearpage% Flush page
+}
+\DIFaddend 
+
+
+\end{document}
