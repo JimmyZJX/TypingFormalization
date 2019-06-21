@@ -1,3 +1,10 @@
+
+# For latexdiff
+TypingFormalization-*/*
+*.cfg
+
+*.zip
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
