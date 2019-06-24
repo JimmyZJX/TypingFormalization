@@ -478,8 +478,8 @@ a check of the argument against the input type $\al$ and returns the output type
 Checking $()$ against the existential variable $\al$ solves $\al$ to the unit type $1$
 through Rules 18, 24 and 16.
 Immediately after $\al$ is solved, the algorithm replaces every occurrence of $\al$ with $1$.
-Therefore the worklist remains a simple subtyping judgment $1 \le 1$, which is finished off by Rule 4.
-Finally we get an empty worklist, indicating the success of the whole derivation.
+Therefore the worklist remains $1 \le 1$, which is finished off by Rule 4.
+Finally, the empty worklist indicates the success of the whole derivation.
 
 \begin{figure}
 \begin{gather*}

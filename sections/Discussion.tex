@@ -181,7 +181,6 @@ The main issue is the well-formedness condition.
 Normally $\Psi \vdash (e : A)$ follows from $\Psi \vdash e$ and $\Psi \vdash A$.
 However, when $A = \all A'$, the type variable $a$ is not in scope at $e$,
 therefore $\Psi \vdash e$ is not derivable.
-
 To address the problem, we add a new syntactic form that explicitly binds a
 type variable simulatenously in a function and its annotation.
 $$

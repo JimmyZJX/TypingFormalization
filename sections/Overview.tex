@@ -43,7 +43,7 @@ shown at the top of Figure~\ref{fig:decl:sub}. The rules are standard
 and simply ensure that variables in types and terms are well-scoped.  
 
 \begin{figure}[t]
-\centering \framebox{$\Psi \vdash A$}
+\centering \framebox{$\Psi \vdash A$} Well-formed declarative type
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf_d unit}$]
     {~}{\Psi\vdash 1}
@@ -60,7 +60,7 @@ and simply ensure that variables in types and terms are well-scoped.
     {\Psi\vdash \forall a. A}
 \end{gather*}
 
-\centering \framebox{$\Psi \vdash e$}
+\centering \framebox{$\Psi \vdash e$} Well-formed declarative expression
 \begin{gather*}
 \inferrule*[right=$\mathtt{wf_d tmvar}$]
     {x:A\in\Psi}{\Psi\vdash x}
@@ -81,7 +81,7 @@ and simply ensure that variables in types and terms are well-scoped.
     {\Psi\vdash (e:A)}
 \end{gather*}
 
-\centering \framebox{$\Psi \vdash A \le B$}
+\centering \framebox{$\Psi \vdash A \le B$} Declarative subtyping
 \begin{gather*}
 \inferrule*[right=$\mathtt{{\le}Var}$]
     {a\in\Psi}{\Psi\vdash a\le a}
@@ -437,7 +437,8 @@ does not mesh well with the use of output contexts; explicit marker entries are
 needed in two places to demarcate the end of an existential variable's scope.
 Actually we found a scoping issue related to the subsumption rule $\mathtt{DK\_Sub}$,
 which might cause existential variables to leak across judgments.
-A detailed discussion on this issue with a possible fix is in Section~\ref{sec:discussion:scoping}.
+In Section~\ref{sec:discussion:scoping} we give a detailed discussion.
+%A detailed discussion on this issue with a possible fix is .
 
 The complications of scoping and propagation are compelling reasons
 to look for another algorithm that is easier to
