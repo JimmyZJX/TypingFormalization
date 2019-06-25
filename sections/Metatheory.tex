@@ -26,6 +26,7 @@ Abella theorem prover~\cite{AbellaDesc}.
 {\Om\vdash\tau \\ \Om,[\tau/\al]\Gm \sto \Om}
 {\Om,\al,\Gm \sto \Om}
 \end{gather*}
+\Description{Declarative Worklists and Instantiation}
 \caption{Declarative Worklists and Instantiation}
 \label{fig:trans}
 \end{figure}
@@ -89,7 +90,8 @@ If $\Gm_L, \al, \Gm_R \sto \Om$
 \Om\Vdash \appInfAlg{A}{e} &\rto \Om\Vdash[C/a]\jg & \text{ when } \|\Om\| \vdash \appInf{A}{e}{C}\\
 \end{aligned}
 \end{gather*}
-\caption{Declarative Transfer.}
+\Description{Declarative Transfer}
+\caption{Declarative Transfer}
 \label{fig:decl:worklist}
 \end{figure}
 
@@ -195,6 +197,7 @@ $$\begin{aligned}
 \inferrule*[right=$\mathtt{CtxSubTmVar}$]
 {\Psi' \le \Psi \\ \Psi \vdash A' \le A}{\Psi', x:A' \le \Psi, x:A}\qquad
 \end{aligned}$$
+\Description{Context Subtyping}
 \caption{Context Subtyping}
 \label{fig:context_subtyping}
 \end{figure}
@@ -401,6 +404,7 @@ can be derived as a combination of the three rules that define the update relati
 \inferrule*[right=$\mathtt{\jExt \al}$]
     {\Gm_L,\al,\Gm_R \jExt \Gm'}{\Gm_L,\Gm_R \jExt \Gm'}
 \end{gather*}
+\Description{Worklist Update}
 \caption{Worklist Update}\label{fig:worklist_ext}
 \end{figure}
 

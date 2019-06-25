@@ -24,6 +24,7 @@ that the unifies \emph{ordered contexts} and the worklists themselves.
 \text{Contexts}\qquad&\Psi &::=&\quad \nil \mid \Psi, a \mid \Psi, x:A
 \end{array}
 \]
+\Description{Syntax of Declarative System}
 \caption{Syntax of Declarative System}\label{fig:decl:syntax}
 \end{figure}
 
@@ -101,6 +102,7 @@ and simply ensure that variables in types and terms are well-scoped.
     {\Psi, b\vdash A\le B}
     {\Psi\vdash A \le \all[b]B}
 \end{gather*}
+\Description{Declarative Well-formedness and Subtyping}
 \caption{%Well-formedness of Declarative Types and 
 Declarative Well-formedness and Subtyping}\label{fig:decl:sub}
 \end{figure}
@@ -194,6 +196,7 @@ throughout the whole text.
     {\Psi\vdash e \Lto A}
     {\Psi\vdash \appInf{A \to C}{e}{C}}
 \end{gather*}
+\Description{Declarative Typing}
 \caption{Declarative Typing}\label{fig:decl:typing}
 \end{figure}
 
