@@ -178,46 +178,49 @@ The mapping should be helpful for anyone who reads the script.
 \begin{landscape}% Landscape page
 
 \begin{table}[ht]
+\renewcommand{\arraystretch}{1.3} 
 \caption{Translation Table for the Proof Scripts}
 \centering
-\begin{tabular}{|c|c|c|c|}\hline
-Symbol & Abella textual relation & File (.thm) & Description\\\hline
-\hline
+\begin{tabular}{@{}llll@{}}
+\toprule
+Symbol & Abella textual relation & File (.thm) & Description\\
+\midrule
 $A$    & {\tt ty, wft, wfta} & typing &
-    The "type" type, decl./alg. well-formedness\\\hline
+    The "type" type, decl./alg. well-formedness\\
 $e$    & {\tt tm, wftm} & typing &
-    The "term" type, (alg.) well-formedness\\\hline
+    The "term" type, (alg.) well-formedness\\
 $\Psi, \Gm$ & {\tt olist, wfj} & typing &
-    {\tt olist} is Abella's built-in list type, i.e. {\tt [o]}\\\hline
+    {\tt olist} is Abella's built-in list type, i.e. {\tt [o]}\\
 $\jg$  & {\tt judgment, wfjg} & typing &
-    Judgment chain and its well-formedness\\\hline
-\hline
+    Judgment chain and its well-formedness\\
+
 $\Gm\rto\Gm'$ & {\tt reduction} & smallStep &
-    Algorithmic reduction: paper version\\\hline
+    Algorithmic reduction: paper version\\
 $\Gm\redto\nil$ & {\tt judge} & typing &
-    ({\tt judge} $\Gm$): a success reduction on $\Gm$\\\hline
-\hline
+    ({\tt judge} $\Gm$): a success reduction on $\Gm$\\
+
 $\Gm \sto \Om$ & {\tt tex} & trans &
-    "transfer existential variables"\\\hline
+    "transfer existential variables"\\
 $\Om\redto\nil$ & {\tt dc, dcl} & trans, dcl &
-    Declarative chain representation\\\hline
-\hline
-$\Psi'\le\Psi$ & {\tt esub} & declTyping & Declarative context subtyping\\\hline
-\hline
-$\Gm\jExt\Gm'$ & {\tt jExt} & inst\_decidable & "Judgment extension"\\\hline
-$\Gm_i$ & {\tt iexp} & inst\_decidable & instantiation judgments ($\Gm \vdash_{wf} \Gm_i$)\\\hline
-$\Gm_\le$ & {\tt subExp} & inst\_decidable & subtyping judgments\\\hline
-\hline
+    Declarative chain representation\\
+
+$\Psi'\le\Psi$ & {\tt esub} & declTyping & Declarative context subtyping\\
+
+$\Gm\jExt\Gm'$ & {\tt jExt} & inst\_decidable & "Judgment extension"\\
+$\Gm_i$ & {\tt iexp} & inst\_decidable & instantiation judgments ($\Gm \vdash_{wf} \Gm_i$)\\
+$\Gm_\le$ & {\tt subExp} & inst\_decidable & subtyping judgments\\
+
 $|\cdot|_e$ & {\tt tmSize, tmSizeJ, tmSizel} & declTyping, decidability &
-    Size measure for term, judgment chain or context\\\hline
+    Size measure for term, judgment chain or context\\
 $|\cdot|_\Leftrightarrow$ & {\tt m\_judgeJ, m\_judge} & decidability &
-    Judgment measure for judgment chain or context\\\hline
+    Judgment measure for judgment chain or context\\
 $|\cdot|_{\al}$ & {\tt nVar} & inst\_decidable &
-    Existential measure for context\\\hline
+    Existential measure for context\\
 $|\cdot|_\forall$ & {\tt order, orderJ, orderl} & order, inst\_decidable &
-    Polymorphism measure for type, judgment chain or context\\\hline
+    Polymorphism measure for type, judgment chain or context\\
 $|\cdot|_\to$ & {\tt depth, depthJ, depthl} & order, decidability &
-    Function measure for type, judgment chain or context\\\hline
+    Function measure for type, judgment chain or context\\
+\bottomrule
 \end{tabular}
 \label{table:translation_table}
 \end{table}
