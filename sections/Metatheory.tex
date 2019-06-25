@@ -472,10 +472,11 @@ In addition, we do prove the equivalence of the two representations.
 \paragraph{Statistics of the Proof}
 The proof script consists of 7977 lines of Abella code with a total of
 60 definitions and 596 theorems.
-Figure~\ref{fig:proof_statistics} briefly summarizes the contents of each file.
+Figure~\ref{table:proof_statistics} briefly summarizes the contents of each file.
 The files are linearly dependent due to limitations of Abella.
 
-\begin{figure}[t]
+\begin{table}[t]
+\caption{Statistics for the proof scripts}
 \centering\begin{tabular}{|c|c|c|l|}\hline
     File(s) & SLOC & \#Theorems & Description\\\hline
     olist.thm, nat.thm  &  311 & 57  & Basic data structures\\\hline
@@ -498,6 +499,5 @@ The files are linearly dependent due to limitations of Abella.
     smallStep.thm       &  119 &  2  & The equivalence between big-step and small-step\\\hline
     \hline\emph{Total}               & 7977 & 596 & (60 definitions in total)\\\hline
 \end{tabular}
-\caption{Statistics for the proof scripts}
-\label{fig:proof_statistics}
-\end{figure}
+\label{table:proof_statistics}
+\end{table}
