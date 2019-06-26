@@ -22,7 +22,9 @@ readability of the program, and are not much of a burden in practice.
 
 DK's algorithm is shown to be sound, complete and decidable in 70 pages of manual proofs.
 Though carefully written, some of the proofs are incorrect
-(see discussion in Appendix~\ref{appendix:false_lemmas} and \ref{appendix:subsumption}),
+(see discussion in Appendix
+%~\ref{appendix:false_lemmas} and \ref{appendix:subsumption}
+),
 which creates difficulties when formalizing them in a proof assistant.
 In their follow-up work \citet{DunfieldIndexed} enrich the bidirectional higher-rank system with
 existentials and indexed types.
@@ -30,7 +32,7 @@ With a more complex declarative system, they developed a proof of over 150 pages
 It is even more difficult to argue its correctness for every single detail within such a big development.
 Unfortunately, we find that their Lemma 26 (Parallel Admissibility) appears to have the same issue 
 as lemma 29 in \citet{dunfield2013complete}: the conclusion is false. We also discuss
-the issue in more detail in Appendix~\ref{appendix:false_lemmas}.
+the issue in more detail in Appendix. %~\ref{appendix:false_lemmas}.
 
 \citet{jones2007practical} developed another higher-rank predicative bidirectional type system.
 Their subtyping relation is enriched with \emph{deep skolemisation},
